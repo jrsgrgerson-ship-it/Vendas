@@ -2,14 +2,14 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Painel Canil My Baby</title>
     
+    <link rel="manifest" href="manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#2d3436">
-    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Canil%20My%20Baby%22,%22short_name%22:%22MyBaby%22,%22start_url%22:%22index.html%22,%22display%22:%22standalone%22,%22background_color%22:%22#f8f9fa%22,%22theme_color%22:%22#2d3436%22}">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -17,7 +17,7 @@
             --spitz: #ff9f43; --bengal: #54a0ff; --bg: #f8f9fa;
             --dark: #2d3436; --danger: #ff4757;
         }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 12px; color: var(--dark); }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 12px; color: var(--dark); overflow-x: hidden; }
         .container { max-width: 500px; margin: auto; }
         header { text-align: center; padding: 10px 0 15px; }
         header h2 { margin: 0; font-size: 20px; color: var(--dark); letter-spacing: -0.5px; }
@@ -85,9 +85,7 @@
                 <span style="margin-left:5px;">&#127919;</span>
             </div>
         </div>
-        
         <div class="progress-container"><div id="barraProgresso" class="progress-bar"></div></div>
-        
         <div class="meta-footer">
             <div>TOTAL <span id="porcentoTxt">0%</span></div>
             <div id="faltaTxt">...</div>
@@ -95,50 +93,25 @@
     </div>
 
     <div class="chart-container">
-        <div class="chart-wrapper">
-            <canvas id="meuGrafico"></canvas>
-        </div>
+        <div class="chart-wrapper"><canvas id="meuGrafico"></canvas></div>
         <div class="media-tag">M&#201;DIA / VENDA: <span id="valorMedia">R$ 0</span></div>
     </div>
 
     <div class="stats-grid">
-        <div class="stat-card">
-            <small>Faturamento</small>
-            <strong id="totalVendas">R$ 0,00</strong>
-            <div id="faltaPerc" style="font-size: 8px; font-weight: bold; margin-top: 4px;"></div>
-        </div>
-        <div class="stat-card">
-            <small>L&#237;quido a Receber</small>
-            <strong id="totalComissao" style="color: #2ecc71;">R$ 0,00</strong>
-            <div id="subVale" style="font-size: 8px; color: var(--danger); font-weight: bold;"></div>
-        </div>
-        <div class="stat-card">
-            <small>Machos</small>
-            <strong id="countMacho">0</strong>
-            <div style="font-size:8px; opacity: 0.6;">&#128054;<span id="mS">0</span> | &#128049;<span id="mB">0</span></div>
-        </div>
-        <div class="stat-card">
-            <small>F&#234;meas</small>
-            <strong id="countFemea">0</strong>
-            <div style="font-size:8px; opacity: 0.6;">&#128054;<span id="fS">0</span> | &#128049;<span id="fB">0</span></div>
-        </div>
+        <div class="stat-card"><small>Faturamento</small><strong id="totalVendas">R$ 0,00</strong><div id="faltaPerc" style="font-size: 8px; font-weight: bold; margin-top: 4px;"></div></div>
+        <div class="stat-card"><small>L&#237;quido a Receber</small><strong id="totalComissao" style="color: #2ecc71;">R$ 0,00</strong><div id="subVale" style="font-size: 8px; color: var(--danger); font-weight: bold;"></div></div>
+        <div class="stat-card"><small>Machos</small><strong id="countMacho">0</strong><div style="font-size:8px; opacity: 0.6;">&#128054;<span id="mS">0</span> | &#128049;<span id="mB">0</span></div></div>
+        <div class="stat-card"><small>F&#234;meas</small><strong id="countFemea">0</strong><div style="font-size:8px; opacity: 0.6;">&#128054;<span id="fS">0</span> | &#128049;<span id="fB">0</span></div></div>
     </div>
 
     <div class="form-venda">
         <div class="row">
-            <select id="tipo" style="flex:1.2">
-                <option value="Spitz">&#128054; Spitz</option>
-                <option value="Bengal">&#128049; Bengal</option>
-            </select>
-            <select id="sexo" style="flex:1">
-                <option value="Macho">&#9794; Macho</option>
-                <option value="F&#234;mea">&#9792; F&#234;mea</option>
-            </select>
+            <select id="tipo" style="flex:1.2"><option value="Spitz">&#128054; Spitz</option><option value="Bengal">&#128049; Bengal</option></select>
+            <select id="sexo" style="flex:1"><option value="Macho">&#9794; Macho</option><option value="F&#234;mea">&#9792; F&#234;mea</option></select>
         </div>
         <input type="text" id="cliente" placeholder="Nome do Cliente">
         <input type="number" id="valorVenda" placeholder="Valor da Venda (R$)">
         <button class="btn-add" onclick="adicionarVenda()">REGISTRAR VENDA</button>
-        
         <div class="row" style="margin-top: 5px;">
             <input type="number" id="valorVale" placeholder="R$ Vale" style="flex: 1;">
             <input type="text" id="motivoVale" placeholder="Motivo" style="flex: 1.5;">
@@ -147,18 +120,15 @@
     </div>
 
     <div id="lista"></div>
-
     <div class="backup-area">
         <button class="btn-backup" onclick="exportarBackup()">&#128190; BACKUP</button>
         <button class="btn-backup" onclick="document.getElementById('inputFile').click()">&#128194; IMPORTAR</button>
         <input type="file" id="inputFile" style="display:none" onchange="importarBackup(event)">
     </div>
-    
     <button onclick="limparTudo()" style="background:none; color:#ccc; width:100%; border:none; margin-bottom:50px; cursor:pointer; font-size:10px; font-weight: bold;">ZERAR TUDO</button>
 </div>
 
 <script>
-    // Código de lógica permanece o mesmo das versões anteriores
     let vendas = JSON.parse(localStorage.getItem('vendasV5')) || [];
     let meta = localStorage.getItem('metaV5') || 0;
     let chartInstance = null;
@@ -278,50 +248,18 @@
         const mediaVenda = qtdVendasReal > 0 ? totalFat / qtdVendasReal : 0;
         document.getElementById('valorMedia').innerText = "R$ " + Math.round(mediaVenda).toLocaleString();
 
-        document.getElementById('countMacho').innerText = mS + mB;
-        document.getElementById('countFemea').innerText = fS + fB;
-        document.getElementById('mS').innerText = mS; document.getElementById('mB').innerText = mB;
-        document.getElementById('fS').innerText = fS; document.getElementById('fB').innerText = fB;
-
         const p = meta > 0 ? (totalFat / meta) * 100 : 0;
         document.getElementById('barraProgresso').style.width = Math.min(p, 100) + "%";
         document.getElementById('porcentoTxt').innerText = Math.floor(p) + "%";
         
-        if(meta > 0) {
-            document.getElementById('faltaTxt').innerText = meta - totalFat > 0 ? "FALTA R$ " + (meta-totalFat).toLocaleString() : "META BATIDA! &#127942;";
-            document.getElementById('faltaPerc').innerText = (100-p) > 0 ? "FALTAM " + Math.ceil(100-p) + "%" : "META ATINGIDA";
-            document.getElementById('faltaPerc').style.color = (100-p) > 0 ? "#ff4757" : "#2ecc71";
-        }
-
         const ctx = document.getElementById('meuGrafico').getContext('2d');
         if(chartInstance) chartInstance.destroy();
         chartInstance = new Chart(ctx, {
             type: 'line',
-            data: { 
-                labels: Object.keys(dadosGrafico), 
-                datasets: [{ 
-                    data: Object.values(dadosGrafico), 
-                    borderColor: '#54a0ff', 
-                    backgroundColor: 'rgba(84, 160, 255, 0.05)',
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 4,
-                    pointRadius: 3,
-                    pointBackgroundColor: '#54a0ff'
-                }] 
-            },
-            options: { 
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: false } }, 
-                scales: { 
-                    y: { display: false }, 
-                    x: { grid: { display: false }, ticks: { font: { size: 9, weight: 'bold' }, color: '#b2bec3' } } 
-                } 
-            }
+            data: { labels: Object.keys(dadosGrafico), datasets: [{ data: Object.values(dadosGrafico), borderColor: '#54a0ff', fill: true, tension: 0.4, borderWidth: 4 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
         });
     }
-
-    function limparTudo() { if(confirm("Zerar todos os dados?")) { localStorage.clear(); location.reload(); } }
     renderizar();
 </script>
 </body>
