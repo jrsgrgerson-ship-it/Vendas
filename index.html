@@ -37,11 +37,12 @@
         .progress-container { background: rgba(255,255,255,0.1); height: 10px; border-radius: 10px; overflow: hidden; margin: 12px 0; }
         .progress-bar { background: linear-gradient(90deg, var(--spitz), #ffcd3c); height: 100%; width: 0%; transition: 1.5s ease; }
         
-        .chart-container { background: white; padding: 15px; border-radius: 24px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; flex-direction: column; }
-        .chart-wrapper { height: 160px; position: relative; }
-        .media-tag { align-self: flex-end; margin-top: 10px; background: #f1f2f6; padding: 4px 12px; border-radius: 8px; font-size: 10px; font-weight: bold; color: #636e72; }
+        /* CORREÇÃO DO GRÁFICO */
+        .chart-container { background: white; padding: 15px; border-radius: 24px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .chart-wrapper { height: 180px; width: 100%; position: relative; }
+        .media-tag { text-align: right; margin-top: 10px; background: #f1f2f6; padding: 4px 12px; border-radius: 8px; font-size: 10px; font-weight: bold; color: #636e72; display: inline-block; float: right; }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; clear: both; padding-top: 10px; }
         .stat-card { background: white; padding: 12px; border-radius: 20px; text-align: center; border: 1px solid rgba(0,0,0,0.02); }
         .stat-card small { color: #b2bec3; display: block; font-size: 9px; text-transform: uppercase; font-weight: 800; margin-bottom: 4px; }
         .stat-card strong { font-size: 15px; }
@@ -62,12 +63,10 @@
         .btn-backup { background: #eee; border: none; padding: 10px 15px; border-radius: 12px; font-size: 10px; font-weight: bold; color: #777; cursor: pointer; }
         .btn-pdf { background: #ff4757; color: white !important; box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3); }
 
-        /* Estilo do PDF */
-        #relatorio-print { display: none; padding: 20px; color: #333; }
-        .pdf-header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
-        .pdf-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
-        .pdf-table th { background: #f2f2f2; padding: 8px; border: 1px solid #ddd; }
-        .pdf-table td { padding: 8px; border: 1px solid #ddd; }
+        /* ESTILO DO PDF - FORA DA TELA */
+        #pdf-container { position: absolute; left: -9999px; top: 0; width: 800px; background: white; color: #000; padding: 40px; }
+        .pdf-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .pdf-table th, .pdf-table td { border: 1px solid #ddd; padding: 12px; text-align: left; }
     </style>
 </head>
 <body>
@@ -128,23 +127,23 @@
     </div>
 </div>
 
-<div id="relatorio-print">
-    <div class="pdf-header">
-        <h2>Canil My Baby - Relatório de Vendas</h2>
-        <p>Vendedor: Gerson | Data: <span id="pdf-data-hoje"></span></p>
+<div id="pdf-container">
+    <div style="text-align: center; border-bottom: 3px solid #000; padding-bottom: 10px;">
+        <h1 style="margin:0">CANIL MY BABY</h1>
+        <p>Relatório de Fechamento de Vendas - Gerson</p>
     </div>
-    <div id="pdf-resumo-corpo" style="margin-bottom: 20px;"></div>
+    <div id="pdf-resumo" style="margin: 30px 0; font-size: 18px; line-height: 1.6;"></div>
     <table class="pdf-table">
         <thead>
-            <tr>
+            <tr style="background: #eee;">
                 <th>Data</th>
                 <th>Cliente</th>
                 <th>Raça/Sexo</th>
-                <th>Valor</th>
+                <th>Valor Venda</th>
                 <th>Comissão (3%)</th>
             </tr>
         </thead>
-        <tbody id="pdf-lista-corpo"></tbody>
+        <tbody id="pdf-corpo"></tbody>
     </table>
 </div>
 
@@ -155,11 +154,7 @@
 
     document.getElementById('metaVal').value = meta;
 
-    function salvarMeta() {
-        meta = document.getElementById('metaVal').value;
-        localStorage.setItem('metaV5', meta);
-        renderizar();
-    }
+    function salvarMeta() { meta = document.getElementById('metaVal').value; localStorage.setItem('metaV5', meta); renderizar(); }
 
     function adicionarVenda() {
         const t = document.getElementById('tipo').value, s = document.getElementById('sexo').value, c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valorVenda').value);
@@ -174,45 +169,32 @@
     function adicionarVale() {
         const v = parseFloat(document.getElementById('valorVale').value);
         if(v) {
-            vendas.push({ tipo:'Vale', cliente: 'Adiantamento/Vale', valor: v, data: new Date().toLocaleDateString('pt-BR').substring(0,5), isVale: true });
+            vendas.push({ tipo:'Vale', cliente: 'Vale / Adiantamento', valor: v, data: new Date().toLocaleDateString('pt-BR').substring(0,5), isVale: true });
             localStorage.setItem('vendasV5', JSON.stringify(vendas));
             document.getElementById('valorVale').value = '';
             renderizar();
         }
     }
 
-    function excluir(i) {
-        if(confirm("Excluir registro?")) {
-            vendas.splice(i, 1);
-            localStorage.setItem('vendasV5', JSON.stringify(vendas));
-            renderizar();
-        }
-    }
+    function excluir(i) { if(confirm("Excluir?")) { vendas.splice(i, 1); localStorage.setItem('vendasV5', JSON.stringify(vendas)); renderizar(); } }
 
     function gerarPDF() {
-        const element = document.getElementById('relatorio-print');
-        document.getElementById('pdf-data-hoje').innerText = new Date().toLocaleDateString();
-        element.style.display = 'block';
-        
+        const element = document.getElementById('pdf-container');
         const opt = {
             margin: 10,
-            filename: `Relatorio_Vendas_Gerson.pdf`,
+            filename: 'Relatorio_Canil_MyBaby.pdf',
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
+            html2canvas: { scale: 2, useCORS: true },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
-
-        html2pdf().set(opt).from(element).save().then(() => {
-            element.style.display = 'none';
-        });
+        html2pdf().set(opt).from(element).save();
     }
 
     function renderizar() {
         const listaDiv = document.getElementById('lista');
-        const pdfCorpo = document.getElementById('pdf-lista-corpo');
+        const pdfCorpo = document.getElementById('pdf-corpo');
         let totalFat = 0, totalVales = 0, qtd = 0;
         let dadosGrafico = {};
-        
         listaDiv.innerHTML = ''; pdfCorpo.innerHTML = '';
 
         vendas.forEach((v, i) => {
@@ -222,25 +204,24 @@
             } else {
                 totalFat += v.valor; qtd++;
                 dadosGrafico[v.data] = (dadosGrafico[v.data] || 0) + v.valor;
-                const icon = v.tipo === 'Spitz' ? '🐶' : '🐱';
-                listaDiv.innerHTML = `<div class="venda-card venda-${v.tipo}"><div style="flex-grow:1"><strong>${icon} ${v.cliente}</strong><br><small>${v.data} | ${v.tipo} | ${v.sexo}</small></div><div style="text-align:right"><strong>R$ ${v.valor.toLocaleString()}</strong><br><small style="color:#2ecc71">Com: R$ ${(v.valor*0.03).toFixed(2)}</small></div><button class="del-btn" onclick="excluir(${i})">&times;</button></div>` + listaDiv.innerHTML;
-                
+                listaDiv.innerHTML = `<div class="venda-card venda-${v.tipo}"><div style="flex-grow:1"><strong>${v.tipo == 'Spitz' ? '🐶' : '🐱'} ${v.cliente}</strong><br><small>${v.data} | ${v.tipo} | ${v.sexo}</small></div><div style="text-align:right"><strong>R$ ${v.valor.toLocaleString()}</strong><br><small style="color:#2ecc71">Com: R$ ${(v.valor*0.03).toFixed(2)}</small></div><button class="del-btn" onclick="excluir(${i})">&times;</button></div>` + listaDiv.innerHTML;
                 pdfCorpo.innerHTML += `<tr><td>${v.data}</td><td>${v.cliente}</td><td>${v.tipo} (${v.sexo})</td><td>R$ ${v.valor.toLocaleString()}</td><td>R$ ${(v.valor*0.03).toFixed(2)}</td></tr>`;
             }
         });
 
-        let liq = (totalFat * 0.03) + 2000 - totalVales;
+        let comissaoBruta = totalFat * 0.03;
+        let liq = comissaoBruta + 2000 - totalVales;
         document.getElementById('totalVendas').innerText = "R$ " + totalFat.toLocaleString();
         document.getElementById('totalComissao').innerText = "R$ " + liq.toLocaleString();
         document.getElementById('valorMedia').innerText = "R$ " + (qtd > 0 ? Math.round(totalFat/qtd).toLocaleString() : 0);
         
-        document.getElementById('pdf-resumo-corpo').innerHTML = `
-            <p><strong>Total Faturado:</strong> R$ ${totalFat.toLocaleString()}</p>
-            <p><strong>Comissão (3%):</strong> R$ ${(totalFat*0.03).toLocaleString()}</p>
-            <p><strong>Bônus Base:</strong> R$ 2.000,00</p>
-            <p><strong>Vales/Adiantamentos:</strong> - R$ ${totalVales.toLocaleString()}</p>
-            <hr>
-            <h3>Líquido Total a Receber: R$ ${liq.toLocaleString()}</h3>
+        document.getElementById('pdf-resumo').innerHTML = `
+            <strong>Resumo do Período:</strong><br>
+            Faturamento Total: R$ ${totalFat.toLocaleString()}<br>
+            Comissão (3%): R$ ${comissaoBruta.toLocaleString()}<br>
+            Bônus Base: R$ 2.000,00<br>
+            Vales Pagos: - R$ ${totalVales.toLocaleString()}<br><br>
+            <span style="font-size: 22px;"><strong>Total Líquido a Receber: R$ ${liq.toLocaleString()}</strong></span>
         `;
 
         const p = meta > 0 ? (totalFat / meta) * 100 : 0;
@@ -252,7 +233,7 @@
         if(chartInstance) chartInstance.destroy();
         chartInstance = new Chart(ctx, {
             type: 'line',
-            data: { labels: Object.keys(dadosGrafico), datasets: [{ data: Object.values(dadosGrafico), borderColor: '#54a0ff', backgroundColor: 'rgba(84, 160, 255, 0.05)', fill: true, tension: 0.4 }] },
+            data: { labels: Object.keys(dadosGrafico), datasets: [{ data: Object.values(dadosGrafico), borderColor: '#54a0ff', backgroundColor: 'rgba(84, 160, 255, 0.1)', fill: true, tension: 0.4, borderWidth: 3 }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
         });
     }
