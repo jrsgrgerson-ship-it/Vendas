@@ -16,6 +16,7 @@
         :root {
             --spitz: #ff9f43; --bengal: #54a0ff; --bg: #f8f9fa;
             --dark: #2d3436; --danger: #ff4757;
+            --blue-glow: rgba(84, 160, 255, 0.4);
         }
         body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 12px; color: var(--dark); overflow-x: hidden; }
         .container { max-width: 500px; margin: auto; }
@@ -33,8 +34,29 @@
         .meta-value-container { display: flex; align-items: center; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 12px; }
         .meta-input { background: transparent; border: none; color: white; width: 80px; font-weight: bold; font-size: 16px; outline: none; text-align: right; }
         
-        .progress-container { background: rgba(255,255,255,0.1); height: 10px; border-radius: 10px; overflow: hidden; margin: 12px 0; }
-        .progress-bar { background: linear-gradient(90deg, var(--spitz), #ffcd3c); height: 100%; width: 0%; transition: 1.5s ease; }
+        /* BARRA DE PROGRESSO COM EFEITO BLUR/GLOW AZUL */
+        .progress-container { 
+            background: rgba(255,255,255,0.08); 
+            height: 12px; 
+            border-radius: 10px; 
+            overflow: hidden; 
+            margin: 12px 0; 
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .progress-bar { 
+            background: linear-gradient(90deg, #54a0ff, #00d2ff); 
+            height: 100%; 
+            width: 0%; 
+            transition: 1.5s cubic-bezier(0.17, 0.67, 0.83, 0.67); 
+            box-shadow: 0 0 15px var(--blue-glow);
+            position: relative;
+        }
+        .progress-bar::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0));
+        }
         
         .chart-container { background: white; padding: 15px; border-radius: 24px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
         .chart-wrapper { height: 160px; width: 100%; position: relative; }
@@ -81,7 +103,7 @@
         </div>
         <div class="progress-container"><div id="barraProgresso" class="progress-bar"></div></div>
         <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: bold;">
-            <span>TOTAL <span id="porcentoTxt">0%</span></span>
+            <span>TOTAL <span id="porcentoTxt" style="color:var(--bengal)">0%</span></span>
             <span id="faltaTxt">...</span>
         </div>
     </div>
@@ -92,25 +114,10 @@
     </div>
 
     <div class="stats-grid">
-        <div class="stat-card">
-            <small>Faturamento</small>
-            <strong id="totalVendas">R$ 0,00</strong>
-        </div>
-        <div class="stat-card">
-            <small>Líquido a Receber</small>
-            <strong id="totalComissao" style="color: #2ecc71;">R$ 0,00</strong>
-            <div id="subVale" style="font-size: 8px; color: var(--danger); font-weight: bold; margin-top: 2px;"></div>
-        </div>
-        <div class="stat-card">
-            <small>Machos</small>
-            <strong id="countMacho">0</strong>
-            <div style="font-size:8px; opacity: 0.6;">🐶<span id="mS">0</span> | 🐱<span id="mB">0</span></div>
-        </div>
-        <div class="stat-card">
-            <small>Fêmeas</small>
-            <strong id="countFemea">0</strong>
-            <div style="font-size:8px; opacity: 0.6;">🐶<span id="fS">0</span> | 🐱<span id="fB">0</span></div>
-        </div>
+        <div class="stat-card"><small>Faturamento</small><strong id="totalVendas">R$ 0,00</strong></div>
+        <div class="stat-card"><small>Líquido a Receber</small><strong id="totalComissao" style="color: #2ecc71;">R$ 0,00</strong><div id="subVale" style="font-size: 8px; color: var(--danger); font-weight: bold; margin-top: 2px;"></div></div>
+        <div class="stat-card"><small>Machos</small><strong id="countMacho">0</strong><div style="font-size:8px; opacity: 0.6;">🐶<span id="mS">0</span> | 🐱<span id="mB">0</span></div></div>
+        <div class="stat-card"><small>Fêmeas</small><strong id="countFemea">0</strong><div style="font-size:8px; opacity: 0.6;">🐶<span id="fS">0</span> | 🐱<span id="fB">0</span></div></div>
     </div>
 
     <div class="form-venda">
@@ -123,7 +130,7 @@
         <button class="btn-add" onclick="adicionarVenda()">REGISTRAR VENDA</button>
         <div class="row" style="margin-top: 5px;">
             <input type="number" id="valorVale" placeholder="R$ Vale" style="flex: 1;">
-            <button onclick="adicionarVale()" style="background: #fff5f5; color: var(--danger); border: 1px solid #ffe3e3; border-radius: 14px; padding: 10px 20px; font-weight: bold; font-size: 11px;">VALE</button>
+            <button onclick="adicionarVale()" style="background: #fff5f5; color: var(--danger); border: 1px solid #ffe3e3; border-radius: 14px; padding: 10px 20px; font-weight: bold; font-size: 11px; cursor: pointer;">VALE</button>
         </div>
     </div>
 
@@ -141,7 +148,6 @@
     let vendas = JSON.parse(localStorage.getItem('vendasV5')) || [];
     let meta = localStorage.getItem('metaV5') || 0;
     let chartInstance = null;
-
     document.getElementById('metaVal').value = meta;
 
     function salvarMeta() { meta = document.getElementById('metaVal').value; localStorage.setItem('metaV5', meta); renderizar(); }
@@ -203,7 +209,7 @@
 
         const ctx = document.getElementById('meuGrafico').getContext('2d');
         if(chartInstance) chartInstance.destroy();
-        chartInstance = new Chart(ctx, { type: 'line', data: { labels: Object.keys(dadosG), datasets: [{ data: Object.values(dadosG), borderColor: '#54a0ff', backgroundColor: 'rgba(84,160,255,0.1)', fill: true, tension: 0.4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } } });
+        chartInstance = new Chart(ctx, { type: 'line', data: { labels: Object.keys(dadosG), datasets: [{ data: Object.values(dadosG), borderColor: '#54a0ff', backgroundColor: 'rgba(84, 160, 255, 0.1)', fill: true, tension: 0.4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } } });
     }
 
     function imprimirRelatorio() {
@@ -212,28 +218,9 @@
             if(!v.isVale) fat += v.valor; else vales += v.valor;
             return `<tr><td>${v.data}</td><td>${v.cliente}</td><td>${v.tipo}</td><td>R$ ${v.valor.toLocaleString()}</td><td>${v.isVale ? '-' : 'R$ '+(v.valor*0.03).toFixed(2)}</td></tr>`;
         }).join('');
-        
         let liq = (fat * 0.03) + 2000 - vales;
         const win = window.open('', '_blank');
-        win.document.write(`
-            <html><head><title>Relatório My Baby</title><style>
-            body{font-family:sans-serif;padding:20px} table{width:100%;border-collapse:collapse;margin-top:20px}
-            th,td{border:1px solid #ddd;padding:10px;text-align:left} th{background:#f2f2f2}
-            .resumo{margin-bottom:20px;padding:15px;background:#f9f9f9;border-radius:10px}
-            </style></head><body>
-            <h1>Relatório de Vendas - Canil My Baby</h1>
-            <div class="resumo">
-                <strong>Vendedor:</strong> Gerson<br>
-                <strong>Faturamento:</strong> R$ ${fat.toLocaleString()}<br>
-                <strong>Comissão (3%):</strong> R$ ${(fat*0.03).toLocaleString()}<br>
-                <strong>Bônus Fixo:</strong> R$ 2.000,00<br>
-                <strong>Vales Descontados:</strong> R$ ${vales.toLocaleString()}<br><hr>
-                <h2>Total Líquido: R$ ${liq.toLocaleString()}</h2>
-            </div>
-            <table><thead><tr><th>Data</th><th>Cliente</th><th>Raça</th><th>Valor</th><th>Comissão</th></tr></thead>
-            <tbody>${linhas}</tbody></table>
-            <script>window.print();<\/script></body></html>
-        `);
+        win.document.write(`<html><head><title>Relatório My Baby</title><style>body{font-family:sans-serif;padding:20px} table{width:100%;border-collapse:collapse;margin-top:20px} th,td{border:1px solid #ddd;padding:10px;text-align:left} th{background:#f2f2f2} .resumo{margin-bottom:20px;padding:15px;background:#f9f9f9;border-radius:10px}</style></head><body><h1>Relatório Canil My Baby</h1><div class="resumo"><strong>Faturamento:</strong> R$ ${fat.toLocaleString()}<br><strong>Líquido a Receber:</strong> R$ ${liq.toLocaleString()}</div><table><thead><tr><th>Data</th><th>Cliente</th><th>Raça</th><th>Valor</th><th>Comissão</th></tr></thead><tbody>${linhas}</tbody></table><script>window.print();<\/script></body></html>`);
         win.document.close();
     }
 
