@@ -1,0 +1,15 @@
+{
+  "name": "Canil My Baby",
+  "short_name": "MyBaby",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f8f9fa",
+  "theme_color": "#2d3436",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/620/620851.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
