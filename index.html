@@ -30,7 +30,6 @@
         .progress-bar { background: linear-gradient(90deg, var(--spitz), #ffcd3c); height: 100%; width: 0%; transition: 1.5s ease; }
         .meta-footer { display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; }
 
-        /* AJUSTE DO GRAFICO E MEDIA EMBAIXO */
         .chart-container { background: white; padding: 15px; border-radius: 24px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; flex-direction: column; }
         .chart-wrapper { height: 160px; position: relative; }
         .media-tag { align-self: flex-end; margin-top: 10px; background: #f1f2f6; padding: 4px 12px; border-radius: 8px; font-size: 10px; font-weight: bold; color: #636e72; border: 1px solid #eee; }
@@ -54,6 +53,9 @@
         .venda-Bengal { border-left-color: var(--bengal); }
         .venda-Vale { border-left-color: var(--danger); background: #fffcfc; }
         .del-btn { border: none; background: #f1f2f6; color: #b2bec3; border-radius: 50%; width: 26px; height: 26px; cursor: pointer; }
+
+        .backup-area { display: flex; gap: 10px; justify-content: center; margin-top: 20px; padding-bottom: 40px; }
+        .btn-backup { background: #eee; border: none; padding: 8px 15px; border-radius: 10px; font-size: 10px; font-weight: bold; color: #777; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -138,7 +140,14 @@
     </div>
 
     <div id="lista"></div>
-    <button onclick="limparTudo()" style="background:none; color:#ccc; width:100%; border:none; margin:30px 0; cursor:pointer; font-size:10px; font-weight: bold;">ZERAR TUDO</button>
+
+    <div class="backup-area">
+        <button class="btn-backup" onclick="exportarBackup()">&#128190; EXPORTAR BACKUP</button>
+        <button class="btn-backup" onclick="document.getElementById('inputFile').click()">&#128194; IMPORTAR</button>
+        <input type="file" id="inputFile" style="display:none" onchange="importarBackup(event)">
+    </div>
+    
+    <button onclick="limparTudo()" style="background:none; color:#ccc; width:100%; border:none; margin-bottom:50px; cursor:pointer; font-size:10px; font-weight: bold;">ZERAR TUDO</button>
 </div>
 
 <script>
@@ -182,6 +191,32 @@
         }
     }
 
+    function exportarBackup() {
+        const dados = JSON.stringify({vendas, meta});
+        const blob = new Blob([dados], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup_canil_mybaby.json`;
+        a.click();
+    }
+
+    function importarBackup(event) {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const importado = JSON.parse(e.target.result);
+            if(importado.vendas) {
+                vendas = importado.vendas;
+                meta = importado.meta || 0;
+                localStorage.setItem('vendasV5', JSON.stringify(vendas));
+                localStorage.setItem('metaV5', meta);
+                location.reload();
+            }
+        };
+        reader.readAsText(file);
+    }
+
     function excluir(i) {
         if(confirm("Excluir registro?")) {
             vendas.splice(i, 1);
@@ -202,7 +237,7 @@
                 totalVales += val;
                 listaDiv.innerHTML = `
                     <div class="venda-card venda-Vale">
-                        <div class="venda-info"><strong>&#128184; ${v.cliente}</strong><br><small>Adiantamento</small></div>
+                        <div class="venda-info"><strong>&#128184; ${v.cliente}</strong><br><small>${v.data} - Adiantamento</small></div>
                         <div class="venda-valor"><strong style="color:var(--danger)">- R$ ${val.toLocaleString()}</strong></div>
                         <button class="del-btn" onclick="excluir(${i})">&times;</button>
                     </div>` + listaDiv.innerHTML;
@@ -215,7 +250,7 @@
                 const pIcon = v.tipo.includes('Spitz') ? '&#128054;' : '&#128049;';
                 listaDiv.innerHTML = `
                     <div class="venda-card venda-${v.tipo.replace(/[^a-zA-Z]/g, "")}">
-                        <div class="venda-info"><strong>${pIcon} ${v.cliente}</strong><br><small>${v.tipo} | ${v.sexo}</small></div>
+                        <div class="venda-info"><strong>${pIcon} ${v.cliente}</strong><br><small>${v.data} | ${v.tipo} | ${v.sexo}</small></div>
                         <div class="venda-valor"><strong>R$ ${val.toLocaleString()}</strong><br><small style="color:#2ecc71">Com: R$ ${(val*0.03).toFixed(2)}</small></div>
                         <button class="del-btn" onclick="excluir(${i})">&times;</button>
                     </div>` + listaDiv.innerHTML;
@@ -232,7 +267,6 @@
         document.getElementById('totalComissao').innerText = "R$ " + (comissaoBruta - totalVales).toLocaleString();
         document.getElementById('subVale').innerText = totalVales > 0 ? "DESCONTADO: R$ " + totalVales.toLocaleString() : "SEM DESCONTOS";
         
-        // VOLTANDO PARA MEDIA POR VENDA
         const mediaVenda = qtdVendasReal > 0 ? totalFat / qtdVendasReal : 0;
         document.getElementById('valorMedia').innerText = "R$ " + Math.round(mediaVenda).toLocaleString();
 
