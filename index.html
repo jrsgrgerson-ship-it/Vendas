@@ -248,18 +248,50 @@
         const mediaVenda = qtdVendasReal > 0 ? totalFat / qtdVendasReal : 0;
         document.getElementById('valorMedia').innerText = "R$ " + Math.round(mediaVenda).toLocaleString();
 
+        document.getElementById('countMacho').innerText = mS + mB;
+        document.getElementById('countFemea').innerText = fS + fB;
+        document.getElementById('mS').innerText = mS; document.getElementById('mB').innerText = mB;
+        document.getElementById('fS').innerText = fS; document.getElementById('fB').innerText = fB;
+
         const p = meta > 0 ? (totalFat / meta) * 100 : 0;
         document.getElementById('barraProgresso').style.width = Math.min(p, 100) + "%";
         document.getElementById('porcentoTxt').innerText = Math.floor(p) + "%";
         
+        if(meta > 0) {
+            document.getElementById('faltaTxt').innerText = meta - totalFat > 0 ? "FALTA R$ " + (meta-totalFat).toLocaleString() : "META BATIDA! &#127942;";
+            document.getElementById('faltaPerc').innerText = (100-p) > 0 ? "FALTAM " + Math.ceil(100-p) + "%" : "META ATINGIDA";
+            document.getElementById('faltaPerc').style.color = (100-p) > 0 ? "#ff4757" : "#2ecc71";
+        }
+
         const ctx = document.getElementById('meuGrafico').getContext('2d');
         if(chartInstance) chartInstance.destroy();
         chartInstance = new Chart(ctx, {
             type: 'line',
-            data: { labels: Object.keys(dadosGrafico), datasets: [{ data: Object.values(dadosGrafico), borderColor: '#54a0ff', fill: true, tension: 0.4, borderWidth: 4 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
+            data: { 
+                labels: Object.keys(dadosGrafico), 
+                datasets: [{ 
+                    data: Object.values(dadosGrafico), 
+                    borderColor: '#54a0ff', 
+                    backgroundColor: 'rgba(84, 160, 255, 0.05)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 4,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#54a0ff'
+                }] 
+            },
+            options: { 
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } }, 
+                scales: { 
+                    y: { display: false }, 
+                    x: { grid: { display: false }, ticks: { font: { size: 9, weight: 'bold' }, color: '#b2bec3' } } 
+                } 
+            }
         });
     }
+
+    function limparTudo() { if(confirm("Zerar todos os dados?")) { localStorage.clear(); location.reload(); } }
     renderizar();
 </script>
 </body>
