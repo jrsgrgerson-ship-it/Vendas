@@ -8,290 +8,228 @@
     <link rel="manifest" href="manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#2d3436">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
-        :root {
-            --spitz: #ff9f43; --bengal: #54a0ff; --bg: #f8f9fa;
-            --dark: #2d3436; --danger: #ff4757;
-        }
+        :root { --spitz: #ff9f43; --bengal: #54a0ff; --bg: #f8f9fa; --dark: #2d3436; --danger: #ff4757; }
         body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 12px; color: var(--dark); overflow-x: hidden; }
         .container { max-width: 500px; margin: auto; }
         header { text-align: center; padding: 10px 0 15px; }
-        header h2 { margin: 0; font-size: 20px; color: var(--dark); letter-spacing: -0.5px; }
-        header small { color: #636e72; font-weight: bold; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
-
-        .card-meta { 
-            background: linear-gradient(135deg, #2d3436 0%, #000000 100%); 
-            color: white; padding: 20px; border-radius: 24px; margin-bottom: 15px; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-        }
-        .meta-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .meta-title { font-size: 11px; font-weight: bold; opacity: 0.8; }
-        .meta-value-container { display: flex; align-items: center; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 12px; }
-        .meta-input { background: transparent; border: none; color: white; width: 80px; font-weight: bold; font-size: 16px; outline: none; text-align: right; }
+        header h2 { margin: 0; font-size: 20px; color: var(--dark); }
         
-        .progress-container { background: rgba(255,255,255,0.1); height: 10px; border-radius: 10px; overflow: hidden; margin: 12px 0; }
-        .progress-bar { background: linear-gradient(90deg, var(--spitz), #ffcd3c); height: 100%; width: 0%; transition: 1.5s ease; }
-        .meta-footer { display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; }
-
-        .chart-container { background: white; padding: 15px; border-radius: 24px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; flex-direction: column; }
-        .chart-wrapper { height: 160px; position: relative; }
-        .media-tag { align-self: flex-end; margin-top: 10px; background: #f1f2f6; padding: 4px 12px; border-radius: 8px; font-size: 10px; font-weight: bold; color: #636e72; border: 1px solid #eee; }
+        .card-meta { background: linear-gradient(135deg, #2d3436 0%, #000000 100%); color: white; padding: 20px; border-radius: 24px; margin-bottom: 15px; }
+        .meta-header { display: flex; justify-content: space-between; align-items: center; }
+        .meta-input { background: transparent; border: none; color: white; width: 80px; font-weight: bold; font-size: 16px; text-align: right; outline: none; }
+        .progress-container { background: rgba(255,255,255,0.1); height: 10px; border-radius: 10px; margin: 12px 0; overflow: hidden; }
+        .progress-bar { background: linear-gradient(90deg, var(--spitz), #ffcd3c); height: 100%; width: 0%; transition: 1.5s; }
+        
+        .chart-container { background: white; padding: 15px; border-radius: 24px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .chart-wrapper { height: 160px; }
 
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .stat-card { background: white; padding: 12px; border-radius: 20px; text-align: center; border: 1px solid rgba(0,0,0,0.02); }
-        .stat-card small { color: #b2bec3; display: block; font-size: 9px; text-transform: uppercase; font-weight: 800; margin-bottom: 4px; }
-        .stat-card strong { font-size: 15px; }
+        .stat-card { background: white; padding: 12px; border-radius: 20px; text-align: center; }
+        .stat-card strong { font-size: 15px; display: block; }
 
-        .form-venda { background: white; padding: 20px; border-radius: 24px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .form-venda { background: white; padding: 20px; border-radius: 24px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .row { display: flex; gap: 8px; }
-        input, select { padding: 12px; border: 1px solid #edf2f7; background: #f8fafc; border-radius: 14px; font-size: 14px; outline: none; width: 100%; box-sizing: border-box; }
+        input, select { padding: 12px; border: 1px solid #edf2f7; background: #f8fafc; border-radius: 14px; width: 100%; box-sizing: border-box; }
         
-        button.btn-add { background: var(--dark); color: white; border: none; padding: 15px; border-radius: 14px; font-weight: bold; cursor: pointer; }
-        .btn-vale { background: #fff5f5; color: var(--danger); border: 1px solid #ffe3e3; padding: 10px; border-radius: 12px; font-weight: bold; font-size: 11px; cursor: pointer; }
-
-        .venda-card { background: white; padding: 15px; border-radius: 18px; margin-bottom: 10px; display: flex; align-items: center; border-left: 6px solid #ccc; font-size: 12px; gap: 10px; }
-        .venda-info { flex-grow: 1; }
-        .venda-valor { text-align: right; min-width: 90px; }
+        button.btn-add { background: var(--dark); color: white; border: none; padding: 15px; border-radius: 14px; font-weight: bold; }
+        .venda-card { background: white; padding: 12px; border-radius: 18px; margin-bottom: 10px; border-left: 5px solid #ccc; display: flex; justify-content: space-between; align-items: center; }
         .venda-Spitz { border-left-color: var(--spitz); }
         .venda-Bengal { border-left-color: var(--bengal); }
-        .venda-Vale { border-left-color: var(--danger); background: #fffcfc; }
-        .del-btn { border: none; background: #f1f2f6; color: #b2bec3; border-radius: 50%; width: 26px; height: 26px; cursor: pointer; }
+        .venda-Vale { border-left-color: var(--danger); opacity: 0.8; }
 
-        .backup-area { display: flex; gap: 10px; justify-content: center; margin-top: 20px; padding-bottom: 40px; }
-        .btn-backup { background: #eee; border: none; padding: 8px 15px; border-radius: 10px; font-size: 10px; font-weight: bold; color: #777; cursor: pointer; }
+        .backup-area { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 20px; padding-bottom: 40px; }
+        .btn-backup { background: #eee; border: none; padding: 10px 15px; border-radius: 12px; font-size: 11px; font-weight: bold; color: #555; cursor: pointer; }
+        .btn-pdf { background: #e74c3c; color: white !important; }
+
+        /* Estilo do Relatório PDF (Invisível na tela) */
+        #relatorio-print { display: none; padding: 40px; font-family: sans-serif; }
+        .pdf-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .pdf-table th, .pdf-table td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h2>Painel de Vendas Canil My Baby</h2>
-        <small>Gerson</small>
-    </header>
+    <header><h2>Painel Canil My Baby</h2><small>GERSON</small></header>
 
     <div class="card-meta">
         <div class="meta-header">
-            <div>
-                <div class="meta-title">OBJETIVO DO M&#202;S</div>
-                <div id="countdownTxt" style="font-size: 10px; margin-top: 4px; opacity: 0.7;"></div>
-            </div>
-            <div class="meta-value-container">
-                <span style="font-size: 10px; opacity: 0.7; margin-right: 5px;">R$</span>
-                <input type="number" id="metaVal" class="meta-input" onchange="salvarMeta()">
-                <span style="margin-left:5px;">&#127919;</span>
-            </div>
+            <span style="font-size: 11px; font-weight: bold;">OBJETIVO</span>
+            <input type="number" id="metaVal" class="meta-input" onchange="salvarMeta()">
         </div>
         <div class="progress-container"><div id="barraProgresso" class="progress-bar"></div></div>
-        <div class="meta-footer">
-            <div>TOTAL <span id="porcentoTxt">0%</span></div>
-            <div id="faltaTxt">...</div>
+        <div style="display: flex; justify-content: space-between; font-size: 11px;">
+            <span id="porcentoTxt">0%</span>
+            <span id="faltaTxt">...</span>
         </div>
     </div>
 
     <div class="chart-container">
         <div class="chart-wrapper"><canvas id="meuGrafico"></canvas></div>
-        <div class="media-tag">M&#201;DIA / VENDA: <span id="valorMedia">R$ 0</span></div>
     </div>
 
     <div class="stats-grid">
-        <div class="stat-card"><small>Faturamento</small><strong id="totalVendas">R$ 0,00</strong><div id="faltaPerc" style="font-size: 8px; font-weight: bold; margin-top: 4px;"></div></div>
-        <div class="stat-card"><small>L&#237;quido a Receber</small><strong id="totalComissao" style="color: #2ecc71;">R$ 0,00</strong><div id="subVale" style="font-size: 8px; color: var(--danger); font-weight: bold;"></div></div>
-        <div class="stat-card"><small>Machos</small><strong id="countMacho">0</strong><div style="font-size:8px; opacity: 0.6;">&#128054;<span id="mS">0</span> | &#128049;<span id="mB">0</span></div></div>
-        <div class="stat-card"><small>F&#234;meas</small><strong id="countFemea">0</strong><div style="font-size:8px; opacity: 0.6;">&#128054;<span id="fS">0</span> | &#128049;<span id="fB">0</span></div></div>
+        <div class="stat-card"><small>FATURAMENTO</small><strong id="totalVendas">R$ 0</strong></div>
+        <div class="stat-card"><small>A RECEBER</small><strong id="totalComissao" style="color: #2ecc71;">R$ 0</strong></div>
     </div>
 
     <div class="form-venda">
         <div class="row">
-            <select id="tipo" style="flex:1.2"><option value="Spitz">&#128054; Spitz</option><option value="Bengal">&#128049; Bengal</option></select>
-            <select id="sexo" style="flex:1"><option value="Macho">&#9794; Macho</option><option value="F&#234;mea">&#9792; F&#234;mea</option></select>
+            <select id="tipo"><option value="Spitz">🐶 Spitz</option><option value="Bengal">🐱 Bengal</option></select>
+            <select id="sexo"><option value="Macho">♂ Macho</option><option value="Fêmea">♀ Fêmea</option></select>
         </div>
         <input type="text" id="cliente" placeholder="Nome do Cliente">
-        <input type="number" id="valorVenda" placeholder="Valor da Venda (R$)">
+        <input type="number" id="valorVenda" placeholder="Valor (R$)">
         <button class="btn-add" onclick="adicionarVenda()">REGISTRAR VENDA</button>
-        <div class="row" style="margin-top: 5px;">
-            <input type="number" id="valorVale" placeholder="R$ Vale" style="flex: 1;">
-            <input type="text" id="motivoVale" placeholder="Motivo" style="flex: 1.5;">
-            <button class="btn-vale" onclick="adicionarVale()">VALE</button>
+        <div class="row">
+            <input type="number" id="valorVale" placeholder="R$ Vale" style="flex:1">
+            <button onclick="adicionarVale()" style="background:#fff5f5; color:var(--danger); border:1px solid #ffe3e3; border-radius:14px; padding:0 15px; font-weight:bold;">VALE</button>
         </div>
     </div>
 
     <div id="lista"></div>
+
     <div class="backup-area">
-        <button class="btn-backup" onclick="exportarBackup()">&#128190; BACKUP</button>
-        <button class="btn-backup" onclick="document.getElementById('inputFile').click()">&#128194; IMPORTAR</button>
+        <button class="btn-backup btn-pdf" onclick="gerarPDF()">📄 GERAR RELATÓRIO PDF</button>
+        <button class="btn-backup" onclick="exportarBackup()">💾 BACKUP</button>
+        <button class="btn-backup" onclick="document.getElementById('inputFile').click()">📂 IMPORTAR</button>
         <input type="file" id="inputFile" style="display:none" onchange="importarBackup(event)">
     </div>
-    <button onclick="limparTudo()" style="background:none; color:#ccc; width:100%; border:none; margin-bottom:50px; cursor:pointer; font-size:10px; font-weight: bold;">ZERAR TUDO</button>
+</div>
+
+<div id="relatorio-print">
+    <h1 style="text-align: center; color: #2d3436;">Relatório Mensal - Canil My Baby</h1>
+    <p style="text-align: center; font-weight: bold;">Vendedor: Gerson</p>
+    <hr>
+    <div id="pdf-resumo" style="margin: 20px 0; font-size: 18px;"></div>
+    <table class="pdf-table">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Cliente</th>
+                <th>Raça</th>
+                <th>Valor</th>
+                <th>Comissão (3%)</th>
+            </tr>
+        </thead>
+        <tbody id="pdf-lista"></tbody>
+    </table>
 </div>
 
 <script>
     let vendas = JSON.parse(localStorage.getItem('vendasV5')) || [];
     let meta = localStorage.getItem('metaV5') || 0;
     let chartInstance = null;
-
     document.getElementById('metaVal').value = meta;
 
-    function salvarMeta() {
-        meta = document.getElementById('metaVal').value;
-        localStorage.setItem('metaV5', meta);
-        renderizar();
-    }
+    function salvarMeta() { meta = document.getElementById('metaVal').value; localStorage.setItem('metaV5', meta); renderizar(); }
 
     function adicionarVenda() {
-        const t = document.getElementById('tipo').value;
-        const s = document.getElementById('sexo').value;
-        const c = document.getElementById('cliente').value;
-        const v = parseFloat(document.getElementById('valorVenda').value);
+        const t = document.getElementById('tipo').value, s = document.getElementById('sexo').value, c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valorVenda').value);
         if(c && v) {
-            const hoje = new Date().toLocaleDateString('pt-BR').substring(0,5);
-            vendas.push({ tipo:t, sexo:s, cliente:c, valor:v, data: hoje, isVale: false });
+            vendas.push({ tipo:t, sexo:s, cliente:c, valor:v, data: new Date().toLocaleDateString('pt-BR'), isVale: false });
             localStorage.setItem('vendasV5', JSON.stringify(vendas));
-            document.getElementById('cliente').value = '';
-            document.getElementById('valorVenda').value = '';
+            document.getElementById('cliente').value = ''; document.getElementById('valorVenda').value = '';
             renderizar();
         }
     }
 
     function adicionarVale() {
-        const m = document.getElementById('motivoVale').value || "Vale";
         const v = parseFloat(document.getElementById('valorVale').value);
         if(v) {
-            const hoje = new Date().toLocaleDateString('pt-BR').substring(0,5);
-            vendas.push({ tipo:'Vale', cliente: m, valor: v, data: hoje, isVale: true });
+            vendas.push({ tipo:'Vale', cliente: 'Vale/Adiantamento', valor: v, data: new Date().toLocaleDateString('pt-BR'), isVale: true });
             localStorage.setItem('vendasV5', JSON.stringify(vendas));
-            document.getElementById('motivoVale').value = '';
             document.getElementById('valorVale').value = '';
             renderizar();
         }
     }
 
-    function exportarBackup() {
-        const dados = JSON.stringify({vendas, meta});
-        const blob = new Blob([dados], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `backup_canil_mybaby.json`;
-        a.click();
-    }
-
-    function importarBackup(event) {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const importado = JSON.parse(e.target.result);
-            if(importado.vendas) {
-                vendas = importado.vendas;
-                meta = importado.meta || 0;
-                localStorage.setItem('vendasV5', JSON.stringify(vendas));
-                localStorage.setItem('metaV5', meta);
-                location.reload();
-            }
+    function gerarPDF() {
+        const element = document.getElementById('relatorio-print');
+        element.style.display = 'block'; // Mostra apenas para capturar
+        
+        const opt = {
+            margin: 10,
+            filename: `Relatorio_Canil_MyBaby_${new Date().getMonth()+1}.pdf`,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
-        reader.readAsText(file);
-    }
 
-    function excluir(i) {
-        if(confirm("Excluir registro?")) {
-            vendas.splice(i, 1);
-            localStorage.setItem('vendasV5', JSON.stringify(vendas));
-            renderizar();
-        }
+        html2pdf().set(opt).from(element).save().then(() => {
+            element.style.display = 'none'; // Esconde de novo
+        });
     }
 
     function renderizar() {
         const listaDiv = document.getElementById('lista');
-        let totalFat = 0, mS=0, mB=0, fS=0, fB=0, totalVales = 0, qtdVendasReal = 0;
+        const pdfLista = document.getElementById('pdf-lista');
+        let totalFat = 0, totalVales = 0;
         let dadosGrafico = {};
-        listaDiv.innerHTML = '';
+        
+        listaDiv.innerHTML = ''; pdfLista.innerHTML = '';
 
         vendas.forEach((v, i) => {
-            let val = v.valor || 0;
             if(v.isVale) {
-                totalVales += val;
-                listaDiv.innerHTML = `
-                    <div class="venda-card venda-Vale">
-                        <div class="venda-info"><strong>&#128184; ${v.cliente}</strong><br><small>${v.data} - Adiantamento</small></div>
-                        <div class="venda-valor"><strong style="color:var(--danger)">- R$ ${val.toLocaleString()}</strong></div>
-                        <button class="del-btn" onclick="excluir(${i})">&times;</button>
-                    </div>` + listaDiv.innerHTML;
+                totalVales += v.valor;
+                listaDiv.innerHTML = `<div class="venda-card venda-Vale"><span>💸 ${v.cliente}</span><strong>- R$ ${v.valor.toLocaleString()}</strong></div>` + listaDiv.innerHTML;
             } else {
-                totalFat += val;
-                qtdVendasReal++;
-                dadosGrafico[v.data] = (dadosGrafico[v.data] || 0) + val;
-                if(v.sexo && v.sexo.includes('Macho')) { v.tipo.includes('Spitz') ? mS++ : mB++; }
-                else { v.tipo.includes('Spitz') ? fS++ : fB++; }
-                const pIcon = v.tipo.includes('Spitz') ? '&#128054;' : '&#128049;';
-                listaDiv.innerHTML = `
-                    <div class="venda-card venda-${v.tipo.replace(/[^a-zA-Z]/g, "")}">
-                        <div class="venda-info"><strong>${pIcon} ${v.cliente}</strong><br><small>${v.data} | ${v.tipo} | ${v.sexo}</small></div>
-                        <div class="venda-valor"><strong>R$ ${val.toLocaleString()}</strong><br><small style="color:#2ecc71">Com: R$ ${(val*0.03).toFixed(2)}</small></div>
-                        <button class="del-btn" onclick="excluir(${i})">&times;</button>
-                    </div>` + listaDiv.innerHTML;
+                totalFat += v.valor;
+                dadosGrafico[v.data] = (dadosGrafico[v.data] || 0) + v.valor;
+                listaDiv.innerHTML = `<div class="venda-card venda-${v.tipo}"><span>${v.tipo == 'Spitz' ? '🐶' : '🐱'} ${v.cliente}</span><strong>R$ ${v.valor.toLocaleString()}</strong></div>` + listaDiv.innerHTML;
+                
+                // Adiciona na tabela do PDF
+                pdfLista.innerHTML += `<tr><td>${v.data}</td><td>${v.cliente}</td><td>${v.tipo}</td><td>R$ ${v.valor.toLocaleString()}</td><td>R$ ${(v.valor*0.03).toFixed(2)}</td></tr>`;
             }
         });
 
-        const hoje = new Date();
-        const ultimoDia = new Date(hoje.getFullYear(), hoje.getMonth() + 1, 0).getDate();
-        const diasFaltam = ultimoDia - hoje.getDate();
-        document.getElementById('countdownTxt').innerHTML = "Faltam " + diasFaltam + " dias para o fim do m&#234;s";
-
-        let comissaoBruta = (totalFat * 0.03) + 2000;
+        let comissaoFinal = (totalFat * 0.03) + 2000 - totalVales;
         document.getElementById('totalVendas').innerText = "R$ " + totalFat.toLocaleString();
-        document.getElementById('totalComissao').innerText = "R$ " + (comissaoBruta - totalVales).toLocaleString();
-        document.getElementById('subVale').innerText = totalVales > 0 ? "DESCONTADO: R$ " + totalVales.toLocaleString() : "SEM DESCONTOS";
+        document.getElementById('totalComissao').innerText = "R$ " + comissaoFinal.toLocaleString();
         
-        const mediaVenda = qtdVendasReal > 0 ? totalFat / qtdVendasReal : 0;
-        document.getElementById('valorMedia').innerText = "R$ " + Math.round(mediaVenda).toLocaleString();
-
-        document.getElementById('countMacho').innerText = mS + mB;
-        document.getElementById('countFemea').innerText = fS + fB;
-        document.getElementById('mS').innerText = mS; document.getElementById('mB').innerText = mB;
-        document.getElementById('fS').innerText = fS; document.getElementById('fB').innerText = fB;
+        // Resumo do PDF
+        document.getElementById('pdf-resumo').innerHTML = `
+            Faturamento Total: R$ ${totalFat.toLocaleString()} <br>
+            Vales Descontados: R$ ${totalVales.toLocaleString()} <br>
+            <strong>Líquido a Receber: R$ ${comissaoFinal.toLocaleString()}</strong>
+        `;
 
         const p = meta > 0 ? (totalFat / meta) * 100 : 0;
         document.getElementById('barraProgresso').style.width = Math.min(p, 100) + "%";
         document.getElementById('porcentoTxt').innerText = Math.floor(p) + "%";
-        
-        if(meta > 0) {
-            document.getElementById('faltaTxt').innerText = meta - totalFat > 0 ? "FALTA R$ " + (meta-totalFat).toLocaleString() : "META BATIDA! &#127942;";
-            document.getElementById('faltaPerc').innerText = (100-p) > 0 ? "FALTAM " + Math.ceil(100-p) + "%" : "META ATINGIDA";
-            document.getElementById('faltaPerc').style.color = (100-p) > 0 ? "#ff4757" : "#2ecc71";
-        }
 
         const ctx = document.getElementById('meuGrafico').getContext('2d');
         if(chartInstance) chartInstance.destroy();
         chartInstance = new Chart(ctx, {
             type: 'line',
-            data: { 
-                labels: Object.keys(dadosGrafico), 
-                datasets: [{ 
-                    data: Object.values(dadosGrafico), 
-                    borderColor: '#54a0ff', 
-                    backgroundColor: 'rgba(84, 160, 255, 0.05)',
-                    fill: true,
-                    tension: 0.4,
-                    borderWidth: 4,
-                    pointRadius: 3,
-                    pointBackgroundColor: '#54a0ff'
-                }] 
-            },
-            options: { 
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: false } }, 
-                scales: { 
-                    y: { display: false }, 
-                    x: { grid: { display: false }, ticks: { font: { size: 9, weight: 'bold' }, color: '#b2bec3' } } 
-                } 
-            }
+            data: { labels: Object.keys(dadosGrafico), datasets: [{ data: Object.values(dadosGrafico), borderColor: '#54a0ff', tension: 0.4 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
         });
     }
 
-    function limparTudo() { if(confirm("Zerar todos os dados?")) { localStorage.clear(); location.reload(); } }
+    function exportarBackup() {
+        const blob = new Blob([JSON.stringify({vendas, meta})], {type: 'application/json'});
+        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `backup.json`; a.click();
+    }
+
+    function importarBackup(event) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const d = JSON.parse(e.target.result);
+            vendas = d.vendas; meta = d.meta;
+            localStorage.setItem('vendasV5', JSON.stringify(vendas));
+            localStorage.setItem('metaV5', meta);
+            location.reload();
+        };
+        reader.readAsText(event.target.files[0]);
+    }
+
     renderizar();
 </script>
 </body>
