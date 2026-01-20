@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Canil My Baby</title>
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#2d3436">
+    <link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Canil%20My%20Baby%22,%22short_name%22:%22MyBaby%22,%22start_url%22:%22index.html%22,%22display%22:%22standalone%22,%22background_color%22:%22#f8f9fa%22,%22theme_color%22:%22#2d3436%22}">
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -142,7 +149,7 @@
     <div id="lista"></div>
 
     <div class="backup-area">
-        <button class="btn-backup" onclick="exportarBackup()">&#128190; EXPORTAR BACKUP</button>
+        <button class="btn-backup" onclick="exportarBackup()">&#128190; BACKUP</button>
         <button class="btn-backup" onclick="document.getElementById('inputFile').click()">&#128194; IMPORTAR</button>
         <input type="file" id="inputFile" style="display:none" onchange="importarBackup(event)">
     </div>
@@ -151,6 +158,7 @@
 </div>
 
 <script>
+    // Código de lógica permanece o mesmo das versões anteriores
     let vendas = JSON.parse(localStorage.getItem('vendasV5')) || [];
     let meta = localStorage.getItem('metaV5') || 0;
     let chartInstance = null;
