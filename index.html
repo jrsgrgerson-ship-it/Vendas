@@ -10,83 +10,106 @@
 
     <style>
         :root {
-            --spitz: #ff9f43; --bengal: #54a0ff; --bg: #f8f9fa;
+            --spitz: #ff9f43; --bengal: #54a0ff; --bg: #e0e5ec;
             --dark: #2d3436; --danger: #ff4757;
             --blue-glow: rgba(84, 160, 255, 0.4);
             --success: #2ecc71;
+            --glass: rgba(255, 255, 255, 0.7);
         }
-        body { font-family: sans-serif; background: var(--bg); margin: 0; padding: 12px; color: var(--dark); overflow-x: hidden; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0; padding: 15px; color: var(--dark); min-height: 100vh;
+        }
+
         .container { max-width: 500px; margin: auto; }
         
-        header { text-align: center; padding: 10px 0 15px; }
-        header h2 { margin: 0; font-size: 20px; color: var(--dark); }
-        header small { color: #636e72; font-weight: bold; text-transform: uppercase; font-size: 11px; }
+        header { text-align: center; padding: 10px 0 20px; }
+        header h2 { margin: 0; font-size: 22px; font-weight: 800; color: var(--dark); letter-spacing: -0.5px; }
+        header small { color: #636e72; font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 2px; }
+
+        /* EFEITO GLASSMORPHISM */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
 
         .card-meta { 
             background: linear-gradient(135deg, #2d3436 0%, #000000 100%); 
-            color: white; padding: 20px; border-radius: 24px; margin-bottom: 15px; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            color: white; padding: 22px; border-radius: 30px; margin-bottom: 20px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
         }
+
         .meta-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .meta-value-container { display: flex; align-items: center; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 12px; }
-        .meta-input { background: transparent; border: none; color: white; width: 85px; font-weight: bold; font-size: 16px; outline: none; text-align: right; }
+        .meta-value-container { display: flex; align-items: center; background: rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 15px; }
+        .meta-input { background: transparent; border: none; color: white; width: 90px; font-weight: 800; font-size: 18px; outline: none; text-align: right; }
         
-        .progress-container { background: rgba(255,255,255,0.08); height: 12px; border-radius: 10px; overflow: hidden; margin: 12px 0; }
-        .progress-bar { background: linear-gradient(90deg, #54a0ff, #00d2ff); height: 100%; width: 0%; transition: 1.5s; box-shadow: 0 0 15px var(--blue-glow); position: relative; }
-        
-        .chart-container { background: white; padding: 15px; border-radius: 24px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .chart-wrapper { height: 160px; width: 100%; position: relative; }
-        .media-tag { float: right; margin-top: 10px; background: #f1f2f6; padding: 4px 12px; border-radius: 8px; font-size: 10px; font-weight: bold; color: #636e72; }
+        .progress-container { background: rgba(255,255,255,0.1); height: 14px; border-radius: 10px; overflow: hidden; margin: 15px 0; }
+        .progress-bar { background: linear-gradient(90deg, #54a0ff, #00d2ff); height: 100%; width: 0%; transition: 1.5s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 0 15px var(--blue-glow); }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; clear: both; }
-        .stat-card { background: white; padding: 12px; border-radius: 20px; text-align: center; border: 1px solid rgba(0,0,0,0.02); }
-        .stat-card small { color: #b2bec3; display: block; font-size: 9px; text-transform: uppercase; font-weight: 800; margin-bottom: 4px; }
-        .stat-card strong { font-size: 15px; }
+        .chart-container { background: white; padding: 18px; border-radius: 28px; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.02); }
+        .media-tag { float: right; margin-top: 10px; background: #f1f2f6; padding: 5px 12px; border-radius: 10px; font-size: 10px; font-weight: 800; color: #636e72; }
 
-        .form-venda { background: white; padding: 20px; border-radius: 24px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .row { display: flex; gap: 8px; }
-        input, select { padding: 12px; border: 1px solid #edf2f7; background: #f8fafc; border-radius: 14px; font-size: 14px; outline: none; width: 100%; box-sizing: border-box; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .stat-card { background: var(--glass); backdrop-filter: blur(5px); border-radius: 22px; padding: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.3); }
+        .stat-card small { color: #636e72; display: block; font-size: 9px; text-transform: uppercase; font-weight: 800; margin-bottom: 5px; }
+        .stat-card strong { font-size: 17px; font-weight: 800; }
+
+        .form-venda { background: var(--glass); backdrop-filter: blur(10px); padding: 22px; border-radius: 30px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.5); }
+        .row { display: flex; gap: 10px; }
+        input, select { padding: 14px; border: 1px solid rgba(0,0,0,0.05); background: rgba(255,255,255,0.5); border-radius: 16px; font-size: 14px; outline: none; width: 100%; transition: 0.3s; }
+        input:focus { background: white; border-color: var(--bengal); }
         
-        button.btn-add { background: var(--dark); color: white; border: none; padding: 15px; border-radius: 14px; font-weight: bold; cursor: pointer; }
+        button.btn-add { background: var(--dark); color: white; border: none; padding: 16px; border-radius: 18px; font-weight: 800; cursor: pointer; letter-spacing: 0.5px; }
         
-        .venda-card { background: white; padding: 15px; border-radius: 18px; margin-bottom: 10px; display: flex; align-items: center; border-left: 6px solid #ccc; font-size: 12px; gap: 8px; transition: 0.3s; }
-        .venda-card.entregue, .venda-card.cancelada { opacity: 0.5; background: #f1f2f6; }
-        .venda-card.cancelada { border-left-style: dashed; }
+        /* LISTA DE VENDAS MODERNIZADA */
+        .venda-card { background: white; padding: 18px; border-radius: 22px; margin-bottom: 12px; display: flex; align-items: center; border-left: 8px solid #ccc; font-size: 13px; gap: 10px; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
+        .venda-card.entregue, .venda-card.cancelada { opacity: 0.5; filter: grayscale(0.5); background: #f8f9fa; }
+        .venda-card.cancelada { border-left-style: dotted; }
         
         .venda-Spitz { border-left-color: var(--spitz); }
         .venda-Bengal { border-left-color: var(--bengal); }
         .venda-Vale { border-left-color: var(--danger); background: #fffcfc; }
         
-        .badge { color: white; padding: 2px 8px; border-radius: 10px; font-size: 9px; margin-left: 5px; text-transform: uppercase; font-weight: bold; }
+        .badge { color: white; padding: 3px 10px; border-radius: 12px; font-size: 9px; margin-left: 6px; text-transform: uppercase; font-weight: 800; }
         .bg-success { background: var(--success); }
         .bg-cancel { background: #636e72; }
 
-        .btn-action { border: 1px solid #ddd; background: white; border-radius: 10px; padding: 6px; cursor: pointer; font-size: 14px; }
+        .btn-action { border: 1px solid #ddd; background: white; border-radius: 12px; padding: 8px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
         .btn-action.ativo { background: var(--success); color: white; border-color: var(--success); }
-        .del-btn { border: none; background: #f1f2f6; color: #b2bec3; border-radius: 50%; width: 26px; height: 26px; cursor: pointer; }
+        .del-btn { border: none; background: #eee; color: #999; border-radius: 50%; width: 28px; height: 28px; cursor: pointer; font-weight: bold; }
 
-        .backup-area { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; padding-bottom: 40px; }
-        .btn-backup { background: #eee; border: none; padding: 10px 15px; border-radius: 12px; font-size: 10px; font-weight: bold; color: #777; cursor: pointer; }
-        .btn-pdf { background: var(--danger); color: white !important; }
+        .backup-area { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 25px; padding-bottom: 50px; }
+        .btn-backup { background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.05); padding: 12px 20px; border-radius: 15px; font-size: 11px; font-weight: 800; color: #555; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header><h2>Painel de Vendas Canil My Baby</h2><small>Gerson</small></header>
+    <header>
+        <h2>Painel Canil My Baby</h2>
+        <small>GERSON • GESTÃO PROFISSIONAL</small>
+    </header>
 
     <div class="card-meta">
         <div class="meta-header">
-            <div>OBJETIVO DO MÊS</div>
+            <div style="font-weight: 800; font-size: 12px; opacity: 0.8;">OBJETIVO DO MÊS</div>
             <div class="meta-value-container">
-                <span style="font-size: 10px; opacity: 0.7;">R$</span>
+                <span style="font-size: 11px; font-weight: 800; opacity: 0.7; margin-right: 5px;">R$</span>
                 <input type="number" id="metaVal" class="meta-input" onchange="salvarMeta()">
                 <span>🎯</span>
             </div>
         </div>
         <div class="progress-container"><div id="barraProgresso" class="progress-bar"></div></div>
-        <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: bold;">
-            <span>TOTAL <span id="porcentoTxt" style="color:var(--bengal)">0%</span></span>
+        <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 800;">
+            <span>CONCLUÍDO <span id="porcentoTxt" style="color:var(--bengal)">0%</span></span>
             <span id="faltaTxt">...</span>
         </div>
     </div>
@@ -97,13 +120,13 @@
     </div>
 
     <div class="stats-grid">
-        <div class="stat-card"><small>Faturamento</small><strong id="totalVendas">R$ 0,00</strong></div>
+        <div class="stat-card"><small>Faturamento</small><strong id="totalVendas">R$ 0</strong></div>
         <div class="stat-card"><small>A Entregar</small><strong id="countPendentes" style="color: var(--spitz);">0</strong></div>
-        <div class="stat-card"><small>Machos</small><strong id="countMacho">0</strong><div style="font-size:8px; opacity: 0.6;">🐶<span id="mS">0</span> | 🐱<span id="mB">0</span></div></div>
-        <div class="stat-card"><small>Fêmeas</small><strong id="countFemea">0</strong><div style="font-size:8px; opacity: 0.6;">🐶<span id="fS">0</span> | 🐱<span id="fB">0</span></div></div>
-        <div class="stat-card" style="grid-column: span 2;">
-            <small>Líquido a Receber</small><strong id="totalComissao" style="color: var(--success);">R$ 0,00</strong>
-            <div id="subVale" style="font-size: 8px; color: var(--danger); font-weight: bold; margin-top: 2px;"></div>
+        <div class="stat-card"><small>Machos</small><strong id="countMacho">0</strong><div style="font-size:9px; margin-top:4px;">🐶<span id="mS">0</span> | 🐱<span id="mB">0</span></div></div>
+        <div class="stat-card"><small>Fêmeas</small><strong id="countFemea">0</strong><div style="font-size:9px; margin-top:4px;">🐶<span id="fS">0</span> | 🐱<span id="fB">0</span></div></div>
+        <div class="stat-card" style="grid-column: span 2; background: white;">
+            <small>Líquido a Receber</small><strong id="totalComissao" style="color: var(--success); font-size: 22px;">R$ 0,00</strong>
+            <div id="subVale" style="font-size: 10px; color: var(--danger); font-weight: 800; margin-top: 4px;"></div>
         </div>
     </div>
 
@@ -117,14 +140,14 @@
         <button class="btn-add" onclick="adicionarVenda()">REGISTRAR VENDA</button>
         <div class="row" style="margin-top: 5px;">
             <input type="number" id="valorVale" placeholder="R$ Vale" style="flex: 1;">
-            <button onclick="adicionarVale()" style="background: #fff5f5; color: var(--danger); border: 1px solid #ffe3e3; border-radius: 14px; padding: 10px 20px; font-weight: bold; font-size: 11px;">VALE</button>
+            <button onclick="adicionarVale()" style="background: #fff5f5; color: var(--danger); border: none; border-radius: 16px; padding: 0 25px; font-weight: 800; font-size: 12px;">VALE</button>
         </div>
     </div>
 
     <div id="lista"></div>
 
     <div class="backup-area">
-        <button class="btn-backup btn-pdf" onclick="imprimirRelatorio()">📄 GERAR PDF</button>
+        <button class="btn-backup" onclick="imprimirRelatorio()" style="background: var(--danger); color: white;">📄 GERAR RELATÓRIO PDF</button>
         <button class="btn-backup" onclick="exportarBackup()">💾 BACKUP</button>
         <button class="btn-backup" onclick="document.getElementById('inputFile').click()">📂 IMPORTAR</button>
         <input type="file" id="inputFile" style="display:none" onchange="importarBackup(event)">
@@ -168,7 +191,7 @@
         renderizar();
     }
 
-    function excluir(i) { if(confirm("Excluir permanentemente?")) { vendas.splice(i, 1); localStorage.setItem('vendasV5', JSON.stringify(vendas)); renderizar(); } }
+    function excluir(i) { if(confirm("Excluir?")) { vendas.splice(i, 1); localStorage.setItem('vendasV5', JSON.stringify(vendas)); renderizar(); } }
 
     function renderizar() {
         const listaDiv = document.getElementById('lista');
@@ -185,7 +208,6 @@
                 let dia = v.data.substring(0,5);
                 dadosG[dia] = (dadosG[dia] || 0) + v.valor;
                 if(v.sexo === 'Macho') { v.tipo === 'Spitz' ? mS++ : mB++; } else { v.tipo === 'Spitz' ? fS++ : fB++; }
-                
                 if(!v.entregue && !v.cancelada) pendentes++;
                 
                 const statusClass = v.cancelada ? 'cancelada' : (v.entregue ? 'entregue' : '');
@@ -199,11 +221,11 @@
                         </div>
                         <div style="text-align:right; margin-right:5px;">
                             <strong>R$ ${v.valor.toLocaleString()}</strong><br>
-                            <small style="color:var(--success)">Com: R$ ${(v.valor*0.03).toFixed(2)}</small>
+                            <small style="color:var(--success); font-weight:800">Com: R$ ${(v.valor*0.03).toFixed(2)}</small>
                         </div>
                         <button class="btn-action ${v.entregue?'ativo':''}" onclick="alternarEstado(${i},'entregue')">${v.entregue?'✅':'🏠'}</button>
                         <button class="btn-action" onclick="alternarEstado(${i},'cancelada')" style="margin-left:2px">${v.cancelada?'♻️':'🚫'}</button>
-                        <button class="del-btn" onclick="excluir(${i})" style="margin-left:2px">&times;</button>
+                        <button class="del-btn" onclick="excluir(${i})" style="margin-left:5px">&times;</button>
                     </div>` + listaDiv.innerHTML;
             }
         });
@@ -211,7 +233,7 @@
         let liq = (fat * 0.03) + 2000 - vales;
         document.getElementById('totalVendas').innerText = "R$ " + fat.toLocaleString();
         document.getElementById('totalComissao').innerText = "R$ " + liq.toLocaleString();
-        document.getElementById('subVale').innerText = vales > 0 ? "DESCONTADO: R$ " + vales.toLocaleString() : "";
+        document.getElementById('subVale').innerText = vales > 0 ? "DESCONTO VALES: R$ " + vales.toLocaleString() : "";
         document.getElementById('countPendentes').innerText = pendentes;
         document.getElementById('countMacho').innerText = mS + mB;
         document.getElementById('mS').innerText = mS; document.getElementById('mB').innerText = mB;
@@ -240,7 +262,7 @@
         }).join('');
         let liq = (fat * 0.03) + 2000 - vales;
         const win = window.open('', '_blank');
-        win.document.write(`<html><head><title>Relatório My Baby</title><style>body{font-family:sans-serif;padding:20px} table{width:100%;border-collapse:collapse;margin-top:20px} th,td{border:1px solid #ddd;padding:10px;text-align:left} .resumo{margin-bottom:20px;padding:15px;background:#f9f9f9;border-radius:10px}</style></head><body><h1>Relatório Canil My Baby</h1><div class="resumo"><strong>Faturamento Total:</strong> R$ ${fat.toLocaleString()}<br><strong>Saldo Líquido (3% + Fixo - Vales):</strong> R$ ${liq.toLocaleString()}</div><table><thead><tr><th>Data</th><th>Cliente</th><th>Raça</th><th>Valor</th><th>Status</th></tr></thead><tbody>${linhas}</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`);
+        win.document.write(`<html><head><title>Relatório</title><style>body{font-family:sans-serif;padding:30px} table{width:100%;border-collapse:collapse;margin-top:20px} th,td{border:1px solid #ddd;padding:12px;text-align:left} .resumo{padding:20px;background:#f8f9fa;border-radius:15px;margin-bottom:30px} h1{color:#2d3436}</style></head><body><h1>Relatório Canil My Baby</h1><div class="resumo"><strong>Faturamento:</strong> R$ ${fat.toLocaleString()}<br><strong>Saldo Líquido Gerson:</strong> R$ ${liq.toLocaleString()}</div><table><thead><tr><th>Data</th><th>Cliente</th><th>Raça</th><th>Valor</th><th>Status</th></tr></thead><tbody>${linhas}</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`);
         win.document.close();
     }
 
