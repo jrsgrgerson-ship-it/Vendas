@@ -55,7 +55,6 @@
         
         button.btn-add { background: var(--dark); color: white; border: none; padding: 15px; border-radius: 14px; font-weight: bold; cursor: pointer; }
         
-        /* ESTILO LOGÍSTICA ENTREGA */
         .venda-card { background: white; padding: 15px; border-radius: 18px; margin-bottom: 10px; display: flex; align-items: center; border-left: 6px solid #ccc; font-size: 12px; gap: 10px; transition: 0.3s; }
         .venda-card.entregue { opacity: 0.6; background: #f1f2f6; border-left-color: var(--success) !important; }
         .venda-Spitz { border-left-color: var(--spitz); }
@@ -69,7 +68,6 @@
 
         .backup-area { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; padding-bottom: 40px; }
         .btn-backup { background: #eee; border: none; padding: 10px 15px; border-radius: 12px; font-size: 10px; font-weight: bold; color: #777; cursor: pointer; }
-        .btn-pdf { background: #ff4757; color: white !important; box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3); }
     </style>
 </head>
 <body>
@@ -100,9 +98,21 @@
 
     <div class="stats-grid">
         <div class="stat-card"><small>Faturamento</small><strong id="totalVendas">R$ 0,00</strong></div>
-        <div class="stat-card"><small>Líquido a Receber</small><strong id="totalComissao" style="color: var(--success);">R$ 0,00</strong><div id="subVale" style="font-size: 8px; color: var(--danger); font-weight: bold; margin-top: 2px;"></div></div>
         <div class="stat-card"><small>A Entregar</small><strong id="countPendentes" style="color: var(--spitz);">0</strong><div style="font-size:8px; opacity: 0.6;">Filhotes no Canil</div></div>
-        <div class="stat-card"><small>Machos / Fêmeas</small><strong><span id="countMacho">0</span> | <span id="countFemea">0</span></strong><div style="font-size:8px; opacity: 0.6;">Total Vendidos</div></div>
+        
+        <div class="stat-card">
+            <small>Machos</small><strong id="countMacho">0</strong>
+            <div style="font-size:8px; opacity: 0.6;">🐶<span id="mS">0</span> | 🐱<span id="mB">0</span></div>
+        </div>
+        <div class="stat-card">
+            <small>Fêmeas</small><strong id="countFemea">0</strong>
+            <div style="font-size:8px; opacity: 0.6;">🐶<span id="fS">0</span> | 🐱<span id="fB">0</span></div>
+        </div>
+
+        <div class="stat-card" style="grid-column: span 2;">
+            <small>Líquido a Receber</small><strong id="totalComissao" style="color: var(--success);">R$ 0,00</strong>
+            <div id="subVale" style="font-size: 8px; color: var(--danger); font-weight: bold; margin-top: 2px;"></div>
+        </div>
     </div>
 
     <div class="form-venda">
@@ -122,7 +132,6 @@
     <div id="lista"></div>
 
     <div class="backup-area">
-        <button class="btn-backup btn-pdf" onclick="imprimirRelatorio()">📄 RELATÓRIO PDF</button>
         <button class="btn-backup" onclick="exportarBackup()">💾 BACKUP</button>
         <button class="btn-backup" onclick="document.getElementById('inputFile').click()">📂 IMPORTAR</button>
         <input type="file" id="inputFile" style="display:none" onchange="importarBackup(event)">
@@ -170,20 +179,12 @@
     function celebrarMeta() {
         if(celebrou) return;
         celebrou = true;
-        const duration = 5 * 1000, animationEnd = Date.now() + duration, defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-        function randomInRange(min, max) { return Math.random() * (max - min) + min; }
-        const interval = setInterval(function() {
-            const timeLeft = animationEnd - Date.now();
-            if (timeLeft <= 0) return clearInterval(interval);
-            const particleCount = 50 * (timeLeft / duration);
-            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-        }, 250);
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
     }
 
     function renderizar() {
         const listaDiv = document.getElementById('lista');
-        let fat = 0, vales = 0, qtd = 0, m=0, f=0, pendentes=0;
+        let fat = 0, vales = 0, qtd = 0, mS=0, mB=0, fS=0, fB=0, pendentes=0;
         let dadosG = {};
         listaDiv.innerHTML = '';
 
@@ -195,7 +196,9 @@
                 fat += v.valor; qtd++;
                 let dia = v.data.substring(0,5);
                 dadosG[dia] = (dadosG[dia] || 0) + v.valor;
-                if(v.sexo === 'Macho') m++; else f++;
+                
+                // CONTAGEM POR RAÇA E SEXO
+                if(v.sexo === 'Macho') { v.tipo === 'Spitz' ? mS++ : mB++; } else { v.tipo === 'Spitz' ? fS++ : fB++; }
                 if(!v.entregue) pendentes++;
                 
                 const cssEntregue = v.entregue ? 'entregue' : '';
@@ -223,7 +226,13 @@
         document.getElementById('totalComissao').innerText = "R$ " + liq.toLocaleString();
         document.getElementById('subVale').innerText = vales > 0 ? "DESCONTADO: R$ " + vales.toLocaleString() : "";
         document.getElementById('countPendentes').innerText = pendentes;
-        document.getElementById('countMacho').innerText = m; document.getElementById('countFemea').innerText = f;
+        
+        // ATUALIZA CONTAGEM NOS CARDS
+        document.getElementById('countMacho').innerText = mS + mB;
+        document.getElementById('mS').innerText = mS; document.getElementById('mB').innerText = mB;
+        document.getElementById('countFemea').innerText = fS + fB;
+        document.getElementById('fS').innerText = fS; document.getElementById('fB').innerText = fB;
+
         document.getElementById('valorMedia').innerText = "R$ " + (qtd > 0 ? Math.round(fat/qtd).toLocaleString() : 0);
 
         const p = meta > 0 ? (fat / meta) * 100 : 0;
@@ -236,17 +245,6 @@
         const ctx = document.getElementById('meuGrafico').getContext('2d');
         if(chartInstance) chartInstance.destroy();
         chartInstance = new Chart(ctx, { type: 'line', data: { labels: Object.keys(dadosG), datasets: [{ data: Object.values(dadosG), borderColor: '#54a0ff', backgroundColor: 'rgba(84, 160, 255, 0.1)', fill: true, tension: 0.4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } } });
-    }
-
-    function imprimirRelatorio() {
-        let fat = 0, vales = 0;
-        let linhas = vendas.map(v => {
-            if(!v.isVale) fat += v.valor; else vales += v.valor;
-            return `<tr><td>${v.data}</td><td>${v.cliente}</td><td>${v.tipo}</td><td>R$ ${v.valor.toLocaleString()}</td><td>${v.entregue ? 'SIM' : 'NÃO'}</td></tr>`;
-        }).join('');
-        const win = window.open('', '_blank');
-        win.document.write(`<html><head><title>Relatório</title><style>body{font-family:sans-serif;padding:20px} table{width:100%;border-collapse:collapse;margin-top:20px} th,td{border:1px solid #ddd;padding:10px;text-align:left}</style></head><body><h1>Relatório Canil My Baby</h1><table><thead><tr><th>Data</th><th>Cliente</th><th>Raça</th><th>Valor</th><th>Entregue</th></tr></thead><tbody>${linhas}</tbody></table><script>window.print();<\/script></body></html>`);
-        win.document.close();
     }
 
     function exportarBackup() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify({vendas, meta})], {type: 'application/json'})); a.download = `backup.json`; a.click(); }
