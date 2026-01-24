@@ -14,50 +14,39 @@
         header h1 { margin: 0; font-size: 18px; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px var(--blue); }
         header p { margin: 5px 0 0 0; font-size: 11px; color: var(--blue); font-weight: 600; }
 
-        /* BARRA DE META MELHORADA */
-        .meta-container { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 15px; box-shadow: 0 0 20px rgba(0,242,255,0.05); }
+        .meta-container { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 15px; }
         .meta-info { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; }
-        .meta-info div { display: flex; flex-direction: column; }
         .meta-label { font-size: 9px; color: #666; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; }
         .meta-value { font-size: 16px; color: var(--blue); font-weight: 800; }
-        .input-meta-min { background: transparent; border: 1px dashed #444; color: #fff; width: 80px; padding: 4px; border-radius: 5px; font-size: 12px; font-family: inherit; }
+        .input-meta-min { background: transparent; border: 1px dashed #444; color: #fff; width: 80px; padding: 4px; border-radius: 5px; font-size: 12px; }
 
-        .progress-bg { background: #000; height: 16px; border-radius: 20px; width: 100%; position: relative; border: 1px solid #222; margin-top: 5px; }
-        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #0088ff, var(--blue)); box-shadow: 0 0 15px var(--blue); border-radius: 20px; transition: 1s cubic-bezier(0.17, 0.67, 0.83, 0.67); position: relative; }
-        .rocket { position: absolute; right: -8px; top: -4px; font-size: 18px; filter: drop-shadow(0 0 5px #fff); }
+        .progress-bg { background: #000; height: 16px; border-radius: 20px; width: 100%; position: relative; border: 1px solid #222; }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #0088ff, var(--blue)); box-shadow: 0 0 15px var(--blue); border-radius: 20px; transition: 1s; position: relative; }
+        .rocket { position: absolute; right: -8px; top: -4px; font-size: 18px; }
 
-        /* FINANCEIRO SEPARADO */
+        /* FINANCEIRO REORGANIZADO */
         .fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
         .fin-box { background: var(--card); padding: 12px; border-radius: 14px; border: 1px solid var(--border); }
         .fin-box span { font-size: 8px; color: #666; font-weight: 700; display: block; margin-bottom: 3px; text-transform: uppercase; }
-        .fin-box b { font-size: 16px; display: block; letter-spacing: -0.5px; }
+        .fin-box b { font-size: 16px; display: block; }
+        
+        .full-box { grid-column: span 2; background: rgba(0,242,255,0.03); border: 1px solid #1a1a1a; }
 
-        /* GRÁFICO INTEIRO E ALINHADO */
-        .chart-wrapper { 
-            background: var(--card); border-radius: 20px; border: 1px solid var(--border); 
-            margin-bottom: 15px; height: 260px; padding: 15px; box-sizing: border-box;
-            display: flex; flex-direction: column;
-        }
-        .chart-area { flex-grow: 1; width: 100%; min-height: 0; }
+        .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 260px; padding: 15px; box-sizing: border-box; }
         
-        /* INPUTS ESTILOSOS */
         .inputs { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
-        .inputs input, .inputs select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; box-sizing: border-box; font-size: 13px; font-family: inherit; }
+        .inputs input, .inputs select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; box-sizing: border-box; font-size: 13px; }
         
-        .btn-main { background: #fff; color: #000; width: 100%; padding: 14px; border-radius: 10px; font-weight: 800; border: none; margin-bottom: 8px; cursor: pointer; transition: 0.2s; }
+        .btn-main { background: #fff; color: #000; width: 100%; padding: 14px; border-radius: 10px; font-weight: 800; border: none; margin-bottom: 8px; cursor: pointer; }
         .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
         .btn-sec { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 10px; border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
 
-        /* LISTA */
         .item { background: var(--card); padding: 14px; border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .item.entregue { border-left: 4px solid var(--green); }
         .item.pendente { border-left: 4px solid var(--red); }
-        .item-info b { font-size: 14px; display: block; margin-bottom: 2px; }
-        .item-info small { color: #555; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-        
-        .val-venda { font-weight: 800; font-size: 15px; text-align: right; }
+        .val-venda { font-weight: 800; font-size: 15px; }
         .btn-status { width: 38px; height: 38px; border-radius: 10px; border: none; background: #222; color: #fff; margin-left: 10px; cursor: pointer; }
-        .btn-status.on { background: var(--green); color: #000; box-shadow: 0 0 15px rgba(0,255,136,0.2); }
+        .btn-status.on { background: var(--green); color: #000; box-shadow: 0 0 10px var(--green); }
     </style>
 </head>
 <body>
@@ -69,36 +58,27 @@
 
     <div class="meta-container">
         <div class="meta-info">
-            <div>
-                <span class="meta-label">Progresso da Meta</span>
-                <span class="meta-value" id="txtPerc">0%</span>
-            </div>
-            <div>
-                <span class="meta-label">Ajustar Meta R$</span>
-                <input type="number" id="inputMeta" class="input-meta-min" placeholder="50000" onchange="salvarMeta()">
-            </div>
+            <div><span class="meta-label">Progresso</span><span class="meta-value" id="txtPerc">0%</span></div>
+            <div><span class="meta-label">Ajustar Meta R$</span><input type="number" id="inputMeta" class="input-meta-min" onchange="salvarMeta()"></div>
         </div>
-        <div class="progress-bg">
-            <div class="progress-fill" id="barraProg">
-                <span class="rocket">🚀</span>
-            </div>
-        </div>
+        <div class="progress-bg"><div class="progress-fill" id="barraProg"><span class="rocket">🚀</span></div></div>
     </div>
 
     <div class="fin-grid">
-        <div class="fin-box"><span>Salário Fixo</span><b style="color:#fff">R$ 2.000</b></div>
+        <div class="fin-box"><span>Salário Fixo</span><b>R$ 2.000</b></div>
         <div class="fin-box"><span>Comissões (3%)</span><b id="totComissao" style="color:var(--yellow)">R$ 0</b></div>
     </div>
-    <div class="fin-grid" style="margin-bottom: 15px;">
+    <div class="fin-grid">
         <div class="fin-box"><span>Total Vales</span><b id="totDescontos" style="color:var(--red)">R$ 0</b></div>
-        <div class="fin-box"><span>Líquido Real</span><b id="salLiq" style="color:var(--green)">R$ 0</b></div>
+        <div class="fin-box" style="border-color: var(--green);"><span>Líquido Real</span><b id="salLiq" style="color:var(--green)">R$ 0</b></div>
+    </div>
+    <div class="fin-grid" style="margin-bottom: 15px;">
+        <div class="fin-box full-box"><span>Faturamento Bruto</span><b id="totBruto" style="color:var(--blue)">R$ 0</b></div>
     </div>
 
     <div class="chart-wrapper">
-        <span class="meta-label" style="margin-bottom: 10px; display: block;">Desempenho Diário (R$)</span>
-        <div class="chart-area">
-            <canvas id="graficoVendas"></canvas>
-        </div>
+        <span class="meta-label" style="margin-bottom: 10px; display: block;">Faturamento Diário</span>
+        <div style="height: 100%; width: 100%;"><canvas id="graficoVendas"></canvas></div>
     </div>
 
     <div class="inputs">
@@ -156,7 +136,7 @@
         [...vendas].sort((a,b) => b.ts - a.ts).forEach(v => {
             if (v.isVale) {
                 vales += v.valor;
-                div.innerHTML += `<div class="item" style="opacity:0.5; border-color:#333"><div class="item-info"><b>VALE</b><small>${v.data}</small></div><div style="display:flex;align-items:center"><div class="val-venda" style="color:var(--red)">- R$ ${v.valor.toLocaleString()}</div><button onclick="del(${v.id})" style="background:none;border:none;color:#444;margin-left:10px">🗑</button></div></div>`;
+                div.innerHTML += `<div class="item" style="opacity:0.5"><div class="item-info"><b>VALE</b><small>${v.data}</small></div><div style="display:flex;align-items:center"><div class="val-venda" style="color:var(--red)">- R$ ${v.valor.toLocaleString()}</div><button onclick="del(${v.id})" style="background:none;border:none;color:#444;margin-left:10px">🗑</button></div></div>`;
             } else {
                 bruto += v.valor; com += (v.valor * 0.03);
                 div.innerHTML += `<div class="item ${v.entregue ? 'entregue' : 'pendente'}"><div class="item-info"><b>${v.cliente}</b><small>${v.data} • ${v.tipo}</small></div><div style="display:flex;align-items:center"><div class="val-venda">R$ ${v.valor.toLocaleString()}</div><button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button></div></div>`;
@@ -168,12 +148,13 @@
         document.getElementById('txtPerc').innerText = perc + '%';
         document.getElementById('inputMeta').value = metaMensal;
 
-        let crono = [...vendas].filter(v => !v.isVale).sort((a,b) => a.ts - b.ts);
-        crono.forEach(v => hist[v.data] = (hist[v.data] || 0) + v.valor);
-
+        document.getElementById('totBruto').innerText = "R$ " + bruto.toLocaleString();
         document.getElementById('totComissao').innerText = "R$ " + com.toLocaleString();
         document.getElementById('totDescontos').innerText = "R$ " + vales.toLocaleString();
         document.getElementById('salLiq').innerText = "R$ " + (2000 + com - vales).toLocaleString('pt-BR', {minimumFractionDigits:2});
+
+        let crono = [...vendas].filter(v => !v.isVale).sort((a,b) => a.ts - b.ts);
+        crono.forEach(v => hist[v.data] = (hist[v.data] || 0) + v.valor);
 
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
@@ -184,7 +165,7 @@
                 responsive: true, maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: { 
-                    y: { position: 'left', grid: { color: '#222' }, ticks: { color: '#666', font: { size: 9 }, callback: v => v >= 1000 ? (v/1000)+'k' : v } },
+                    y: { grid: { color: '#222' }, ticks: { color: '#666', font: { size: 9 }, callback: v => v >= 1000 ? (v/1000)+'k' : v } },
                     x: { grid: { display: false }, ticks: { color: '#fff', font: { size: 10, weight: 'bold' } } }
                 }
             }
@@ -196,7 +177,7 @@
         const vls = vendas.filter(v=>v.isVale).reduce((a,b)=>a+b.valor,0);
         const com = bruto * 0.03;
         const win = window.open('','_blank');
-        win.document.write(`<html><head><style>body{background:#000;color:#fff;font-family:sans-serif;padding:30px}.card{background:#111;padding:20px;border-radius:10px;border:1px solid #333}table{width:100%;border-collapse:collapse;margin-top:20px}th{text-align:left;color:#00f2ff;border-bottom:1px solid #333;padding:10px}td{padding:10px;border-bottom:1px solid #222}.red{color:#ff0055}.green{color:#00ff88}</style></head><body><h1>Relatório Canil My Baby</h1><div class="card"><h3>Bruto: R$ ${bruto.toLocaleString()}</h3><h3>Fixo: R$ 2.000,00</h3><h3>Comissão (3%): <span class="green">R$ ${com.toLocaleString()}</span></h3><h3>Vales: <span class="red">- R$ ${vls.toLocaleString()}</span></h3><hr><h2>LÍQUIDO: R$ ${(2000+com-vls).toLocaleString()}</h2></div><table><tr><th>DATA</th><th>CLIENTE</th><th>VALOR</th></tr>${vendas.map(v=>`<tr><td>${v.data}</td><td>${v.cliente}</td><td>R$ ${v.valor.toLocaleString()}</td></tr>`).join('')}</table><script>window.print();<\/script></body></html>`);
+        win.document.write(`<html><head><style>body{background:#000;color:#fff;font-family:sans-serif;padding:30px}.card{background:#111;padding:20px;border-radius:10px;border:1px solid #333}table{width:100%;border-collapse:collapse;margin-top:20px}th{text-align:left;color:#00f2ff;border-bottom:1px solid #333;padding:10px}td{padding:10px;border-bottom:1px solid #222}</style></head><body><h1>Relatório Canil My Baby</h1><div class="card"><h3>Faturamento Bruto: R$ ${bruto.toLocaleString()}</h3><h3>Líquido Real: R$ ${(2000+com-vls).toLocaleString()}</h3></div><table><tr><th>DATA</th><th>CLIENTE</th><th>VALOR</th></tr>${vendas.map(v=>`<tr><td>${v.data}</td><td>${v.cliente}</td><td>R$ ${v.valor.toLocaleString()}</td></tr>`).join('')}</table><script>window.print();<\/script></body></html>`);
     }
 
     function exportarDados() {
@@ -208,4 +189,3 @@
 </script>
 </body>
 </html>
-
