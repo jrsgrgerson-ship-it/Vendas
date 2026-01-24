@@ -52,11 +52,9 @@
             position: relative; overflow: hidden;
         }
         
-        /* O Brilho Verde do Saldo */
         .stat-card.green { border-left: 3px solid var(--success); }
         .stat-card.green::before { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(90deg, rgba(0,255,136,0.05), transparent); pointer-events:none; }
         
-        /* O Brilho Vermelho do Vale */
         .stat-card.red { border-left: 3px solid var(--danger); }
         .stat-card.red::before { content:''; position:absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(90deg, rgba(255,0,76,0.05), transparent); pointer-events:none; }
 
@@ -178,8 +176,31 @@
 </div>
 
 <script>
-    // DADOS
-    let dados = JSON.parse(localStorage.getItem('db_mybaby_v6')) || { vendas: [], meta: 0 };
+    // --- RESGATE AUTOMÁTICO DE DADOS ---
+    // O sistema tenta carregar a nova versão (v6). Se estiver vazia, ele busca a antiga (v5).
+    let dados = JSON.parse(localStorage.getItem('db_mybaby_v6'));
+
+    if (!dados) {
+        // Tenta buscar da versão anterior
+        const dadosAntigos = JSON.parse(localStorage.getItem('vendasV5'));
+        const metaAntiga = localStorage.getItem('metaV5');
+        
+        if (dadosAntigos && dadosAntigos.length > 0) {
+            alert("⚠️ Restaurando seus dados da versão anterior... Tudo pronto!");
+            // Converte para o novo formato com ID se necessário
+            dados = {
+                vendas: dadosAntigos.map((v, index) => ({...v, id: v.id || Date.now() + index})),
+                meta: metaAntiga || 0
+            };
+            localStorage.setItem('db_mybaby_v6', JSON.stringify(dados));
+        } else {
+            // Se não tiver nada, inicia zerado
+            dados = { vendas: [], meta: 0 };
+        }
+    }
+    
+    // --- FIM DO RESGATE ---
+
     let chartObj = null;
 
     // INICIALIZAÇÃO
@@ -190,18 +211,16 @@
     function calcularFinancas() {
         let totalComissao = 0;
         let totalVales = 0;
-        let faturamentoAtivo = 0; // Apenas para a meta e gráfico
+        let faturamentoAtivo = 0; 
         let historicoGrafico = {};
 
         dados.vendas.forEach(v => {
             if (v.isVale) {
                 totalVales += v.valor;
             } else {
-                // REGRA DE OURO: Se está na lista, conta comissão. PONTO.
-                // Não importa se cancelou. A venda existiu, o trabalho foi feito.
+                // REGRA BLINDADA: Soma 3% de TUDO, mesmo cancelado.
                 totalComissao += (v.valor * 0.03);
 
-                // Regra da Meta/Gráfico: Apenas o que a loja efetivamente faturou
                 if (!v.cancelada) {
                     faturamentoAtivo += v.valor;
                     let dia = v.data.substring(0, 5);
@@ -368,8 +387,8 @@
                     borderWidth: 3,
                     backgroundColor: gradiente,
                     fill: true,
-                    pointRadius: 0, // SEM BOLINHAS
-                    tension: 0.4    // EFEITO LÍQUIDO
+                    pointRadius: 0, 
+                    tension: 0.4    
                 }]
             },
             options: {
@@ -412,16 +431,4 @@
                     <td>${v.cliente} <small>(${v.cancelada ? 'CANCEL' : 'OK'})</small></td>
                     <td>${v.data}</td>
                     <td>R$ ${v.valor.toLocaleString()}</td>
-                    <td style="color:green; font-weight:bold;">+ R$ ${(v.valor*0.03).toLocaleString()}</td>
-                </tr>`;
-            }
-        });
-
-        const win = window.open('', '_blank');
-        win.document.write(`
-            <html>
-            <head>
-                <style>
-                    body { font-family: 'Helvetica', sans-serif; padding: 40px; background: #fff; color: #000; }
-                    .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 30px; }
-                    .resumo { display: flex; justify-content: space-between; margin-bottom: 30px; background: 
+                    <td style="color:green; f
