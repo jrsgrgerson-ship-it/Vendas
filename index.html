@@ -3,271 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PAINEL PREMIUM V6.2 - GERSON</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+    <title>GERSON V6.3 STABLE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { 
-            --neon-blue: #00f2ff; 
-            --neon-green: #00ff88; 
-            --neon-red: #ff0055;
-            --bg-dark: #000000; 
-            --card-bg: #0d0d0d; 
-            --border: #1e1e1e; 
-        }
-        body { background: var(--bg-dark); color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 15px; -webkit-font-smoothing: antialiased; }
+        :root { --blue: #00f2ff; --green: #00ff88; --red: #ff0055; --bg: #000; --card: #0d0d0d; }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 15px; }
         .container { max-width: 450px; margin: auto; }
-
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-left: 4px solid var(--neon-blue); padding-left: 15px; }
-        header h1 { margin: 0; font-size: 20px; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; }
-        header span { font-size: 10px; color: var(--neon-blue); font-weight: 800; }
-
-        .quick-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
-        .q-box { background: var(--card-bg); border: 1px solid var(--border); padding: 12px 5px; border-radius: 14px; text-align: center; }
-        .q-box b { font-size: 16px; font-weight: 900; display: block; }
-        .q-box span { font-size: 8px; color: #666; text-transform: uppercase; font-weight: 700; }
-
-        .main-card { background: var(--card-bg); border-radius: 24px; padding: 25px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.8); position: relative; overflow: hidden; }
-        .big-number { font-size: 38px; font-weight: 900; display: block; margin: 5px 0; letter-spacing: -1px; }
         
-        .progress-container { background: #1a1a1a; height: 6px; border-radius: 10px; margin: 15px 0; overflow: hidden; }
-        .progress-bar { background: linear-gradient(90deg, var(--neon-blue), var(--neon-green)); height: 100%; width: 0%; box-shadow: 0 0 15px var(--neon-blue); transition: 1.5s; }
+        header { border-left: 4px solid var(--blue); padding-left: 15px; margin-bottom: 20px; }
+        header h1 { margin: 0; font-size: 22px; font-weight: 900; letter-spacing: -1px; }
 
-        .finance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .f-card { background: var(--card-bg); padding: 15px; border-radius: 18px; border: 1px solid var(--border); }
-        .f-card b { font-size: 20px; font-weight: 900; display: block; }
+        /* CARD PRINCIPAL */
+        .main-card { background: var(--card); border-radius: 20px; padding: 20px; border: 1px solid #1a1a1a; margin-bottom: 15px; }
+        .big-val { font-size: 35px; font-weight: 900; display: block; margin: 5px 0; color: #fff; }
+        
+        /* GRÁFICO FIXO */
+        .chart-container { position: relative; height: 120px; width: 100%; margin-top: 10px; }
 
-        input, select { background: #0a0a0a; border: 1px solid #222; color: #fff; padding: 14px; border-radius: 12px; width: 100%; font-family: 'Inter'; margin-bottom: 10px; box-sizing: border-box; }
-        .btn-add { background: #fff; color: #000; border: none; padding: 16px; border-radius: 12px; width: 100%; font-weight: 900; font-size: 14px; cursor: pointer; margin-bottom: 10px; }
-        .btn-pdf { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 12px; border-radius: 12px; width: 100%; font-weight: 800; cursor: pointer; }
+        /* BARRA DE PROGRESSO */
+        .prog-bg { background: #1a1a1a; height: 8px; border-radius: 10px; margin: 15px 0; overflow: hidden; }
+        .prog-fill { background: linear-gradient(90deg, var(--blue), var(--green)); height: 100%; width: 0%; transition: 1s; }
 
-        .item { display: grid; grid-template-columns: 40px 1fr auto 85px; align-items: center; padding: 15px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 10px; transition: 0.3s; }
-        .item.entregue { border-left: 4px solid var(--neon-green); background: linear-gradient(90deg, rgba(0, 255, 136, 0.05), transparent); }
-        .item-info b { display: block; font-size: 13px; text-transform: uppercase; }
-        .item-info span { font-size: 10px; color: #555; }
-        .item-price { font-weight: 900; color: #fff; text-align: right; margin-right: 10px; }
+        /* GRID DE TOTAIS */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .box { background: var(--card); padding: 15px; border-radius: 15px; border: 1px solid #1a1a1a; }
+        .box b { font-size: 18px; color: var(--green); display: block; }
+        .box span { font-size: 9px; color: #666; font-weight: 800; text-transform: uppercase; }
 
-        .actions { display: flex; gap: 5px; justify-content: flex-end; }
-        .btn-icon { width: 34px; height: 34px; border-radius: 10px; border: 1px solid #333; background: #111; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s; }
-        .btn-icon.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); box-shadow: 0 0 15px var(--neon-green); }
-        .btn-icon:active { transform: scale(0.85); }
+        /* ENTRADAS */
+        .inputs { background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #1a1a1a; margin-bottom: 20px; }
+        input, select { background: #000; border: 1px solid #222; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 10px; box-sizing: border-box; font-family: inherit; }
+        .btn-add { background: #fff; color: #000; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: 900; cursor: pointer; }
+        
+        /* LISTA DE VENDAS */
+        .item { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; border: 1px solid #1a1a1a; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; }
+        .item.entregue { border-left: 5px solid var(--green); box-shadow: 0 0 15px rgba(0, 255, 136, 0.1); }
+        .item b { font-size: 14px; text-transform: uppercase; display: block; }
+        .item small { color: #555; font-size: 10px; font-weight: 700; }
+        
+        .val-venda { text-align: right; margin-right: 15px; font-weight: 900; color: var(--blue); }
+        .val-venda.green { color: var(--green); }
 
-        .debug-zone { margin-top: 30px; text-align: center; }
-        .btn-rescue { background: none; border: 1px dashed #333; color: #444; padding: 10px; border-radius: 8px; font-size: 10px; text-transform: uppercase; font-weight: 800; cursor: pointer; }
+        .btn-check { width: 35px; height: 35px; border-radius: 10px; border: 1px solid #333; background: #111; color: #444; cursor: pointer; font-size: 16px; }
+        .btn-check.on { background: var(--green); color: #000; border-color: var(--green); box-shadow: 0 0 10px var(--green); }
+        
+        .btn-del { background: none; border: none; color: #333; cursor: pointer; margin-left: 5px; font-size: 12px; }
+
+        .pdf-btn { background: transparent; border: 1px solid var(--blue); color: var(--blue); padding: 10px; border-radius: 10px; width: 100%; margin-top: 10px; font-weight: 800; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <div><span>CONTROLE DE VENDAS</span><h1>CANIL MY BABY</h1></div>
-        <div style="text-align:right; font-size: 10px; color: var(--neon-blue); font-weight: 900;">GERSON</div>
+        <span style="font-size: 10px; color: var(--blue); font-weight: 800;">CONTROLE DE VENDAS</span>
+        <h1>CANIL MY BABY</h1>
     </header>
-
-    <div class="quick-stats">
-        <div class="q-box"><b><span id="cS">0</span></b><span>🐶 Spitz</span></div>
-        <div class="q-box"><b><span id="cB">0</span></b><span>🐱 Bengal</span></div>
-        <div class="q-box"><b><span id="cM">0</span></b><span>♂ Macho</span></div>
-        <div class="q-box"><b><span id="cF">0</span></b><span>♀ Fêmea</span></div>
-    </div>
 
     <div class="main-card">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <span style="font-size:10px; font-weight:800; color:#555;">FATURAMENTO BRUTO</span>
-            <span id="pctTxt" style="color:var(--neon-blue); font-size:12px; font-weight:900;">0%</span>
+            <span id="pctTxt" style="color:var(--blue); font-weight:900;">0%</span>
         </div>
-        <strong class="big-number" id="totalVendas">R$ 0</strong>
-        <div class="progress-container"><div id="barra" class="progress-bar"></div></div>
-        <div style="display:flex; justify-content:space-between; font-size:11px; color:#444;">
-            <span>META: R$ <input type="number" id="metaVal" style="width:70px; background:none; border:none; color:#444; font-weight:bold;" onchange="salvarMeta()"></span>
-            <span id="faltaMeta">FALTA R$ 0</span>
-        </div>
-        <div style="height:110px; margin-top:15px;"><canvas id="graficoVendas"></canvas></div>
-    </div>
-
-    <div class="finance-grid">
-        <div class="f-card" style="border-color: rgba(0,255,136,0.3);">
-            <span style="font-size:9px; color:var(--neon-green); font-weight:800;">SALDO (3% + 2k)</span>
-            <b id="saldoGerson" style="color:var(--neon-green);">R$ 0,00</b>
-        </div>
-        <div class="f-card">
-            <span style="font-size:9px; color:var(--neon-red); font-weight:800;">VALES ACUMULADOS</span>
-            <b id="totalVales" style="color:var(--neon-red);">R$ 0</b>
+        <strong class="big-val" id="totalVendas">R$ 0</strong>
+        <div class="prog-bg"><div id="barra" class="prog-fill"></div></div>
+        
+        <div class="chart-container">
+            <canvas id="grafico"></canvas>
         </div>
     </div>
 
-    <div style="background:var(--card-bg); padding:20px; border-radius:24px; border:1px solid var(--border); margin-bottom:20px;">
-        <div style="display:flex; gap:8px; margin-bottom:10px;">
-            <select id="tipo"><option value="Spitz">Spitz 🐶</option><option value="Bengal">Bengal 🐱</option></select>
-            <select id="sexo"><option value="Macho">Macho ♂</option><option value="Fêmea">Fêmea ♀</option></select>
+    <div class="grid">
+        <div class="box">
+            <span>SALDO GERSON</span>
+            <b id="saldoGerson">R$ 0,00</b>
+        </div>
+        <div class="box">
+            <span>META (R$)</span>
+            <input type="number" id="metaInput" style="margin:0; padding:0; border:none; background:none; font-size:18px; font-weight:900; color:#fff;" value="100000" onchange="salvarMeta()">
+        </div>
+    </div>
+
+    <div class="inputs">
+        <div style="display:flex; gap:5px;">
+            <select id="tipo"><option value="🐶 Spitz">Spitz</option><option value="🐱 Bengal">Bengal</option></select>
+            <select id="sexo"><option value="♂">Macho</option><option value="♀">Fêmea</option></select>
         </div>
         <input type="text" id="cliente" placeholder="Nome do Cliente">
-        <input type="number" id="valorTotal" placeholder="Valor Total R$">
+        <input type="number" id="valor" placeholder="Valor R$">
         <button class="btn-add" onclick="addVenda()">REGISTRAR VENDA</button>
-        <div style="display:flex; gap:10px;">
-            <button class="btn-pdf" onclick="gerarPDF()">📄 PDF PROFISSIONAL</button>
-            <button class="btn-pdf" style="border-color:var(--neon-red); color:var(--neon-red);" onclick="addVale()">💸 LANÇAR VALE</button>
-        </div>
+        <button class="pdf-btn" onclick="gerarPDF()">📄 EXPORTAR PDF TOP</button>
     </div>
 
-    <div id="listaVendas"></div>
+    <div id="lista"></div>
 
-    <div class="debug-zone">
-        <button class="btn-rescue" onclick="superResgate()">⚠️ RESGATAR MEUS 74K</button>
-    </div>
+    <button onclick="superResgate()" style="width:100%; background:none; border:none; color:#222; font-size:10px; margin-top:20px; padding:20px;">RECUPERAR DADOS ANTIGOS</button>
 </div>
 
 <script>
-    let chartInstance = null;
-    let vendas = [];
-    let meta = localStorage.getItem('meta_gerson') || 100000;
-    document.getElementById('metaVal').value = meta;
-
-    function superResgate() {
-        const chaves = ['vendasV12', 'vendasV5', 'mybaby_v1', 'vendas_final_v1', 'vendas_backup_seguro'];
-        let melhorLote = []; let maiorVlr = -1;
-        chaves.forEach(k => {
-            let d = localStorage.getItem(k);
-            if(d) {
-                try {
-                    let l = JSON.parse(d);
-                    let s = l.reduce((acc, v) => acc + (v.valor || 0), 0);
-                    if(s > maiorVlr) { maiorVlr = s; melhorLote = l; }
-                } catch(e) {}
-            }
-        });
-        if(melhorLote.length > 0) {
-            vendas = melhorLote.map(v => ({ 
-                ...v, 
-                id: v.id || 'id_' + Math.random().toString(36).substr(2, 9),
-                ts: v.ts || Date.now()
-            }));
-            salvar();
-        }
-    }
+    let chart = null;
+    let vendas = JSON.parse(localStorage.getItem('vendasV12')) || [];
 
     function salvar() {
         localStorage.setItem('vendasV12', JSON.stringify(vendas));
-        renderizar();
+        render();
     }
 
     function salvarMeta() {
-        meta = document.getElementById('metaVal').value;
-        localStorage.setItem('meta_gerson', meta);
-        renderizar();
+        localStorage.setItem('metaGerson', document.getElementById('metaInput').value);
+        render();
     }
 
     function addVenda() {
-        const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valorTotal').value);
-        if(c && v) {
-            vendas.push({ 
-                id: 'id_' + Date.now() + Math.random().toString(36).substr(2, 5),
-                cliente: c, valor: v, 
-                tipo: document.getElementById('tipo').value, 
-                sexo: document.getElementById('sexo').value, 
-                data: new Date().toLocaleDateString('pt-BR'), 
-                entregue: false, ts: Date.now() 
+        const c = document.getElementById('cliente').value;
+        const v = parseFloat(document.getElementById('valor').value);
+        if (c && v) {
+            vendas.push({
+                id: Date.now(),
+                cliente: c,
+                valor: v,
+                tipo: document.getElementById('tipo').value,
+                sexo: document.getElementById('sexo').value,
+                data: new Date().toLocaleDateString('pt-BR'),
+                entregue: false
             });
-            document.getElementById('cliente').value = ''; document.getElementById('valorTotal').value = '';
+            document.getElementById('cliente').value = '';
+            document.getElementById('valor').value = '';
             salvar();
         }
     }
 
-    function addVale() {
-        const v = prompt("Valor do Vale:");
-        if(v) { 
-            vendas.push({ 
-                id: 'id_' + Date.now(), 
-                cliente: 'VALE', valor: parseFloat(v), 
-                data: new Date().toLocaleDateString('pt-BR'), 
-                isVale: true, ts: Date.now() 
-            }); 
-            salvar(); 
-        }
-    }
-
-    function toggleEnt(idUnico) {
-        const i = vendas.findIndex(x => x.id === idUnico);
-        if(i > -1) {
-            vendas[i].entregue = !vendas[i].entregue;
-            salvar(); // Isso já chama o renderizar()
-        }
-    }
-
-    function deletar(idUnico) {
-        if(confirm("Deseja apagar este registro?")) {
-            vendas = vendas.filter(x => x.id !== idUnico);
+    function toggle(id) {
+        const v = vendas.find(x => x.id === id);
+        if (v) {
+            v.entregue = !v.entregue;
             salvar();
         }
     }
 
-    function renderizar() {
-        const lista = document.getElementById('listaVendas');
-        lista.innerHTML = '';
-        let total = 0, vales = 0, cS=0, cB=0, cM=0, cF=0, h = {};
+    function del(id) {
+        if(confirm("Excluir?")) {
+            vendas = vendas.filter(x => x.id !== id);
+            salvar();
+        }
+    }
 
-        let exibicao = [...vendas].sort((a,b) => b.ts - a.ts);
-
-        exibicao.forEach(v => {
-            if(v.isVale) {
-                vales += v.valor;
-                lista.innerHTML += `
-                <div class="item" style="border-color:var(--neon-red); opacity:0.7;">
-                    <div class="item-icon">💸</div>
-                    <div class="item-info"><b>VALE</b><span>${v.data}</span></div>
-                    <div class="item-price" style="color:var(--neon-red)">- R$ ${v.valor.toLocaleString()}</div>
-                    <div class="actions"><button class="btn-icon" onclick="deletar('${v.id}')">🗑</button></div>
-                </div>`;
-            } else {
-                total += v.valor;
-                if(v.tipo === 'Spitz') cS++; else cB++;
-                if(v.sexo === 'Macho') cM++; else cF++;
-                let d = v.data.substring(0,5); h[d] = (h[d] || 0) + v.valor;
-
-                lista.innerHTML += `
-                <div class="item ${v.entregue ? 'entregue' : ''}">
-                    <div class="item-icon">${v.tipo === 'Spitz'?'🐶':'🐱'}</div>
-                    <div class="item-info"><b>${v.cliente}</b><span>${v.sexo} | ${v.data}</span></div>
-                    <div class="item-price">R$ ${v.valor.toLocaleString()}</div>
-                    <div class="actions">
-                        <button class="btn-icon ${v.entregue ? 'active' : ''}" onclick="toggleEnt('${v.id}')">✔</button>
-                        <button class="btn-icon" onclick="deletar('${v.id}')">🗑</button>
-                    </div>
-                </div>`;
+    function superResgate() {
+        const keys = ['vendasV12', 'vendasV5', 'vendas_backup_seguro', 'vendas'];
+        keys.forEach(k => {
+            let d = localStorage.getItem(k);
+            if(d) {
+                let l = JSON.parse(d);
+                if(l.length > vendas.length) { vendas = l; salvar(); }
             }
         });
+    }
 
+    function render() {
+        const div = document.getElementById('lista');
+        div.innerHTML = '';
+        let total = 0;
+        let hist = {};
+
+        [...vendas].reverse().forEach(v => {
+            total += v.valor;
+            let d = v.data.substring(0, 5);
+            hist[d] = (hist[d] || 0) + v.valor;
+
+            div.innerHTML += `
+                <div class="item ${v.entregue ? 'entregue' : ''}">
+                    <div>
+                        <b>${v.cliente}</b>
+                        <small>${v.tipo} ${v.sexo} | ${v.data}</small>
+                    </div>
+                    <div style="display:flex; align-items:center;">
+                        <div class="val-venda ${v.entregue ? 'green' : ''}">R$ ${v.valor.toLocaleString()}</div>
+                        <button class="btn-check ${v.entregue ? 'on' : ''}" onclick="toggle(${v.id})">✔</button>
+                        <button class="btn-del" onclick="del(${v.id})">🗑</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Totais
         document.getElementById('totalVendas').innerText = "R$ " + total.toLocaleString();
-        document.getElementById('saldoGerson').innerText = "R$ " + ((total * 0.03) + 2000 - vales).toLocaleString('pt-BR', {minimumFractionDigits:2});
-        document.getElementById('totalVales').innerText = "R$ " + vales.toLocaleString();
-        document.getElementById('cS').innerText = cS; document.getElementById('cB').innerText = cB;
-        document.getElementById('cM').innerText = cM; document.getElementById('cF').innerText = cF;
+        document.getElementById('saldoGerson').innerText = "R$ " + ((total * 0.03) + 2000).toLocaleString('pt-BR', {minimumFractionDigits:2});
         
+        // Progresso
+        let meta = document.getElementById('metaInput').value || 100000;
         let p = Math.min((total/meta)*100, 100);
         document.getElementById('barra').style.width = p + "%";
         document.getElementById('pctTxt').innerText = Math.floor(p) + "%";
-        document.getElementById('faltaMeta').innerText = "FALTA R$ " + (meta-total > 0 ? (meta-total).toLocaleString() : "OK!");
 
-        const ctx = document.getElementById('graficoVendas').getContext('2d');
-        if(chartInstance) chartInstance.destroy();
-        chartInstance = new Chart(ctx, {
+        // Gráfico
+        const ctx = document.getElementById('grafico').getContext('2d');
+        if (chart) chart.destroy();
+        chart = new Chart(ctx, {
             type: 'line',
-            data: { labels: Object.keys(h), datasets: [{ data: Object.values(h), borderColor: '#00f2ff', borderWidth: 3, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.4, pointRadius: 2 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
+            data: {
+                labels: Object.keys(hist).reverse(),
+                datasets: [{
+                    data: Object.values(hist).reverse(),
+                    borderColor: '#00f2ff',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    fill: true,
+                    backgroundColor: 'rgba(0, 242, 255, 0.05)'
+                }]
+            },
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
         });
     }
 
     function gerarPDF() {
-        let t = 0, vls = 0;
-        let rows = vendas.map(v => {
-            if(!v.isVale) t += v.valor; else vls += v.valor;
-            return `<tr><td style="padding:10px; border-bottom:1px solid #eee;">${v.data}</td><td style="padding:10px; border-bottom:1px solid #eee;"><b>${v.cliente}</b></td><td style="padding:10px; border-bottom:1px solid #eee; text-align:right;">R$ ${v.valor.toLocaleString()}</td><td style="padding:10px; border-bottom:1px solid #eee; text-align:center;">${v.isVale ? 'VALE' : (v.entregue?'ENTREGUE':'PENDENTE')}</td></tr>`;
+        let t = 0;
+        let linhas = vendas.map(v => {
+            t += v.valor;
+            return `<tr><td style="padding:8px; border-bottom:1px solid #eee;">${v.data}</td><td>${v.cliente}</td><td style="text-align:right;">R$ ${v.valor.toLocaleString()}</td><td style="text-align:center;">${v.entregue?'SIM':'NÃO'}</td></tr>`;
         }).join('');
         const win = window.open('','_blank');
-        win.document.write(`<html><body style="font-family:sans-serif; padding:40px;"><h1>RELATÓRIO DE VENDAS - GERSON</h1><div style="background:#f4f4f4; padding:20px; border-radius:10px; margin-bottom:20px;"><b>Total Bruto: R$ ${t.toLocaleString()}</b><br><b style="color:green">Comissão + Fixo: R$ ${((t*0.03)+2000-vls).toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div><table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#000; color:#fff;"><th>DATA</th><th>CLIENTE</th><th>VALOR</th><th>STATUS</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`);
+        win.document.write(`<html><body style="font-family:sans-serif; padding:20px;"><h2>Relatório Canil My Baby</h2><p>Total: R$ ${t.toLocaleString()}</p><table style="width:100%; border-collapse:collapse;">${linhas}</table><script>window.print();<\/script></body></html>`);
     }
 
-    superResgate(); 
+    superResgate();
+    render();
 </script>
 </body>
 </html>
+
