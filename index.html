@@ -3,372 +3,306 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MY BABY | GESTÃO PROFISSIONAL v7.0</title>
+    <title>MY BABY ULTIMATE | V8.0 STABLE</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
-            --primary: #006aff;
+            --primary: #0071e3;
             --success: #28a745;
-            --danger: #dc3545;
-            --warning: #f39c12;
-            --text-main: #1d1d1f;
-            --text-sub: #6e6e73;
-            --bg-pure: #ffffff;
-            --bg-soft: #f5f5f7;
+            --danger: #ff3b30;
+            --bg: #ffffff;
+            --surface: #f5f5f7;
+            --text: #1d1d1f;
             --border: #d2d2d7;
-            --radius-lg: 18px;
-            --radius-sm: 10px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-pure); color: var(--text-main); padding: 20px; line-height: 1.4; }
+        body { background: var(--bg); color: var(--text); padding: 20px; -webkit-font-smoothing: antialiased; }
+        .container { max-width: 1000px; margin: auto; }
 
-        .app-container { max-width: 1100px; margin: 0 auto; }
-
-        /* HEADER ESTATÍSTICO */
-        .header-top { 
-            display: flex; justify-content: space-between; align-items: flex-end; 
-            padding: 30px 0; border-bottom: 1px solid var(--border); margin-bottom: 30px;
+        /* HEADER */
+        header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 30px;
         }
-        .header-top h1 { font-weight: 900; font-size: 28px; letter-spacing: -1.2px; }
-        .header-top .date-tag { color: var(--text-sub); font-size: 14px; font-weight: 600; }
+        header h1 { font-weight: 900; font-size: 24px; letter-spacing: -1px; }
 
-        /* DASHBOARD GRID - DENSIDADE DE INFORMAÇÃO */
+        /* DASHBOARD - EDITÁVEL */
         .dashboard { 
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px; margin-bottom: 30px; 
         }
-        .stat-card { 
-            background: var(--bg-soft); padding: 25px; border-radius: var(--radius-lg); 
-            border: 1px solid transparent; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .card { 
+            background: var(--surface); padding: 25px; border-radius: 20px; 
+            border: 1px solid transparent; transition: 0.2s;
         }
-        .stat-card:hover { border-color: var(--border); background: var(--bg-pure); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .stat-card h3 { font-size: 11px; text-transform: uppercase; color: var(--text-sub); letter-spacing: 0.1em; font-weight: 700; }
-        .stat-card .main-value { font-size: 32px; font-weight: 900; display: block; margin: 12px 0 4px; letter-spacing: -1px; }
-        .stat-card .sub-detail { font-size: 12px; font-weight: 600; color: var(--text-sub); }
-
-        .card-dark { background: var(--text-main); color: #fff; }
-        .card-dark h3 { color: #86868b; }
-        .card-dark .main-value { color: var(--success); }
-        .card-dark .sub-detail { color: #86868b; }
-
-        /* META PROGRESS BAR */
-        .goal-section { margin-bottom: 30px; }
-        .goal-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px; font-weight: 800; }
-        .goal-bar-bg { background: var(--bg-soft); height: 10px; border-radius: 20px; overflow: hidden; }
-        .goal-bar-fill { 
-            height: 100%; background: linear-gradient(90deg, var(--primary), #5856d6); 
-            width: 0%; transition: width 1.5s ease-in-out; 
-        }
-
-        /* GRÁFICO LÍQUIDO */
-        .chart-container { 
-            background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); 
-            padding: 25px; height: 320px; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-        }
-
-        /* FORMULÁRIO DE LANÇAMENTO */
-        .entry-form { 
-            background: var(--bg-soft); padding: 25px; border-radius: var(--radius-lg);
-            display: grid; grid-template-columns: 1.5fr 1.5fr 1fr auto; gap: 15px; margin-bottom: 30px;
-        }
-        .input-wrap { display: flex; flex-direction: column; gap: 8px; }
-        .input-wrap label { font-size: 10px; font-weight: 800; color: var(--text-sub); text-transform: uppercase; padding-left: 5px; }
+        .card:hover { border-color: var(--border); background: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .card h3 { font-size: 11px; text-transform: uppercase; color: #86868b; letter-spacing: 1px; margin-bottom: 10px; }
+        .card .value { font-size: 32px; font-weight: 800; letter-spacing: -1px; display: block; }
         
+        .card-gerson { background: #1d1d1f; color: #fff; }
+        .card-gerson .value { color: var(--success); }
+
+        /* META EDITÁVEL */
+        .meta-box { margin-bottom: 30px; background: var(--surface); padding: 20px; border-radius: 20px; }
+        .meta-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .meta-input-group { display: flex; align-items: center; gap: 10px; }
+        .meta-input-group label { font-size: 12px; font-weight: 700; color: #86868b; }
+        .meta-input-group input { 
+            background: #fff; border: 1px solid var(--border); padding: 5px 10px; 
+            border-radius: 8px; font-weight: 800; width: 120px; color: var(--primary);
+        }
+        .bar-bg { background: #e5e5ea; height: 12px; border-radius: 10px; overflow: hidden; }
+        .bar-fill { background: var(--primary); height: 100%; width: 0%; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        /* CHART */
+        .chart-container { height: 300px; margin-bottom: 30px; }
+
+        /* FORMULÁRIO */
+        .form-grid { 
+            display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 12px; 
+            background: var(--surface); padding: 20px; border-radius: 20px; margin-bottom: 20px;
+        }
         input, select { 
-            background: #fff; border: 1px solid var(--border); padding: 14px; 
-            border-radius: var(--radius-sm); font-size: 15px; font-weight: 600; outline: none; transition: 0.2s;
+            padding: 12px; border: 1px solid var(--border); border-radius: 10px; 
+            font-size: 15px; font-weight: 600; outline: none;
         }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(0, 106, 255, 0.1); }
-
-        .btn-add { background: var(--primary); color: #fff; border: none; padding: 0 30px; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer; height: 50px; align-self: flex-end; }
-        .btn-add:hover { background: #0056d2; transform: translateY(-1px); }
-
-        .btn-vale-exp { 
-            grid-column: 1 / -1; background: #fff; color: var(--danger); 
-            border: 1px solid var(--border); padding: 12px; border-radius: var(--radius-sm); 
-            font-weight: 700; cursor: pointer; transition: 0.2s; margin-top: 5px;
+        .btn-add { background: var(--primary); color: #fff; border: none; padding: 0 25px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .btn-vale { 
+            width: 100%; padding: 12px; background: #fff; border: 1px solid var(--danger); 
+            color: var(--danger); border-radius: 10px; font-weight: 700; cursor: pointer; margin-bottom: 30px;
         }
-        .btn-vale-exp:hover { background: #fff5f5; border-color: var(--danger); }
 
-        /* TABELA DE HISTÓRICO - ENXUTA E PROFISSIONAL */
-        .history-card { 
-            background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; 
-        }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-        th { background: #fbfbfd; padding: 18px; font-size: 11px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; border-bottom: 1px solid var(--border); }
-        td { padding: 16px 18px; border-bottom: 1px solid var(--bg-soft); font-size: 14px; font-weight: 500; }
+        /* TABELA PROFISSIONAL */
+        .history-wrap { background: #fff; border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #fbfbfd; padding: 15px; text-align: left; font-size: 11px; color: #86868b; text-transform: uppercase; }
+        td { padding: 15px; border-bottom: 1px solid var(--surface); font-size: 14px; font-weight: 600; }
 
-        tr.is-canceled { background: #fafafa; }
-        tr.is-canceled td { color: #a1a1a6; }
-        .strike { text-decoration: line-through; opacity: 0.5; }
+        .cancelled { background: #fafafa; }
+        .cancelled .v-bruto { text-decoration: line-through; color: #a1a1a6; }
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; }
+        .badge-ok { background: #e3f9e5; color: #1db954; }
+        .badge-no { background: #fff1f0; color: #ff3b30; }
 
-        .badge { padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 800; display: inline-block; }
-        .badge-active { background: #e3f9e5; color: #1db954; }
-        .badge-canceled { background: #fff1f0; color: #ff3b30; }
-        .badge-vale { background: #fff8e6; color: #f39c12; }
-
-        .action-btns { display: flex; gap: 8px; justify-content: flex-end; }
-        .btn-circle { 
-            width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); 
+        .actions { display: flex; gap: 8px; justify-content: flex-end; }
+        .btn-action { 
+            width: 35px; height: 35px; border-radius: 8px; border: 1px solid var(--border); 
             background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            font-size: 16px; transition: 0.2s;
         }
-        .btn-circle:hover { background: var(--bg-soft); border-color: var(--text-main); }
-        .btn-del:hover { color: var(--danger); border-color: var(--danger); background: #fff1f0; }
-
-        @media (max-width: 850px) {
-            .dashboard, .entry-form { grid-template-columns: 1fr; }
-            .header-top { flex-direction: column; align-items: flex-start; gap: 10px; }
-        }
+        .btn-action:hover { background: var(--surface); }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="header-top">
-        <div>
-            <h1>MY BABY <span style="color:var(--primary)">SYSTEM</span></h1>
-            <p class="date-tag" id="displayDate">Carregando data...</p>
-        </div>
-        <button onclick="exportData()" style="background:none; border:none; color:var(--primary); font-weight:700; cursor:pointer; font-size:12px;">Exportar Backup .JSON</button>
-    </div>
+<div class="container">
+    <header>
+        <h1>MY BABY <span style="color:var(--primary)">PRO</span></h1>
+        <span id="dateNow" style="font-size: 12px; font-weight: 700; color: #86868b;"></span>
+    </header>
 
     <div class="dashboard">
-        <div class="stat-card">
+        <div class="card">
             <h3>Faturamento Loja (Ativo)</h3>
-            <span class="main-value" id="domFat">R$ 0,00</span>
-            <span class="sub-detail" id="domMetaText">Meta: R$ 74.000,00</span>
+            <span class="value" id="dispFat">R$ 0,00</span>
         </div>
-        <div class="stat-card card-dark">
+        <div class="card card-gerson">
             <h3>Meu Saldo Líquido</h3>
-            <span class="main-value" id="domGerson">R$ 0,00</span>
-            <span class="sub-detail">Fixo + 3% de TODAS as vendas</span>
+            <span class="value" id="dispGerson">R$ 0,00</span>
+            <small id="dispComis" style="font-size: 10px; opacity: 0.7;">3% de todas as vendas inclusos</small>
         </div>
-        <div class="stat-card">
-            <h3>Vales & Retiradas</h3>
-            <span class="main-value" style="color:var(--danger)" id="domVales">R$ 0,00</span>
-            <span class="sub-detail" id="domQtdVales">0 registros efetuados</span>
+        <div class="card">
+            <h3>Vales Retirados</h3>
+            <span class="value" style="color:var(--danger)" id="dispVales">R$ 0,00</span>
         </div>
     </div>
 
-    <div class="goal-section">
-        <div class="goal-info">
-            <span>PROGRESSO DA META MENSAL</span>
-            <span id="domPct">0%</span>
+    <div class="meta-box">
+        <div class="meta-header">
+            <div class="meta-input-group">
+                <label>DEFINIR META R$:</label>
+                <input type="number" id="metaInput" value="100000" oninput="updateMeta()">
+            </div>
+            <span id="metaPercent" style="font-weight: 800; color: var(--primary);">0%</span>
         </div>
-        <div class="goal-bar-bg"><div class="goal-bar-fill" id="domBar"></div></div>
+        <div class="bar-bg"><div class="bar-fill" id="metaBar"></div></div>
     </div>
 
     <div class="chart-container">
-        <canvas id="liquidChart"></canvas>
+        <canvas id="mainChart"></canvas>
     </div>
 
-    <div class="entry-form">
-        <div class="input-wrap">
-            <label>Tipo de Animal</label>
-            <select id="inTipo">
-                <option value="Spitz Alemão">🐶 Spitz Alemão</option>
-                <option value="Gato Bengal">🐱 Gato Bengal</option>
-            </select>
-        </div>
-        <div class="input-wrap">
-            <label>Nome do Cliente</label>
-            <input type="text" id="inCli" placeholder="Nome Completo">
-        </div>
-        <div class="input-wrap">
-            <label>Valor Bruto (R$)</label>
-            <input type="number" id="inVal" placeholder="0,00">
-        </div>
-        <button class="btn-add" onclick="addVenda()">LANÇAR</button>
-        <button class="btn-vale-exp" onclick="addVale()">+ REGISTRAR VALE / ADIANTAMENTO PESSOAL</button>
+    <div class="form-grid">
+        <select id="inTipo">
+            <option value="Spitz Alemão">Spitz Alemão</option>
+            <option value="Gato Bengal">Gato Bengal</option>
+        </select>
+        <input type="text" id="inCli" placeholder="Nome do Cliente">
+        <input type="number" id="inVal" placeholder="Valor R$">
+        <button class="btn-add" onclick="lancar()">LANÇAR</button>
     </div>
+    <button class="btn-vale" onclick="lancarVale()">+ REGISTRAR VALE / ADIANTAMENTO</button>
 
-    <div class="history-card">
+    <div class="history-wrap">
         <table>
             <thead>
                 <tr>
                     <th>Data</th>
-                    <th>Cliente / Espécie</th>
-                    <th>Valor Bruto</th>
-                    <th>Comissão (3%)</th>
+                    <th>Cliente / Pet</th>
+                    <th>Bruto</th>
+                    <th>Minha Parte (3%)</th>
                     <th style="text-align:right">Ações</th>
                 </tr>
             </thead>
-            <tbody id="domTabela"></tbody>
+            <tbody id="lista"></tbody>
         </table>
     </div>
 </div>
 
 <script>
-    /** * MOTOR DE DADOS v7.0 
-     * Blindagem contra erros de soma e conflitos de memória
-     */
-    const DB_KEY = 'vendasV5';
-    const META_VAL = 74000;
-    const SALARIO_FIXO = 2000;
+    // ESTADO GLOBAL
+    let dados = JSON.parse(localStorage.getItem('mybaby_v8')) || { vendas: [], meta: 100000 };
+    let chart = null;
 
-    let db = JSON.parse(localStorage.getItem(DB_KEY)) || [];
-    let chartObj = null;
+    document.getElementById('dateNow').innerText = new Date().toLocaleDateString('pt-BR');
+    document.getElementById('metaInput').value = dados.meta;
 
-    // Inicializa Data
-    document.getElementById('displayDate').innerText = new Date().toLocaleDateString('pt-BR', { dateStyle: 'full' });
-
-    function persist() {
-        localStorage.setItem(DB_KEY, JSON.stringify(db));
-        renderApp();
+    function salvar() {
+        localStorage.setItem('mybaby_v8', JSON.stringify(dados));
+        render();
     }
 
-    function addVenda() {
-        const cli = document.getElementById('inCli').value;
-        const val = parseFloat(document.getElementById('inVal').value);
-        if(!cli || !val) return alert("Preencha os campos corretamente!");
-
-        db.push({
-            id: Date.now() + Math.random(),
-            data: new Date().toLocaleDateString('pt-BR').substring(0, 5),
-            fullDate: new Date().toLocaleDateString('pt-BR'),
-            cliente: cli,
-            tipo: document.getElementById('inTipo').value,
-            valor: val,
-            isVale: false,
-            cancelada: false
-        });
-
-        document.getElementById('inCli').value = '';
-        document.getElementById('inVal').value = '';
-        persist();
+    function updateMeta() {
+        dados.meta = parseFloat(document.getElementById('metaInput').value) || 0;
+        salvar();
     }
 
-    function addVale() {
-        const v = prompt("Qual o valor da retirada?");
-        if(!v || isNaN(v)) return;
-
-        db.push({
-            id: Date.now() + Math.random(),
-            data: new Date().toLocaleDateString('pt-BR').substring(0, 5),
-            fullDate: new Date().toLocaleDateString('pt-BR'),
-            cliente: "VALE PESSOAL",
-            valor: parseFloat(v),
-            isVale: true,
-            cancelada: false
-        });
-        persist();
-    }
-
-    function toggleStatus(id) {
-        const i = db.findIndex(x => x.id === id);
-        if(i > -1) {
-            db[i].cancelada = !db[i].cancelada;
-            persist();
+    function lancar() {
+        const c = document.getElementById('inCli').value;
+        const v = parseFloat(document.getElementById('inVal').value);
+        if(c && v) {
+            dados.vendas.push({
+                id: Date.now(),
+                data: new Date().toLocaleDateString('pt-BR').substring(0, 5),
+                cliente: c,
+                tipo: document.getElementById('inTipo').value,
+                valor: v,
+                cancelada: false,
+                isVale: false
+            });
+            document.getElementById('inCli').value = '';
+            document.getElementById('inVal').value = '';
+            salvar();
         }
     }
 
-    function removeRow(id) {
-        if(confirm("Excluir este registro permanentemente?")) {
-            db = db.filter(x => x.id !== id);
-            persist();
+    function lancarVale() {
+        const v = prompt("Valor do Vale:");
+        if(v) {
+            dados.vendas.push({
+                id: Date.now(),
+                data: new Date().toLocaleDateString('pt-BR').substring(0, 5),
+                cliente: "VALE",
+                valor: parseFloat(v),
+                isVale: true
+            });
+            salvar();
         }
     }
 
-    function renderApp() {
-        const corpo = document.getElementById('domTabela');
+    function alternar(id) {
+        const idx = dados.vendas.findIndex(x => x.id === id);
+        dados.vendas[idx].cancelada = !dados.vendas[idx].cancelada;
+        salvar();
+    }
+
+    function excluir(id) {
+        if(confirm("Excluir?")) {
+            dados.vendas = dados.vendas.filter(x => x.id !== id);
+            salvar();
+        }
+    }
+
+    function render() {
+        const corpo = document.getElementById('lista');
         corpo.innerHTML = '';
+        
+        let fatLoja = 0;
+        let minhaComissaoTotal = 0;
+        let meusVales = 0;
+        let pts = {};
 
-        let faturamentoAtivo = 0;
-        let comissaoGersonAcumulada = 0;
-        let valesAcumulados = 0;
-        let countVales = 0;
-        let graphMap = {};
-
-        // --- MOTOR MATEMÁTICO AUDITADO ---
-        db.forEach(item => {
-            if (item.isVale) {
-                valesAcumulados += item.valor;
-                countVales++;
+        // --- MOTOR MATEMÁTICO SEM FILTROS DE ERRO ---
+        dados.vendas.forEach(item => {
+            if(item.isVale) {
+                meusVales += item.valor;
             } else {
-                // A REGRA DE OURO: 3% de TODA venda lançada entra no seu saldo
-                comissaoGersonAcumulada += (item.valor * 0.03);
+                // AQUI ESTÁ A CHAVE: Comissão soma de TUDO, sem perguntar se está cancelado.
+                minhaComissaoTotal += (item.valor * 0.03);
 
-                // Faturamento da loja ignora canceladas
-                if (!item.cancelada) {
-                    faturamentoAtivo += item.valor;
-                    graphMap[item.data] = (graphMap[item.data] || 0) + item.valor;
+                if(!item.cancelada) {
+                    fatLoja += item.valor;
+                    pts[item.data] = (pts[item.data] || 0) + item.valor;
                 }
             }
         });
 
-        const saldoFinalGerson = SALARIO_FIXO + comissaoGersonAcumulada - valesAcumulados;
+        const saldoFinal = 2000 + minhaComissaoTotal - meusVales;
 
-        // Atualiza Dashboard
-        document.getElementById('domFat').innerText = `R$ ${faturamentoAtivo.toLocaleString('pt-BR')}`;
-        document.getElementById('domGerson').innerText = `R$ ${saldoFinalGerson.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
-        document.getElementById('domVales').innerText = `R$ ${valesAcumulados.toLocaleString('pt-BR')}`;
-        document.getElementById('domQtdVales').innerText = `${countVales} registros de retirada`;
+        // DASHBOARD
+        document.getElementById('dispFat').innerText = `R$ ${fatLoja.toLocaleString('pt-BR')}`;
+        document.getElementById('dispGerson').innerText = `R$ ${saldoFinal.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+        document.getElementById('dispVales').innerText = `R$ ${meusVales.toLocaleString('pt-BR')}`;
+        document.getElementById('dispComis').innerText = `3% de tudo: R$ ${minhaComissaoTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
 
-        // Barra de Meta
-        const pct = (faturamentoAtivo / META_VAL) * 100;
-        document.getElementById('domBar').style.width = Math.min(pct, 100) + "%";
-        document.getElementById('domPct').innerText = Math.floor(pct) + "%";
+        // META
+        const pct = (fatLoja / dados.meta) * 100;
+        document.getElementById('metaBar').style.width = Math.min(pct, 100) + "%";
+        document.getElementById('metaPercent').innerText = Math.floor(pct) + "%";
 
-        // Tabela de Histórico (Invertida: Novos primeiro)
-        [...db].reverse().forEach(item => {
+        // TABELA
+        [...dados.vendas].reverse().forEach(item => {
             if(item.isVale) {
-                corpo.innerHTML += `
-                    <tr style="background:#fffcfc">
-                        <td>${item.data}</td>
-                        <td><span class="badge badge-vale">RETIRADA / VALE</span></td>
-                        <td style="color:var(--danger); font-weight:700">- R$ ${item.valor.toLocaleString()}</td>
-                        <td>-</td>
-                        <td class="action-btns"><button class="btn-circle btn-del" onclick="removeRow(${item.id})">🗑</button></td>
-                    </tr>`;
+                corpo.innerHTML += `<tr style="background:#fffafa"><td>${item.data}</td><td><span class="badge badge-no">VALE</span></td><td style="color:var(--danger)">- R$ ${item.valor.toLocaleString()}</td><td>-</td><td class="actions"><button class="btn-action" onclick="excluir(${item.id})">🗑</button></td></tr>`;
             } else {
                 corpo.innerHTML += `
-                    <tr class="${item.cancelada ? 'is-canceled' : ''}">
+                    <tr class="${item.cancelada ? 'cancelled' : ''}">
                         <td>${item.data}</td>
                         <td>
-                            <b>${item.cliente}</b><br>
-                            <span style="font-size:11px; color:var(--text-sub)">${item.tipo}</span> 
-                            <span class="badge ${item.cancelada ? 'badge-canceled' : 'badge-active'}">${item.cancelada ? 'Cancelada' : 'Ativa'}</span>
+                            <b>${item.cliente}</b> <br> <small style="color:#86868b">${item.tipo}</small>
+                            <span class="badge ${item.cancelada ? 'badge-no' : 'badge-ok'}">${item.cancelada ? 'Cancelada' : 'Ativa'}</span>
                         </td>
-                        <td class="${item.cancelada ? 'strike' : ''}" style="font-weight:700">R$ ${item.valor.toLocaleString()}</td>
-                        <td style="color:var(--success); font-weight:800">+ R$ ${(item.valor * 0.03).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
-                        <td class="action-btns">
-                            <button class="btn-circle" onclick="toggleStatus(${item.id})">${item.cancelada ? '✅' : '🚫'}</button>
-                            <button class="btn-circle btn-del" onclick="removeRow(${item.id})">🗑</button>
+                        <td class="v-bruto">R$ ${item.valor.toLocaleString()}</td>
+                        <td style="color:var(--success); font-weight:800">+ R$ ${(item.valor * 0.03).toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
+                        <td class="actions">
+                            <button class="btn-action" onclick="alternar(${item.id})">${item.cancelada ? '✅' : '🚫'}</button>
+                            <button class="btn-action" onclick="excluir(${item.id})">🗑</button>
                         </td>
                     </tr>`;
             }
         });
 
-        renderChart(graphMap);
+        renderChart(pts);
     }
 
-    function renderChart(dataMap) {
-        const ctx = document.getElementById('liquidChart').getContext('2d');
-        if(chartObj) chartObj.destroy();
-
-        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-        gradient.addColorStop(0, 'rgba(0, 106, 255, 0.15)');
-        gradient.addColorStop(1, 'rgba(0, 106, 255, 0)');
-
-        chartObj = new Chart(ctx, {
+    function renderChart(pts) {
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        if(chart) chart.destroy();
+        chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: Object.keys(dataMap),
+                labels: Object.keys(pts),
                 datasets: [{
-                    data: Object.values(dataMap),
-                    borderColor: '#006aff',
+                    data: Object.values(pts),
+                    borderColor: '#0071e3',
                     borderWidth: 4,
                     tension: 0.4,
                     fill: true,
-                    backgroundColor: gradient,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#006aff',
-                    pointBorderWidth: 2
+                    backgroundColor: 'rgba(0, 113, 227, 0.05)',
+                    pointRadius: 0
                 }]
             },
             options: {
@@ -376,23 +310,14 @@
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
-                    x: { grid: { display: false }, ticks: { font: { size: 10, weight: 'bold' } } },
-                    y: { border: { display: false }, grid: { color: '#f5f5f7' }, ticks: { display: false } }
+                    x: { grid: { display: false } },
+                    y: { display: false }
                 }
             }
         });
     }
 
-    function exportData() {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
-        const dlAnchor = document.createElement('a');
-        dlAnchor.setAttribute("href", dataStr);
-        dlAnchor.setAttribute("download", "my_baby_backup.json");
-        dlAnchor.click();
-    }
-
-    // Inicialização
-    renderApp();
+    render();
 </script>
 </body>
 </html>
