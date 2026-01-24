@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CANIL MY BABY - GERSON</title>
+    <title>PAINEL DE VENDAS CANIL MY BABY</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --blue: #00f2ff; --green: #00ff88; --red: #ff0055; --bg: #000; --card: #0a0a0a; --border: #1a1a1a; --yellow: #e9ea00; }
         body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 15px; }
         
-        /* CABEÇALHO SOLICITADO */
+        /* TÍTULO FIXO E DEFINITIVO */
         header { border-left: 5px solid var(--blue); padding-left: 15px; margin-bottom: 25px; }
         header h1 { 
             margin: 0; font-size: 20px; font-weight: 900; text-transform: uppercase;
-            color: #fff; text-shadow: 0 0 10px var(--blue);
+            color: #fff; text-shadow: 0 0 15px var(--blue);
             animation: pulse-glow 2.5s infinite alternate;
-            line-height: 1.1;
+            line-height: 1.2;
         }
-        @keyframes pulse-glow { from { text-shadow: 0 0 5px var(--blue); } to { text-shadow: 0 0 20px var(--blue), 0 0 30px #0088ff; } }
-        header p { margin: 5px 0 0 0; font-size: 13px; color: var(--blue); font-weight: 700; letter-spacing: 0.3px; }
+        @keyframes pulse-glow { from { text-shadow: 0 0 5px var(--blue); } to { text-shadow: 0 0 25px var(--blue); } }
+        header p { margin: 5px 0 0 0; font-size: 13px; color: var(--blue); font-weight: 700; }
 
         /* KPI CONTADORES */
         .count-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 15px; }
@@ -27,7 +27,7 @@
         .c-box b { display: block; font-size: 16px; color: #fff; }
         .c-box span { font-size: 7px; color: #555; font-weight: 800; text-transform: uppercase; }
 
-        /* PAINEL FINANCEIRO */
+        /* FINANCEIRO */
         .fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
         .fin-box { background: var(--card); padding: 12px; border-radius: 15px; border: 1px solid var(--border); }
         .fin-box span { font-size: 8px; color: #666; font-weight: 800; display: block; margin-bottom: 4px; }
@@ -36,17 +36,13 @@
         .com { color: var(--yellow); }
 
         /* GRÁFICO COM GLOW */
-        .chart-card { 
-            background: var(--card); border-radius: 20px; padding: 15px; border: 1px solid var(--border); 
-            margin-bottom: 15px; height: 180px; 
-            box-shadow: inset 0 0 20px rgba(0, 242, 255, 0.03);
-        }
+        .chart-card { background: var(--card); border-radius: 20px; padding: 15px; border: 1px solid var(--border); margin-bottom: 15px; height: 180px; }
 
         /* INPUTS */
         .inputs { background: var(--card); padding: 20px; border-radius: 24px; border: 1px solid var(--border); margin-bottom: 20px; }
         input, select { background: #000; border: 1px solid #222; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; box-sizing: border-box; font-family: inherit; }
         .btn-row { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 8px; }
-        button { cursor: pointer; font-weight: 900; border-radius: 10px; border: none; transition: 0.3s; }
+        button { cursor: pointer; font-weight: 900; border-radius: 10px; border: none; }
         .btn-add { background: #fff; color: #000; }
         .btn-pdf { background: var(--blue); color: #000; }
 
@@ -59,10 +55,7 @@
         .status-pendente { background: rgba(255,0,85,0.1); color: var(--red); border: 1px solid var(--red); }
         .status-entregue { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid var(--green); }
 
-        .item-info b { font-size: 14px; text-transform: uppercase; display: block; }
-        .date-badge { background: #1a1a1a; padding: 3px 6px; border-radius: 5px; color: var(--blue); font-size: 10px; cursor: pointer; }
-        
-        .val-venda { font-weight: 900; font-size: 16px; text-align: right; margin-right: 10px; }
+        .val-venda { font-weight: 900; font-size: 16px; text-align: right; }
         .btn-circle { width: 36px; height: 36px; border-radius: 10px; border: 1px solid #222; background: #000; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; }
         .btn-circle.on { background: var(--green); color: #000; border-color: var(--green); box-shadow: 0 0 10px var(--green); }
         .btn-del { color: #333; border: none; background: none; margin-left: 8px; font-size: 12px; }
@@ -112,10 +105,33 @@
 </div>
 
 <script>
-    let vendas = JSON.parse(localStorage.getItem('vendas_v10_final')) || [];
+    // CHAVE ÚNICA PARA NUNCA MAIS PERDER DADOS
+    const CHAVE_MESTRA = 'vendas_gerson_oficial';
+
+    function resgatarHistorico() {
+        const nomesAntigos = ['vendas_v10_final', 'vendas_v9_glow', 'vendasV12', 'vendas_v8_final'];
+        let dadosEncontrados = localStorage.getItem(CHAVE_MESTRA);
+        
+        if (!dadosEncontrados) {
+            for (let nome of nomesAntigos) {
+                let antigo = localStorage.getItem(nome);
+                if (antigo) {
+                    localStorage.setItem(CHAVE_MESTRA, antigo);
+                    return JSON.parse(antigo);
+                }
+            }
+            return [];
+        }
+        return JSON.parse(dadosEncontrados);
+    }
+
+    let vendas = resgatarHistorico();
     let chart = null;
 
-    function salvar() { localStorage.setItem('vendas_v10_final', JSON.stringify(vendas)); render(); }
+    function salvar() { 
+        localStorage.setItem(CHAVE_MESTRA, JSON.stringify(vendas)); 
+        render(); 
+    }
 
     function addVenda() {
         const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valor').value);
@@ -131,8 +147,7 @@
     }
 
     function toggleStatus(id) { const v = vendas.find(x => x.id === id); v.entregue = !v.entregue; salvar(); }
-    function editarData(id) { const v = vendas.find(x => x.id === id); const n = prompt("Data (DD/MM):", v.data); if(n) { v.data = n; salvar(); } }
-    function del(id) { if(confirm("Excluir registro?")) { vendas = vendas.filter(x => x.id !== id); salvar(); } }
+    function del(id) { if(confirm("Excluir?")) { vendas = vendas.filter(x => x.id !== id); salvar(); } }
 
     function render() {
         const div = document.getElementById('lista'); div.innerHTML = '';
@@ -144,25 +159,12 @@
         [...vendas].sort((a,b) => b.ts - a.ts).forEach(v => {
             if (v.isVale) {
                 descontos += v.valor;
-                div.innerHTML += `<div class="item" style="border-color:var(--red)"><div class="item-info"><b>VALE / ADIANTAMENTO</b><span class="date-badge" onclick="editarData(${v.id})">${v.data}</span></div><div style="display:flex;align-items:center"><div class="val-venda" style="color:var(--red)">- R$ ${v.valor.toLocaleString()}</div><button onclick="del(${v.id})" class="btn-del">🗑</button></div></div>`;
+                div.innerHTML += `<div class="item" style="border-color:var(--red)"><div class="item-info"><b>VALE / ADIANTAMENTO</b><br><small>${v.data}</small></div><div style="display:flex;align-items:center"><div class="val-venda" style="color:var(--red)">- R$ ${v.valor.toLocaleString()}</div><button onclick="del(${v.id})" class="btn-del">🗑</button></div></div>`;
             } else {
                 bruto += v.valor; comissoes += (v.valor * 0.03);
                 if(v.tipo === 'Spitz') s++; else b++;
                 if(v.sexo === 'Macho') m++; else f++;
-                
-                div.innerHTML += `
-                <div class="item ${v.entregue ? 'entregue' : 'pendente'}">
-                    <div class="item-info">
-                        <b>${v.cliente}</b>
-                        <span class="date-badge" onclick="editarData(${v.id})">${v.data}</span>
-                        <br><span class="status-badge ${v.entregue ? 'status-entregue' : 'status-pendente'}">${v.entregue ? '📦 Entregue' : '⏳ Aguardando'}</span>
-                    </div>
-                    <div style="display:flex;align-items:center">
-                        <div class="val-venda">R$ ${v.valor.toLocaleString()}</div>
-                        <button class="btn-circle ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button>
-                        <button onclick="del(${v.id})" class="btn-del">🗑</button>
-                    </div>
-                </div>`;
+                div.innerHTML += `<div class="item ${v.entregue ? 'entregue' : 'pendente'}"><div class="item-info"><b>${v.cliente}</b><small>${v.data}</small><br><span class="status-badge ${v.entregue ? 'status-entregue' : 'status-pendente'}">${v.entregue ? '📦 Entregue' : '⏳ Aguardando'}</span></div><div style="display:flex;align-items:center"><div class="val-venda">R$ ${v.valor.toLocaleString()}</div><button class="btn-circle ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button><button onclick="del(${v.id})" class="btn-del">🗑</button></div></div>`;
             }
         });
 
@@ -176,39 +178,14 @@
         if (chart) chart.destroy();
         chart = new Chart(ctx, {
             type: 'line',
-            data: { labels: Object.keys(hist), datasets: [{ 
-                data: Object.values(hist), borderColor: '#00f2ff', borderWidth: 4, pointRadius: 5, pointBackgroundColor: '#00f2ff', 
-                fill: true, backgroundColor: (c) => { const g = c.chart.ctx.createLinearGradient(0,0,0,180); g.addColorStop(0,'rgba(0,242,255,0.2)'); g.addColorStop(1,'transparent'); return g; },
-                tension: 0.4 
-            }] },
-            options: { 
-                responsive: true, maintainAspectRatio: false, 
-                plugins: { legend: { display: false } },
-                scales: { 
-                    y: { grid: { color: '#111' }, ticks: { color: '#444', font: {size: 10} } },
-                    x: { grid: { display: false }, ticks: { color: '#444', font: {size: 10} } }
-                }
-            }
+            data: { labels: Object.keys(hist), datasets: [{ data: Object.values(hist), borderColor: '#00f2ff', borderWidth: 4, pointRadius: 5, fill: true, backgroundColor: 'rgba(0,242,255,0.1)', tension: 0.4 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#111' }, ticks: { color: '#444' } }, x: { grid: { display: false }, ticks: { color: '#444' } } } }
         });
     }
 
     function gerarPDF() {
-        const bruto = vendas.filter(v=>!v.isVale).reduce((a,b)=>a+b.valor,0);
         const win = window.open('','_blank');
-        win.document.write(`
-            <html><head><style>
-                body { background: #000; color: #fff; font-family: sans-serif; padding: 30px; }
-                h1 { color: #00f2ff; border-bottom: 1px solid #222; padding-bottom: 10px; }
-                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                th { background: #111; color: #00f2ff; padding: 12px; text-align: left; border: 1px solid #222; }
-                td { padding: 12px; border: 1px solid #222; }
-            </style></head><body>
-                <h1>Relatório Canil My Baby - Gerson</h1>
-                <p>Faturamento Bruto: R$ ${bruto.toLocaleString()}</p>
-                <table><thead><tr><th>DATA</th><th>CLIENTE</th><th>VALOR</th></tr></thead>
-                <tbody>${vendas.map(v=>`<tr><td>${v.data}</td><td>${v.cliente}</td><td>R$ ${v.valor.toLocaleString()}</td></tr>`).join('')}</tbody></table>
-                <script>window.print();<\/script>
-            </body></html>`);
+        win.document.write(`<html><head><style>body{background:#000;color:#fff;font-family:sans-serif;padding:30px}table{width:100%;border-collapse:collapse}th,td{padding:12px;border:1px solid #222;text-align:left}</style></head><body><h1>Painel Canil My Baby</h1><p>Vendedor: Gerson</p><table><thead><tr><th>DATA</th><th>CLIENTE</th><th>VALOR</th></tr></thead><tbody>${vendas.map(v=>`<tr><td>${v.data}</td><td>${v.cliente}</td><td>R$ ${v.valor.toLocaleString()}</td></tr>`).join('')}</tbody></table><script>window.print();<\/script></body></html>`);
     }
 
     render();
