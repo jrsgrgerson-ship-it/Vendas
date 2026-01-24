@@ -2,281 +2,237 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MY BABY | RESGATE TOTAL</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento My Baby - Estável</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            --primary: #00d2ff;     /* Azul Neon */
-            --success: #00ff88;     /* Verde Neon */
-            --danger: #ff004c;      /* Vermelho Neon */
-            --bg: #000000;          /* Preto Fundo */
-            --glass: rgba(25, 25, 25, 0.8);
-            --border: 1px solid #333;
-        }
-
-        body { 
-            background: var(--bg); color: #fff; font-family: 'Inter', sans-serif;
-            margin: 0; padding: 15px; min-height: 100vh;
-        }
-
-        .container { max-width: 450px; margin: auto; }
-
-        header { text-align: center; margin-bottom: 20px; }
-        .brand { font-size: 22px; font-weight: 900; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; }
-
-        /* CARDS */
-        .card { 
-            background: var(--glass); border-radius: 15px; padding: 15px; 
-            margin-bottom: 12px; border: var(--border);
-        }
-
-        /* PAINEL FINANCEIRO */
-        .painel-saldo { border-left: 4px solid var(--success); }
-        .painel-vale { border-left: 4px solid var(--danger); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
-        .lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #888; display: block; }
-        .val-big { font-size: 24px; font-weight: 900; display: block; margin-top: 2px; }
-        .txt-green { color: var(--success); }
-        .txt-red { color: var(--danger); }
+        h1 { text-align: center; color: #2c3e50; margin-bottom: 30px; }
+        
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        .card { padding: 15px; border-radius: 8px; text-align: center; color: white; }
+        .card.azul { background: #3498db; }
+        .card.verde { background: #27ae60; }
+        .card.vermelho { background: #e74c3c; }
+        .card h3 { margin: 0; font-size: 14px; opacity: 0.9; }
+        .card p { margin: 10px 0 0; font-size: 20px; font-weight: bold; }
 
-        /* LISTA */
-        .item { 
-            display: grid; grid-template-columns: 40px 1fr auto; gap: 10px; 
-            padding: 12px; border-bottom: 1px solid #222; align-items: center;
-        }
-        .item:last-child { border-bottom: none; }
-        .icon { font-size: 20px; }
-        .info b { font-size: 13px; display: block; color: #fff; }
-        .info span { font-size: 10px; color: #777; }
-        
-        .money { text-align: right; }
-        .comissao { color: var(--success); font-weight: 700; font-size: 11px; display: block; }
-        .bruto { font-size: 10px; color: #555; }
-        
-        .cancelled { opacity: 0.6; }
-        .cancelled .bruto { text-decoration: line-through; }
-        
-        .tag-cancel { color: var(--danger); font-size: 9px; font-weight: 900; }
-        .tag-ok { color: var(--success); font-size: 9px; font-weight: 900; }
+        .form-group { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; margin-bottom: 20px; }
+        input, select { padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        button { cursor: pointer; border: none; border-radius: 5px; font-weight: bold; transition: 0.3s; }
+        .btn-add { background: #27ae60; color: white; padding: 10px 20px; }
+        .btn-vale { background: #e67e22; color: white; padding: 10px 20px; width: 100%; margin-bottom: 20px; }
 
-        /* INPUTS */
-        input, select { 
-            background: #111; border: 1px solid #333; color: #fff; 
-            padding: 12px; border-radius: 8px; width: 100%; margin-bottom: 8px; 
-            font-size: 14px; outline: none; box-sizing: border-box;
-        }
-        .btn { 
-            background: var(--primary); color: #000; border: none; padding: 15px; 
-            border-radius: 8px; font-weight: 900; width: 100%; text-transform: uppercase; cursor: pointer;
-        }
-        .btn-mini { width: 30px; height: 30px; border-radius: 6px; border: 1px solid #333; background: #000; color: #fff; cursor: pointer; margin-left: 4px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background: #f8f9fa; padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6; }
+        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; }
+        
+        .status-cancel { color: #e74c3c; font-weight: bold; font-size: 11px; }
+        .status-ok { color: #27ae60; font-weight: bold; font-size: 11px; }
+        .btn-acao { padding: 5px 8px; font-size: 12px; margin-right: 2px; background: #eee; color: #333; }
+        .btn-del { background: #ffeded; color: #e74c3c; }
+
+        .meta-container { margin: 20px 0; background: #eee; border-radius: 10px; height: 20px; overflow: hidden; position: relative; }
+        .meta-bar { background: #3498db; height: 100%; width: 0%; transition: 1s; }
+        .meta-text { position: absolute; width: 100%; text-align: center; font-size: 12px; line-height: 20px; font-weight: bold; color: #000; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header><div class="brand">MY BABY SYSTEM</div></header>
+    <h1>Controle de Vendas My Baby</h1>
 
-    <div class="card painel-saldo">
-        <span class="lbl">Saldo Final (Fixo + 3%)</span>
-        <span class="val-big txt-green" id="saldoFinal">R$ 0,00</span>
-        <span class="lbl" style="margin-top:5px; color:#555;" id="comissaoTotal">Comissão: R$ 0,00</span>
-    </div>
-
-    <div class="card painel-vale">
-        <span class="lbl">Vales e Retiradas</span>
-        <span class="val-big txt-red" id="totalVales">R$ 0,00</span>
-    </div>
-
-    <div class="card">
-        <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-            <span class="lbl">META MENSAL</span>
-            <input type="number" id="metaVal" onchange="salvarMeta()" style="width:100px; border:none; background:transparent; text-align:right; color:#fff; font-weight:900;">
+    <div class="dashboard">
+        <div class="card azul">
+            <h3>Faturamento Total (Ativo)</h3>
+            <p id="faturamentoDisplay">R$ 0,00</p>
         </div>
-        <div style="background:#222; height:6px; border-radius:10px; overflow:hidden;">
-            <div id="barraProgresso" style="width:0%; height:100%; background:var(--primary); transition:1s;"></div>
+        <div class="card verde">
+            <h3>Meu Saldo (Fixo + 3%)</h3>
+            <p id="saldoDisplay">R$ 0,00</p>
         </div>
-        <div style="text-align:right; font-size:10px; color:#777; margin-top:5px;" id="faltaMeta">Falta R$ 0,00</div>
+        <div class="card vermelho">
+            <h3>Total de Vales</h3>
+            <p id="valesDisplay">R$ 0,00</p>
+        </div>
     </div>
 
-    <div class="card">
-        <div style="display:flex; gap:5px;">
-            <select id="selTipo"><option value="Spitz">🐶 Spitz</option><option value="Bengal">🐱 Bengal</option></select>
-            <select id="selSexo"><option value="Macho">♂ Macho</option><option value="Fêmea">♀ Fêmea</option></select>
-        </div>
-        <input type="text" id="inCliente" placeholder="Nome do Cliente">
-        <input type="number" id="inValor" placeholder="Valor R$">
-        <button class="btn" onclick="addVenda()">LANÇAR VENDA</button>
-        <button onclick="addVale()" style="background:none; border:none; color:var(--danger); width:100%; margin-top:10px; font-weight:800; cursor:pointer;">REGISTRAR VALE</button>
+    <div class="meta-container">
+        <div class="meta-text" id="metaLabel">Meta: 0%</div>
+        <div class="meta-bar" id="metaBarra"></div>
     </div>
 
-    <div class="card" style="padding:0;" id="listaDiv"></div>
+    <div class="form-group">
+        <select id="tipo">
+            <option value="Spitz Alemão">Spitz Alemão</option>
+            <option value="Gato Bengal">Gato Bengal</option>
+        </select>
+        <input type="text" id="cliente" placeholder="Nome do Cliente">
+        <input type="number" id="valor" placeholder="Valor da Venda">
+        <button class="btn-add" onclick="adicionarVenda()">Lançar</button>
+    </div>
+    
+    <button class="btn-vale" onclick="adicionarVale()">+ Registrar Vale / Adiantamento</button>
 
-    <button onclick="fazerBackup()" style="background:#222; color:#fff; padding:10px; border:1px solid #333; width:100%; border-radius:8px; margin-top:20px;">SALVAR BACKUP AGORA</button>
-    <button onclick="restaurarBackup()" style="background:#222; color:#fff; padding:10px; border:1px solid #333; width:100%; border-radius:8px; margin-top:10px;">IMPORTAR BACKUP</button>
+    <canvas id="graficoVendas" style="width:100%; height:200px; margin-bottom:30px;"></canvas>
+
+    <table id="tabelaVendas">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Cliente/Tipo</th>
+                <th>Valor Bruto</th>
+                <th>Comissão (3%)</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="corpoTabela"></tbody>
+    </table>
 </div>
 
 <script>
-    // --- O SEGREDO DO RESGATE: VOLTAR PARA 'vendasV5' ---
     let vendas = JSON.parse(localStorage.getItem('vendasV5')) || [];
-    let meta = localStorage.getItem('metaV5') || 0;
-    
-    document.getElementById('metaVal').value = meta;
-    render();
+    let metaMensal = 74000; 
+    let myChart = null;
 
-    function salvarTudo() {
+    function salvar() {
         localStorage.setItem('vendasV5', JSON.stringify(vendas));
-        localStorage.setItem('metaV5', meta);
-        render();
+        renderizar();
     }
 
-    function salvarMeta() {
-        meta = document.getElementById('metaVal').value;
-        salvarTudo();
-    }
-
-    function addVenda() {
-        let cli = document.getElementById('inCliente').value;
-        let val = parseFloat(document.getElementById('inValor').value);
+    function adicionarVenda() {
+        const cli = document.getElementById('cliente').value;
+        const val = parseFloat(document.getElementById('valor').value);
         if(cli && val) {
             vendas.push({
-                tipo: document.getElementById('selTipo').value,
-                cliente: cli,
-                valor: val,
                 data: new Date().toLocaleDateString('pt-BR'),
+                cliente: cli,
+                tipo: document.getElementById('tipo').value,
+                valor: val,
                 cancelada: false,
-                entregue: false,
-                sinal: 0,
                 isVale: false
             });
-            document.getElementById('inCliente').value = '';
-            document.getElementById('inValor').value = '';
-            salvarTudo();
+            document.getElementById('cliente').value = '';
+            document.getElementById('valor').value = '';
+            salvar();
         }
     }
 
-    function addVale() {
-        let val = prompt("Valor do Vale:");
+    function adicionarVale() {
+        const val = prompt("Qual o valor do vale/retirada?");
         if(val) {
             vendas.push({
-                cliente: 'VALE',
-                valor: parseFloat(val),
                 data: new Date().toLocaleDateString('pt-BR'),
+                cliente: "VALE / ADIANTAMENTO",
+                valor: parseFloat(val),
                 isVale: true
             });
-            salvarTudo();
+            salvar();
         }
     }
 
-    function acao(index, tipo) {
-        if(tipo === 'del') {
-            if(confirm("Apagar item?")) vendas.splice(index, 1);
-        }
-        else if(tipo === 'cancel') {
-            if(!vendas[index].cancelada) {
-                let s = prompt("Valor do Sinal (Informativo):", 0);
-                vendas[index].sinal = s;
-            }
-            vendas[index].cancelada = !vendas[index].cancelada;
-        }
-        else if(tipo === 'home') {
-            vendas[index].entregue = !vendas[index].entregue;
-        }
-        salvarTudo();
+    function toggleCancel(index) {
+        vendas[index].cancelada = !vendas[index].cancelada;
+        salvar();
     }
 
-    function render() {
-        let lista = document.getElementById('listaDiv');
-        lista.innerHTML = '';
+    function deletar(index) {
+        if(confirm("Deseja excluir permanentemente?")) {
+            vendas.splice(index, 1);
+            salvar();
+        }
+    }
+
+    function renderizar() {
+        const corpo = document.getElementById('corpoTabela');
+        corpo.innerHTML = '';
         
-        let somaComissao = 0;
-        let somaVales = 0;
-        let faturamentoReal = 0; // Para meta
+        let fatAtivo = 0;
+        let totalComissaoGerson = 0;
+        let totalVales = 0;
+        let dadosGrafico = {};
 
-        // O LOOP PERFEITO
         vendas.forEach((v, i) => {
             if(v.isVale) {
-                somaVales += v.valor;
-                lista.innerHTML = `
-                <div class="item" style="border-left:3px solid var(--danger)">
-                    <div style="font-size:20px">💸</div>
-                    <div class="info"><b>VALE / SAQUE</b><span>${v.data}</span></div>
-                    <div class="money">
-                        <b style="color:var(--danger)">- R$ ${v.valor.toLocaleString()}</b>
-                        <br><button onclick="acao(${i}, 'del')" style="border:none; background:none; color:#888;">✕</button>
-                    </div>
-                </div>` + lista.innerHTML;
+                totalVales += v.valor;
+                corpo.innerHTML += `
+                    <tr style="background: #fff5f5">
+                        <td>${v.data}</td>
+                        <td style="color: #e74c3c; font-weight: bold;">${v.cliente}</td>
+                        <td style="color: #e74c3c">- R$ ${v.valor.toLocaleString()}</td>
+                        <td>-</td>
+                        <td><button class="btn-acao btn-del" onclick="deletar(${i})">Excluir</button></td>
+                    </tr>
+                `;
             } else {
-                // MATEMÁTICA: SOMA SEMPRE 3% (Não importa se cancelou)
-                somaComissao += (v.valor * 0.03);
+                // MATEMÁTICA REAL: 3% DE TUDO
+                const comissao = v.valor * 0.03;
+                totalComissaoGerson += comissao;
 
-                if(!v.cancelada) faturamentoReal += v.valor;
+                if(!v.cancelada) {
+                    fatAtivo += v.valor;
+                    dadosGrafico[v.data] = (dadosGrafico[v.data] || 0) + v.valor;
+                }
 
-                let icone = v.tipo === 'Spitz' ? '🐶' : '🐱';
-                let status = v.cancelada ? `<span class="tag-cancel">CANCELADA (Sinal ${v.sinal||0})</span>` : (v.entregue ? '<span class="tag-ok">ENTREGUE</span>' : '');
-
-                lista.innerHTML = `
-                <div class="item ${v.cancelada ? 'cancelled' : ''}">
-                    <div class="icon">${icone}</div>
-                    <div class="info">
-                        <b>${v.cliente}</b>
-                        <span>${v.tipo} | ${v.data}</span>
-                        ${status}
-                    </div>
-                    <div class="money">
-                        <span class="comissao">+ R$ ${(v.valor * 0.03).toLocaleString()}</span>
-                        <span class="bruto">R$ ${v.valor.toLocaleString()}</span>
-                        <div style="margin-top:5px;">
-                            <button class="btn-mini" onclick="acao(${i}, 'home')" style="${v.entregue?'background:#2ecc71':''}">🏠</button>
-                            <button class="btn-mini" onclick="acao(${i}, 'cancel')" style="${v.cancelada?'background:#ff4757':''}">🚫</button>
-                            <button class="btn-mini" onclick="acao(${i}, 'del')">🗑️</button>
-                        </div>
-                    </div>
-                </div>` + lista.innerHTML;
+                corpo.innerHTML += `
+                    <tr class="${v.cancelada ? 'cancelado' : ''}">
+                        <td>${v.data}</td>
+                        <td>
+                            <b>${v.cliente}</b><br>
+                            <small>${v.tipo}</small><br>
+                            ${v.cancelada ? '<span class="status-cancel">CANCELADA</span>' : '<span class="status-ok">ATIVA</span>'}
+                        </td>
+                        <td style="${v.cancelada ? 'text-decoration: line-through; color: #999' : ''}">R$ ${v.valor.toLocaleString()}</td>
+                        <td style="color: #27ae60; font-weight: bold;">R$ ${comissao.toLocaleString()}</td>
+                        <td>
+                            <button class="btn-acao" onclick="toggleCancel(${i})">🚫 Cancelar</button>
+                            <button class="btn-acao btn-del" onclick="deletar(${i})">🗑️</button>
+                        </td>
+                    </tr>
+                `;
             }
         });
 
-        // TOTAIS
-        let saldo = 2000 + somaComissao - somaVales;
+        // Atualizar Dashboard
+        const saldoFinalGerson = 2000 + totalComissaoGerson - totalVales;
+        document.getElementById('faturamentoDisplay').innerText = `R$ ${fatAtivo.toLocaleString()}`;
+        document.getElementById('saldoDisplay').innerText = `R$ ${saldoFinalGerson.toLocaleString()}`;
+        document.getElementById('valesDisplay').innerText = `R$ ${totalVales.toLocaleString()}`;
+
+        // Atualizar Barra de Meta
+        const pMeta = (fatAtivo / metaMensal) * 100;
+        document.getElementById('metaBarra').style.width = Math.min(pMeta, 100) + "%";
+        document.getElementById('metaLabel').innerText = `Progresso Meta: ${Math.floor(pMeta)}% (R$ ${fatAtivo.toLocaleString()} de R$ ${metaMensal.toLocaleString()})`;
+
+        atualizarGrafico(dadosGrafico);
+    }
+
+    function atualizarGrafico(dados) {
+        const ctx = document.getElementById('graficoVendas').getContext('2d');
+        if(myChart) myChart.destroy();
         
-        document.getElementById('saldoFinal').innerText = "R$ " + saldo.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-        document.getElementById('totalVales').innerText = "R$ " + somaVales.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-        document.getElementById('comissaoTotal').innerText = "Comissões (3% de Tudo): R$ " + somaComissao.toLocaleString('pt-BR', {minimumFractionDigits: 2});
-
-        // META
-        let pct = meta > 0 ? (faturamentoReal / meta) * 100 : 0;
-        document.getElementById('barraProgresso').style.width = Math.min(pct, 100) + "%";
-        document.getElementById('faltaMeta').innerText = (meta - faturamentoReal) > 0 ? "Falta R$ " + (meta - faturamentoReal).toLocaleString() : "META BATIDA!";
+        myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Object.keys(dados),
+                datasets: [{
+                    label: 'Vendas Diárias (R$)',
+                    data: Object.values(dados),
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
     }
 
-    function fazerBackup() {
-        const data = JSON.stringify({ vendas, meta });
-        const blob = new Blob([data], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'backup_vendas.json';
-        a.click();
-    }
-
-    function restaurarBackup() {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.onchange = e => {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            reader.onload = event => {
-                const dados = JSON.parse(event.target.result);
-                vendas = dados.vendas || [];
-                meta = dados.meta || 0;
-                salvarTudo();
-            };
-            reader.readAsText(file);
-        };
-        input.click();
-    }
+    // Iniciar
+    renderizar();
 </script>
+
 </body>
 </html>
