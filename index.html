@@ -3,264 +3,206 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Painel Canil My Baby - Premium Dark</title>
-    
+    <title>My Baby - Ultra Dark</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-
     <style>
         :root {
-            --spitz: #ff9f43; --bengal: #54a0ff; 
-            --dark-bg: #0f172a; 
-            --glass: rgba(30, 41, 59, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --danger: #ff4757; --success: #2ecc71;
-            --neon-blue: #38bdf8;
+            --spitz: #ff9f43; --bengal: #00d2ff; --danger: #ff4757; --success: #2ecc71;
+            --dark-card: #1a1a1a; --text: #ffffff;
         }
-        
         body { 
-            font-family: -apple-system, system-ui, sans-serif; 
-            background: var(--dark-bg);
-            background-image: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
-            margin: 0; padding: 15px; color: #f1f5f9; min-height: 100vh;
+            background: #000000; color: var(--text); font-family: 'Segoe UI', Roboto, Helvetica, sans-serif;
+            margin: 0; padding: 15px; min-height: 100vh;
         }
-
         .container { max-width: 500px; margin: auto; }
-        
-        header { text-align: center; padding: 10px 0 20px; }
-        header h2 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-        header small { color: var(--bengal); letter-spacing: 3px; font-size: 9px; font-weight: bold; text-transform: uppercase; }
+        header { text-align: center; padding: 20px 0; border-bottom: 1px solid #333; margin-bottom: 20px; }
+        header h2 { margin: 0; font-size: 24px; letter-spacing: 1px; }
 
-        /* GLASSMORPHISM */
+        /* CARDS DARK */
         .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 28px;
-            border: 1px solid var(--glass-border);
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            background: var(--dark-card); border-radius: 20px; padding: 20px;
+            margin-bottom: 15px; border: 1px solid #333; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
+        .card-meta { background: #ffffff; color: #000; border-radius: 20px; padding: 20px; margin-bottom: 15px; }
+        .progress-bg { background: #eee; height: 12px; border-radius: 10px; margin: 10px 0; overflow: hidden; }
+        .progress-bar { background: var(--bengal); height: 100%; transition: 1.5s; width: 0%; }
 
-        .card-meta { 
-            background: linear-gradient(135deg, #1e293b 0%, #000 100%); 
-            color: white; padding: 22px; border-radius: 30px; margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.1);
-        }
+        /* GRÁFICO ANIMADO */
+        .chart-box { height: 180px; position: relative; animation: pulse 3s infinite; }
+        @keyframes pulse { 0% { opacity: 0.9; } 50% { opacity: 1; filter: drop-shadow(0 0 5px var(--bengal)); } 100% { opacity: 0.9; } }
 
-        .meta-header { display: flex; justify-content: space-between; align-items: center; }
-        .meta-input { 
-            background: rgba(255,255,255,0.1); border: none; color: white; 
-            width: 100px; font-weight: 800; font-size: 18px; outline: none; 
-            text-align: center; border-radius: 12px; padding: 6px;
-        }
-        
-        .progress-container { background: rgba(0,0,0,0.4); height: 14px; border-radius: 10px; overflow: hidden; margin: 18px 0; }
-        .progress-bar { background: linear-gradient(90deg, var(--neon-blue), #818cf8); height: 100%; width: 0%; transition: 1.5s cubic-bezier(0.1, 0.5, 0.1, 1); }
+        /* STATS GRID */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stat { background: var(--dark-card); padding: 15px; border-radius: 18px; text-align: center; border: 1px solid #333; }
+        .stat small { font-size: 10px; color: #888; text-transform: uppercase; display: block; }
+        .stat strong { font-size: 18px; display: block; margin-top: 4px; }
 
-        /* GRÁFICO */
-        .chart-container { background: rgba(15, 23, 42, 0.5); border-radius: 24px; padding: 15px; margin-bottom: 20px; border: 1px solid var(--glass-border); }
-        .media-tag { text-align: right; font-size: 10px; font-weight: 800; color: #94a3b8; margin-top: 10px; }
-
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .stat-card { background: var(--glass); border-radius: 22px; padding: 15px; text-align: center; border: 1px solid var(--glass-border); }
-        .stat-card small { color: #94a3b8; display: block; font-size: 9px; text-transform: uppercase; font-weight: 800; }
-        .stat-card strong { font-size: 18px; font-weight: 800; color: #fff; }
-
-        input, select { 
-            padding: 14px; border: 1px solid var(--glass-border); 
-            background: rgba(255,255,255,0.05); border-radius: 16px; 
-            font-size: 14px; color: white; outline: none; width: 100%; box-sizing: border-box;
-        }
-        
-        button.btn-add { 
-            background: #fff; color: #0f172a; border: none; padding: 16px; 
-            border-radius: 18px; font-weight: 800; cursor: pointer; width: 100%;
-        }
-
-        /* LISTA E ALINHAMENTO */
+        /* LISTA */
         .venda-card { 
-            background: var(--glass); padding: 18px; border-radius: 24px; margin-bottom: 12px; 
-            display: flex; align-items: center; border-left: 6px solid #475569;
-            border: 1px solid var(--glass-border); justify-content: space-between;
+            background: var(--dark-card); padding: 15px; border-radius: 15px; margin-bottom: 10px;
+            display: flex; align-items: center; justify-content: space-between; border: 1px solid #333;
         }
+        .venda-val { text-align: right; min-width: 100px; }
+        .venda-card.cancelada { border-color: var(--danger); opacity: 0.7; }
         
-        .venda-card.cancelada { opacity: 0.5; border-left-style: dashed; }
-        .venda-Spitz { border-left-color: var(--spitz); }
-        .venda-Bengal { border-left-color: var(--bengal); }
+        /* TAGS */
+        .badge { font-size: 9px; padding: 4px 8px; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 5px; }
+        .bg-cancel { background: var(--danger); color: white; margin-right: 5px; }
+        .bg-sinal { background: var(--bengal); color: white; }
 
-        .venda-info { flex: 1; }
-        .venda-valores { text-align: right; min-width: 110px; margin-right: 12px; }
-
-        .tag-group { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
-        .badge { 
-            color: white; padding: 3px 10px; border-radius: 8px; font-size: 8px; 
-            text-transform: uppercase; font-weight: 900; display: inline-block; width: fit-content;
-        }
-        .bg-cancel { background: var(--danger); box-shadow: 0 0 10px rgba(255,71,87,0.3); }
-        .bg-sinal { background: var(--bengal); box-shadow: 0 0 10px rgba(84,160,255,0.3); }
-        .bg-success { background: var(--success); }
-
-        .btn-action { border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); border-radius: 12px; padding: 10px; cursor: pointer; color: white; }
-        .btn-action.ativo { background: var(--success); border-color: var(--success); }
+        input, select { background: #222; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 10px; width: 100%; box-sizing: border-box; }
+        .btn-add { background: var(--bengal); color: #000; border: none; padding: 15px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn-pdf { background: var(--danger); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: bold; width: 100%; margin-top: 20px; }
         
-        .btn-pdf { background: var(--danger); color: white; border: none; padding: 18px; border-radius: 20px; font-weight: 800; width: 100%; cursor: pointer; margin-bottom: 50px; box-shadow: 0 10px 20px rgba(255,71,87,0.2); }
+        .backup-btns { display: flex; gap: 10px; margin-top: 20px; padding-bottom: 40px; }
+        .btn-small { background: #333; color: #fff; border: none; padding: 8px; border-radius: 8px; flex: 1; font-size: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header><h2>Canil My Baby</h2><small>Gestão Profissional</small></header>
+    <header><h2>CANIL MY BABY</h2></header>
 
     <div class="card-meta">
-        <div class="meta-header">
-            <div style="font-weight: 800; font-size: 11px; opacity: 0.7;">META DO MÊS</div>
-            <input type="number" id="metaVal" class="meta-input" onchange="salvarMeta()">
+        <div style="display:flex; justify-content: space-between; align-items: center;">
+            <strong style="font-size: 12px;">META MENSAL</strong>
+            <input type="number" id="metaVal" style="width: 80px; background: #f0f0f0; color: #000; border: 1px solid #ccc; padding: 5px;" onchange="salvarMeta()">
         </div>
-        <div class="progress-container"><div id="barraProgresso" class="progress-bar"></div></div>
-        <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: var(--neon-blue);">
+        <div class="progress-bg"><div id="barraProgresso" class="progress-bar"></div></div>
+        <div style="display:flex; justify-content: space-between; font-size: 12px; font-weight: bold;">
             <span id="porcentoTxt">0%</span>
             <span id="faltaTxt">...</span>
         </div>
     </div>
 
-    <div class="chart-container">
-        <div style="height: 150px;"><canvas id="meuGrafico"></canvas></div>
-        <div class="media-tag">MÉDIA/VENDA: <span id="valorMedia" style="color:white">R$ 0</span></div>
+    <div class="glass-card">
+        <div class="chart-box"><canvas id="meuGrafico"></canvas></div>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-card"><small>Faturamento</small><strong id="totalVendas">R$ 0</strong></div>
-        <div class="stat-card"><small>A Entregar</small><strong id="countPendentes" style="color: var(--spitz);">0</strong></div>
-        <div class="stat-card" style="grid-column: span 2; padding: 20px;">
-            <small>Saldo Restante (Líquido)</small><strong id="totalComissao" style="color: var(--success); font-size: 24px;">R$ 0,00</strong>
-            <div id="subVale" style="font-size: 10px; color: var(--danger); font-weight: 800; margin-top: 5px;"></div>
+    <div class="grid">
+        <div class="stat"><small>Faturamento</small><strong id="totalVendas">R$ 0</strong></div>
+        <div class="stat"><small>Pendentes</small><strong id="countPendentes" style="color:var(--spitz)">0</strong></div>
+        <div class="stat"><small>Machos ♂</small><strong id="countMacho">0</strong><div style="font-size:9px;">🐶<span id="mS">0</span> | 🐱<span id="mB">0</span></div></div>
+        <div class="stat"><small>Fêmeas ♀</small><strong id="countFemea">0</strong><div style="font-size:9px;">🐶<span id="fS">0</span> | 🐱<span id="fB">0</span></div></div>
+        <div class="stat" style="grid-column: span 2; border-color: var(--success);">
+            <small>Saldo Restante Líquido</small><strong id="totalComissao" style="color: var(--success); font-size: 24px;">R$ 0,00</strong>
+            <div id="subVale" style="font-size: 10px; color: var(--danger); font-weight: bold;"></div>
         </div>
     </div>
 
     <div class="glass-card">
-        <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
             <select id="tipo"><option value="Spitz">🐶 Spitz</option><option value="Bengal">🐱 Bengal</option></select>
             <select id="sexo"><option value="Macho">♂ Macho</option><option value="Fêmea">♀ Fêmea</option></select>
         </div>
         <input type="text" id="cliente" placeholder="Nome do Cliente" style="margin-bottom:10px;">
-        <input type="number" id="valorVenda" placeholder="Valor da Venda (R$)" style="margin-bottom:10px;">
-        <button class="btn-add" onclick="adicionarVenda()">ADICIONAR VENDA</button>
-        <button onclick="adicionarVale()" style="background:none; border:none; color:var(--danger); font-size:11px; font-weight:bold; margin-top:12px; width:100%; cursor:pointer; text-decoration: underline;">REGISTRAR ADIANTAMENTO/VALE</button>
+        <input type="number" id="valorVenda" placeholder="Valor R$" style="margin-bottom:10px;">
+        <button class="btn-add" onclick="adicionarVenda()">REGISTRAR VENDA</button>
+        <button onclick="adicionarVale()" style="background:none; border:none; color:var(--danger); width:100%; margin-top:10px; cursor:pointer; font-size:11px;">+ REGISTRAR VALE/ADIANTAMENTO</button>
     </div>
 
     <div id="lista"></div>
 
     <button class="btn-pdf" onclick="imprimirRelatorio()">📄 EXPORTAR RELATÓRIO PDF</button>
+
+    <div class="backup-btns">
+        <button class="btn-small" onclick="exportarBackup()">💾 SALVAR BACKUP</button>
+        <button class="btn-small" onclick="document.getElementById('importFile').click()">📂 CARREGAR BACKUP</button>
+        <input type="file" id="importFile" style="display:none" onchange="importarBackup(this)">
+    </div>
 </div>
 
 <script>
-    let vendas = JSON.parse(localStorage.getItem('vendasV5')) || [];
-    let meta = localStorage.getItem('metaV5') || 0;
+    let vendas = JSON.parse(localStorage.getItem('vendasV7')) || [];
+    let meta = localStorage.getItem('metaV7') || 0;
     let chartInstance = null;
     document.getElementById('metaVal').value = meta;
 
-    function salvarMeta() { meta = document.getElementById('metaVal').value; localStorage.setItem('metaV5', meta); renderizar(); }
+    function salvarMeta() { meta = document.getElementById('metaVal').value; localStorage.setItem('metaV7', meta); renderizar(); }
 
     function adicionarVenda() {
-        const t = document.getElementById('tipo').value, c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valorVenda').value);
+        const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valorVenda').value);
         if(c && v) {
-            vendas.push({ tipo:t, sexo:document.getElementById('sexo').value, cliente:c, valor:v, data: new Date().toLocaleDateString('pt-BR'), isVale: false, entregue: false, cancelada: false, sinal: 0 });
-            localStorage.setItem('vendasV5', JSON.stringify(vendas));
-            document.getElementById('cliente').value = ''; document.getElementById('valorVenda').value = '';
+            vendas.push({ tipo: document.getElementById('tipo').value, sexo: document.getElementById('sexo').value, cliente: c, valor: v, data: new Date().toLocaleDateString('pt-BR'), entregue: false, cancelada: false, sinal: 0 });
+            localStorage.setItem('vendasV7', JSON.stringify(vendas));
             renderizar();
         }
     }
 
     function adicionarVale() {
-        const v = prompt("Valor do adiantamento:");
+        const v = prompt("Valor do Vale:");
         if(v) {
             vendas.push({ cliente: 'Adiantamento', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true });
-            localStorage.setItem('vendasV5', JSON.stringify(vendas));
+            localStorage.setItem('vendasV7', JSON.stringify(vendas));
             renderizar();
         }
     }
 
     function alternarEstado(i, campo) {
         if(campo === 'cancelada' && !vendas[i].cancelada) {
-            let s = prompt("Valor do sinal retido (R$):", "1000");
+            let s = prompt("Valor do sinal retido:", "1000");
             vendas[i].sinal = s ? parseFloat(s) : 0;
-            vendas[i].entregue = false;
         }
         vendas[i][campo] = !vendas[i][campo];
-        localStorage.setItem('vendasV5', JSON.stringify(vendas));
+        localStorage.setItem('vendasV7', JSON.stringify(vendas));
         renderizar();
     }
 
     function renderizar() {
         const listaDiv = document.getElementById('lista');
-        let fat = 0, vales = 0, pendentes = 0, qtd = 0;
+        let fat = 0, vales = 0, mS=0, mB=0, fS=0, fB=0, pendentes=0;
         let dadosG = {}; listaDiv.innerHTML = '';
 
         vendas.forEach((v, i) => {
             if(v.isVale) {
                 vales += v.valor;
-                listaDiv.innerHTML = `<div class="venda-card" style="border-left-color:var(--danger)"><span>💸 Adiantamento</span><strong style="margin-left:auto; color:var(--danger)">- R$ ${v.valor.toLocaleString()}</strong></div>` + listaDiv.innerHTML;
+                listaDiv.innerHTML = `<div class="venda-card" style="border-left: 4px solid var(--danger)"><span>💸 Adiantamento</span><strong style="color:var(--danger)">- R$ ${v.valor.toLocaleString()}</strong></div>` + listaDiv.innerHTML;
             } else {
-                fat += v.valor; qtd++;
+                fat += v.valor;
                 let dia = v.data.substring(0,5); dadosG[dia] = (dadosG[dia] || 0) + v.valor;
+                if(v.sexo === 'Macho') { v.tipo === 'Spitz' ? mS++ : mB++; } else { v.tipo === 'Spitz' ? fS++ : fB++; }
                 if(!v.entregue && !v.cancelada) pendentes++;
-                
-                let tags = '';
-                if(v.cancelada) {
-                    tags = `<div class="tag-group"><span class="badge bg-cancel">RESERVA CANCELADA</span><span class="badge bg-sinal">SINAL: R$ ${v.sinal.toLocaleString()}</span></div>`;
-                } else if(v.entregue) {
-                    tags = `<span class="badge bg-success">ENTREGUE ✅</span>`;
-                }
+
+                let statusTags = v.cancelada ? `<div class="badge bg-cancel">RESERVA CANCELADA</div><div class="badge bg-sinal">SINAL: R$ ${v.sinal}</div>` : (v.entregue ? '<div class="badge bg-success">ENTREGUE</div>' : '');
 
                 listaDiv.innerHTML = `
-                    <div class="venda-card venda-${v.tipo} ${v.cancelada?'cancelada':''}">
-                        <div class="venda-info">
-                            <strong>${v.tipo == 'Spitz'?'🐶':'🐱'} ${v.cliente}</strong><br>
-                            <small>${v.data} | ${v.sexo}</small>
-                            ${tags}
-                        </div>
-                        <div class="venda-valores">
-                            <strong style="font-size: 15px; color:#fff">R$ ${v.valor.toLocaleString()}</strong><br>
-                            <small style="color:var(--success); font-weight:800">3%: R$ ${(v.valor*0.03).toFixed(2)}</small>
-                        </div>
-                        <div style="display:flex; gap:6px;">
-                            <button class="btn-action ${v.entregue?'ativo':''}" onclick="alternarEstado(${i},'entregue')">🏠</button>
-                            <button class="btn-action ${v.cancelada?'ativo':''}" onclick="alternarEstado(${i},'cancelada')">🚫</button>
-                        </div>
-                    </div>` + listaDiv.innerHTML;
+                <div class="venda-card ${v.cancelada?'cancelada':''}">
+                    <div>
+                        <strong>${v.tipo == 'Spitz'?'🐶':'🐱'} ${v.cliente}</strong><br>
+                        <small style="color:#888">${v.data} | ${v.sexo}</small><br>${statusTags}
+                    </div>
+                    <div class="venda-val">
+                        <strong style="font-size:16px">R$ ${v.valor.toLocaleString()}</strong><br>
+                        <small style="color:var(--success)">3%: R$ ${(v.valor*0.03).toFixed(2)}</small>
+                    </div>
+                    <div style="display:flex; gap:5px; margin-left:10px;">
+                        <button onclick="alternarEstado(${i},'entregue')" style="background:none; border:1px solid #444; color:white; border-radius:5px; padding:5px;">🏠</button>
+                        <button onclick="alternarEstado(${i},'cancelada')" style="background:none; border:1px solid #444; color:white; border-radius:5px; padding:5px;">🚫</button>
+                    </div>
+                </div>` + listaDiv.innerHTML;
             }
         });
 
-        let liq = (fat * 0.03) + 2000 - vales;
+        let totalLiq = (fat * 0.03) + 2000 - vales;
         document.getElementById('totalVendas').innerText = "R$ " + fat.toLocaleString();
-        document.getElementById('totalComissao').innerText = "R$ " + liq.toLocaleString();
-        document.getElementById('subVale').innerText = vales > 0 ? "TOTAL DE VALES PEGOS: R$ " + vales.toLocaleString() : "";
+        document.getElementById('totalComissao').innerText = "R$ " + totalLiq.toLocaleString();
+        document.getElementById('subVale').innerText = vales > 0 ? "ADIANTAMENTOS: R$ " + vales.toLocaleString() : "";
         document.getElementById('countPendentes').innerText = pendentes;
-        document.getElementById('valorMedia').innerText = "R$ " + (qtd > 0 ? Math.round(fat/qtd).toLocaleString() : 0);
+        document.getElementById('countMacho').innerText = mS + mB; document.getElementById('mS').innerText = mS; document.getElementById('mB').innerText = mB;
+        document.getElementById('countFemea').innerText = fS + fB; document.getElementById('fS').innerText = fS; document.getElementById('fB').innerText = fB;
 
-        let p = meta > 0 ? (fat / meta) * 100 : 0;
+        let p = meta > 0 ? (fat/meta)*100 : 0;
         document.getElementById('barraProgresso').style.width = Math.min(p, 100) + "%";
         document.getElementById('porcentoTxt').innerText = Math.floor(p) + "%";
-        document.getElementById('faltaTxt').innerText = meta - fat > 0 ? "FALTA R$ " + (meta-fat).toLocaleString() : "META BATIDA! 🏆";
-        if(p >= 100) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        document.getElementById('faltaTxt').innerText = meta - fat > 0 ? "FALTA R$ " + (meta-fat).toLocaleString() : "META BATIDA!";
 
         const ctx = document.getElementById('meuGrafico').getContext('2d');
         if(chartInstance) chartInstance.destroy();
-        chartInstance = new Chart(ctx, { 
-            type: 'line', 
-            data: { 
-                labels: Object.keys(dadosG), 
-                datasets: [{ 
-                    data: Object.values(dadosG), 
-                    borderColor: '#38bdf8', 
-                    backgroundColor: 'rgba(56, 189, 248, 0.2)',
-                    fill: true, tension: 0.4, borderWidth: 3, pointRadius: 4
-                }] 
-            }, 
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } } } } 
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: { labels: Object.keys(dadosG), datasets: [{ data: Object.values(dadosG), borderColor: '#00d2ff', backgroundColor: 'rgba(0, 210, 255, 0.2)', fill: true, tension: 0.4, borderWidth: 4 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { color: '#fff' } } } }
         });
     }
 
@@ -268,24 +210,16 @@
         let fat = 0, vales = 0;
         let linhas = vendas.map(v => {
             if(!v.isVale) fat += v.valor; else vales += v.valor;
-            let status = v.isVale ? 'VALE' : (v.cancelada ? `CANCELADA (SINAL R$ ${v.sinal})` : (v.entregue ? 'ENTREGUE' : 'PENDENTE'));
-            return `<tr><td>${v.data}</td><td>${v.cliente}</td><td>R$ ${v.valor.toLocaleString()}</td><td>${status}</td></tr>`;
+            let st = v.isVale ? 'VALE' : (v.cancelada ? `CANCELADA (SINAL R$ ${v.sinal})` : (v.entregue ? 'ENTREGUE' : 'PENDENTE'));
+            return `<tr><td>${v.data}</td><td>${v.cliente}</td><td>R$ ${v.valor.toLocaleString()}</td><td>${st}</td></tr>`;
         }).join('');
-        let liqTotal = (fat * 0.03) + 2000;
+        let totalComissao = (fat * 0.03) + 2000;
         const win = window.open('', '_blank');
-        win.document.write(`<html><body style="font-family:sans-serif; padding:30px">
-            <h1>Relatório Canil My Baby</h1>
-            <div style="background:#f1f5f9; padding:20px; border-radius:15px; margin-bottom:20px; border-left: 5px solid #38bdf8">
-                <b>Total de Comissões:</b> R$ ${liqTotal.toLocaleString()}<br>
-                <b>Adiantamentos (Vales):</b> R$ ${vales.toLocaleString()}<br>
-                <hr>
-                <b>SALDO FINAL A RECEBER: R$ ${(liqTotal - vales).toLocaleString()}</b>
-            </div>
-            <table border="1" style="width:100%; border-collapse:collapse; text-align:left">
-                <tr><th>Data</th><th>Cliente</th><th>Valor Venda</th><th>Status</th></tr>${linhas}
-            </table>
-        <script>window.onload=function(){window.print();}<\/script></body></html>`);
+        win.document.write(`<html><body style="font-family:sans-serif; padding:20px"><h2>Relatório My Baby</h2><p>Comissão: R$ ${totalComissao.toLocaleString()}<br>Vales: R$ ${vales.toLocaleString()}<br><b>SALDO: R$ ${(totalComissao-vales).toLocaleString()}</b></p><table border="1" style="width:100%; border-collapse:collapse"><tr><th>Data</th><th>Cliente</th><th>Valor</th><th>Status</th></tr>${linhas}</table><script>window.onload=function(){window.print();}<\/script></body></html>`);
     }
+
+    function exportarBackup() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(vendas)], {type: 'application/json'})); a.download = `backup_canil.json`; a.click(); }
+    function importarBackup(input) { const reader = new FileReader(); reader.onload = () => { vendas = JSON.parse(reader.result); localStorage.setItem('vendasV7', JSON.stringify(vendas)); renderizar(); }; reader.readAsText(input.files[0]); }
     renderizar();
 </script>
 </body>
