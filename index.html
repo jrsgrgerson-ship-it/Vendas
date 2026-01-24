@@ -91,22 +91,7 @@
 
 <script>
     let chartInstance = null;
-    
-    // FUNÇÃO DE RESGATE COM TRAVA DE 74K
-    function resgatarDados() {
-        let storage = localStorage.getItem('vendasV12') || localStorage.getItem('vendasV5') || "[]";
-        let lista = JSON.parse(storage);
-        
-        // Verifica se o faturamento está abaixo de 74k e corrige se necessário
-        let totalAtual = lista.reduce((acc, v) => acc + (v.isVale ? 0 : v.valor), 0);
-        if (totalAtual > 0 && totalAtual < 74000) {
-            let diferenca = 74000 - totalAtual;
-            lista.push({ id: 1001, cliente: "SALDO RECUPERADO", valor: diferenca, data: "01/01/2024", tipo: "Ajuste", entregue: true, cancelada: false });
-        }
-        return lista;
-    }
-
-    let vendas = resgatarDados();
+    let vendas = JSON.parse(localStorage.getItem('vendasV12') || localStorage.getItem('vendasV5') || "[]");
     let meta = localStorage.getItem('metaV12') || 100000;
     document.getElementById('metaVal').value = meta;
 
@@ -150,7 +135,7 @@
                 if(v.tipo === 'Spitz') cS++; else if(v.tipo === 'Bengal') cB++;
                 if(v.sexo === 'Macho') cM++; else if(v.sexo === 'Fêmea') cF++;
                 let dia = v.data.substring(0,5); hist[dia] = (hist[dia] || 0) + v.valor;
-                lista.innerHTML = `<div class="venda-row ${v.entregue?'entregue':''} ${v.cancelada?'cancelada':''}"><div class="icon">${v.tipo=='Spitz'?'🐶':(v.tipo=='Bengal'?'🐱':'📊')}</div><div class="info"><b>${v.cliente}</b><small>${v.sexo || ''} | ${v.data}</small>${v.cancelada ? `<br><span style="color:var(--danger);font-size:9px;font-weight:800">SINAL RETIDO: R$ ${v.sinal.toLocaleString()}</span>` : ''}</div><div class="price">R$ ${v.valor.toLocaleString()}</div><div style="display:flex"><button class="btn-action ${v.entregue?'active-entregue':''}" onclick="const i=vendas.findIndex(x=>x.id==${v.id});vendas[i].entregue=!vendas[i].entregue;salvar()">🏠</button><button class="btn-action ${v.cancelada?'active-cancel':''}" onclick="alternarCancelado(${v.id})">🚫</button></div></div>` + lista.innerHTML;
+                lista.innerHTML = `<div class="venda-row ${v.entregue?'entregue':''} ${v.cancelada?'cancelada':''}"><div class="icon">${v.tipo=='Spitz'?'🐶':(v.tipo=='Bengal'?'🐱':'🐾')}</div><div class="info"><b>${v.cliente}</b><small>${v.sexo || ''} | ${v.data}</small>${v.cancelada ? `<br><span style="color:var(--danger);font-size:9px;font-weight:800">SINAL RETIDO: R$ ${v.sinal.toLocaleString()}</span>` : ''}</div><div class="price">R$ ${v.valor.toLocaleString()}</div><div style="display:flex"><button class="btn-action ${v.entregue?'active-entregue':''}" onclick="const i=vendas.findIndex(x=>x.id==${v.id});vendas[i].entregue=!vendas[i].entregue;salvar()">🏠</button><button class="btn-action ${v.cancelada?'active-cancel':''}" onclick="alternarCancelado(${v.id})">🚫</button></div></div>` + lista.innerHTML;
             }
         });
 
@@ -177,7 +162,7 @@
             return `<tr><td style="padding:10px; border-bottom:1px solid #eee;">${v.data}</td><td style="padding:10px; border-bottom:1px solid #eee;"><b>${v.cliente}</b></td><td style="padding:10px; border-bottom:1px solid #eee; text-align:right;">R$ ${v.valor.toLocaleString()}</td><td style="padding:10px; border-bottom:1px solid #eee; text-align:center; font-size:10px;">${status}</td></tr>`;
         }).join('');
         const win = window.open('', '_blank');
-        win.document.write(`<html><body style="font-family:sans-serif; padding:40px;"><h1 style="margin:0; border-bottom:2px solid #000;">PAINEL DE VENDAS - CANIL MY BABY</h1><p>Vendedor: <b>GERSON</b> | Relatório: ${new Date().toLocaleDateString()}</p><div style="display:flex; justify-content:space-between; background:#f4f4f4; padding:20px; border-radius:10px; margin:20px 0;"><div>Faturamento: <b>R$ ${fat.toLocaleString()}</b></div><div>Saldo Líquido: <b style="color:#2ecc71;">R$ ${((fat*0.03)+2000-vales).toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div></div><table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#000; color:#fff;"><th style="padding:10px; text-align:left;">DATA</th><th style="padding:10px; text-align:left;">CLIENTE</th><th style="padding:10px; text-align:right;">VALOR TOTAL</th><th style="padding:10px; text-align:center;">STATUS</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`);
+        win.document.write(`<html><body style="font-family:sans-serif; padding:40px;"><h1 style="margin:0; border-bottom:2px solid #000;">PAINEL DE VENDAS - CANIL MY BABY</h1><p>Vendedor: <b>GERSON</b> | Data: ${new Date().toLocaleDateString()}</p><div style="display:flex; justify-content:space-between; background:#f4f4f4; padding:20px; border-radius:10px; margin:20px 0;"><div>Faturamento: <b>R$ ${fat.toLocaleString()}</b></div><div>Saldo Líquido: <b style="color:#2ecc71;">R$ ${((fat*0.03)+2000-vales).toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div></div><table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#000; color:#fff;"><th style="padding:10px; text-align:left;">DATA</th><th style="padding:10px; text-align:left;">CLIENTE</th><th style="padding:10px; text-align:right;">VALOR TOTAL</th><th style="padding:10px; text-align:center;">STATUS</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`);
     }
     renderizar();
 </script>
