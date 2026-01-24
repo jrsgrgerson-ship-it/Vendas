@@ -36,9 +36,9 @@
         .btn-pdf { background: transparent; color: var(--accent); border: 1px solid var(--accent); margin-top: 10px; }
         .btn-action-group { display: flex; gap: 5px; justify-content: flex-end; align-items: center; }
         .btn-act { background: #111; border: 1px solid #222; color: #fff; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-        .btn-act.active-ent { background: var(--success); color: #000; border-color: var(--success); }
-        .btn-act.active-can { background: var(--danger); color: #fff; border-color: var(--danger); }
-        .btn-del { color: #333; font-size: 12px; cursor: pointer; padding: 5px; }
+        .btn-act.active-ent { background: var(--success) !important; color: #000 !important; }
+        .btn-act.active-can { background: var(--danger) !important; color: #fff !important; }
+        .btn-del { color: #333; font-size: 16px; cursor: pointer; padding: 5px; }
         input, select { background: #080808; border: 1px solid #222; color: #fff; padding: 14px; border-radius: 14px; width: 100%; box-sizing: border-box; margin-bottom: 10px; font-family: 'Inter'; }
     </style>
 </head>
@@ -92,68 +92,87 @@
     let meta = localStorage.getItem('metaV12') || 100000;
     document.getElementById('metaVal').value = meta;
 
-    // Converte DD/MM/AAAA para objeto Date real para ordenar
-    function stringParaData(str) {
+    function parseData(str) {
         const p = str.split('/');
-        return new Date(p[2], p[1] - 1, p[0]);
+        return new Date(p[2], p[1] - 1, p[0]).getTime();
     }
 
     function salvar() {
-        // Ordena sempre: Data mais recente no topo da lista
-        vendas.sort((a, b) => stringParaData(b.data) - stringParaData(a.data));
+        vendas.sort((a, b) => parseData(b.data) - parseData(a.data));
         localStorage.setItem('vendasV12', JSON.stringify(vendas));
         renderizar();
     }
 
-    function atualizarMeta() { meta = document.getElementById('metaVal').value; localStorage.setItem('metaV12', meta); renderizar(); }
+    function atualizarMeta() { 
+        meta = document.getElementById('metaVal').value; 
+        localStorage.setItem('metaV12', meta); 
+        renderizar(); 
+    }
 
     function addVenda() {
-        const c = document.getElementById('cliente').value, vt = parseFloat(document.getElementById('valorTotal').value);
+        const c = document.getElementById('cliente').value;
+        const vt = parseFloat(document.getElementById('valorTotal').value);
         if(c && vt) {
-            vendas.push({ id: Date.now().toString(), tipo: document.getElementById('tipo').value, sexo: document.getElementById('sexo').value, cliente: c, valor: vt, sinal: 0, data: new Date().toLocaleDateString('pt-BR'), entregue: false, cancelada: false });
-            document.getElementById('cliente').value = ''; document.getElementById('valorTotal').value = '';
+            vendas.push({ 
+                id: Date.now(), 
+                tipo: document.getElementById('tipo').value, 
+                sexo: document.getElementById('sexo').value, 
+                cliente: c, 
+                valor: vt, 
+                sinal: 0, 
+                data: new Date().toLocaleDateString('pt-BR'), 
+                entregue: false, 
+                cancelada: false 
+            });
+            document.getElementById('cliente').value = ''; 
+            document.getElementById('valorTotal').value = '';
             salvar();
         }
     }
 
-    function editarData(id) {
-        const idx = vendas.findIndex(x => x.id === id);
-        const nD = prompt("Alterar Data (DD/MM/AAAA):", vendas[idx].data);
-        if(nD) { vendas[idx].data = nD; salvar(); }
+    function editarData(idVenda) {
+        const i = vendas.findIndex(v => v.id == idVenda);
+        const nD = prompt("Alterar Data (DD/MM/AAAA):", vendas[i].data);
+        if(nD) { vendas[i].data = nD; salvar(); }
     }
 
-    function deletarVenda(id) {
+    function deletarVenda(idVenda) {
         if(confirm("Excluir esta venda?")) {
-            vendas = vendas.filter(x => x.id !== id);
+            vendas = vendas.filter(v => v.id != idVenda);
             salvar();
         }
     }
 
-    function alternarCancelado(id) {
-        const idx = vendas.findIndex(v => v.id === id);
-        if (!vendas[idx].cancelada) {
+    function alternarCancelado(idVenda) {
+        const i = vendas.findIndex(v => v.id == idVenda);
+        if (!vendas[i].cancelada) {
             const s = prompt("Digite o valor do SINAL RETIDO:");
             if (s !== null) {
-                vendas[idx].sinal = Number(s) || 0;
-                vendas[idx].cancelada = true;
+                vendas[i].sinal = Number(s) || 0;
+                vendas[i].cancelada = true;
+                vendas[i].entregue = false;
                 salvar();
             }
         } else {
-            vendas[idx].cancelada = false;
-            vendas[idx].sinal = 0;
+            vendas[i].cancelada = false;
+            vendas[i].sinal = 0;
             salvar();
         }
     }
 
-    function alternarEntrega(id) {
-        const idx = vendas.findIndex(v => v.id === id);
-        vendas[idx].entregue = !vendas[idx].entregue;
+    function alternarEntrega(idVenda) {
+        const i = vendas.findIndex(v => v.id == idVenda);
+        vendas[i].entregue = !vendas[i].entregue;
+        if(vendas[i].entregue) vendas[i].cancelada = false;
         salvar();
     }
 
     function addVale() {
         const v = prompt("Valor do Vale:");
-        if(v) { vendas.push({ id: "vale-" + Date.now(), cliente: 'VALE', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true }); salvar(); }
+        if(v) { 
+            vendas.push({ id: Date.now(), cliente: 'VALE', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true }); 
+            salvar(); 
+        }
     }
 
     function renderizar() {
@@ -164,7 +183,7 @@
         vendas.forEach((v) => {
             if(v.isVale) {
                 vales += v.valor;
-                lista.innerHTML += `<div class="venda-row" style="opacity:0.4"><div class="icon">💸</div><div class="info"><b>VALE</b><small>${v.data}</small></div><div class="price">- R$ ${v.valor.toLocaleString()}</div><div class="btn-del" onclick="deletarVenda('${v.id}')">🗑</div></div>`;
+                lista.innerHTML += `<div class="venda-row" style="opacity:0.4"><div class="icon">💸</div><div class="info"><b>VALE</b><small>${v.data}</small></div><div class="price">- R$ ${v.valor.toLocaleString()}</div><div class="btn-del" onclick="deletarVenda(${v.id})">🗑</div></div>`;
             } else {
                 fat += v.valor; count++;
                 if(v.tipo === 'Spitz') cS++; else cB++;
@@ -175,15 +194,15 @@
                 <div class="venda-row ${v.entregue?'entregue':''} ${v.cancelada?'cancelada':''}">
                     <div class="icon">${v.tipo=='Spitz'?'🐶':'🐱'}</div>
                     <div class="info">
-                        <b onclick="editarData('${v.id}')">${v.cliente}</b>
+                        <b onclick="editarData(${v.id})">${v.cliente}</b>
                         <small>${v.sexo} | ${v.data}</small>
                         ${v.cancelada ? `<br><b style="color:var(--danger);font-size:10px;">SINAL: R$ ${Number(v.sinal).toLocaleString('pt-BR')}</b>` : ''}
                     </div>
                     <div class="price">R$ ${v.valor.toLocaleString()}</div>
                     <div class="btn-action-group">
-                        <button class="btn-act ${v.entregue?'active-ent':''}" onclick="alternarEntrega('${v.id}')">🏠</button>
-                        <button class="btn-act ${v.cancelada?'active-can':''}" onclick="alternarCancelado('${v.id}')">🚫</button>
-                        <div class="btn-del" onclick="deletarVenda('${v.id}')">🗑</div>
+                        <button class="btn-act ${v.entregue?'active-ent':''}" onclick="alternarEntrega(${v.id})">🏠</button>
+                        <button class="btn-act ${v.cancelada?'active-can':''}" onclick="alternarCancelado(${v.id})">🚫</button>
+                        <div class="btn-del" onclick="deletarVenda(${v.id})">🗑</div>
                     </div>
                 </div>`;
             }
@@ -209,10 +228,10 @@
         let rows = vendas.map(v => {
             if(!v.isVale) fat += v.valor; else vales += v.valor;
             let status = v.isVale ? 'VALE' : (v.cancelada ? `CANCELADO (SINAL: R$ ${Number(v.sinal || 0).toLocaleString()})` : (v.entregue ? 'ENTREGUE' : 'AGUARDANDO ENTREGA'));
-            return `<tr><td style="padding:10px; border-bottom:1px solid #eee;">${v.data}</td><td style="padding:10px; border-bottom:1px solid #eee;"><b>${v.cliente}</b></td><td style="padding:10px; border-bottom:1px solid #eee; text-align:right;">R$ ${v.valor.toLocaleString()}</td><td style="padding:10px; border-bottom:1px solid #eee; text-align:center;">${status}</td></tr>`;
+            return `<tr><td>${v.data}</td><td>${v.cliente}</td><td>R$ ${v.valor.toLocaleString()}</td><td>${status}</td></tr>`;
         }).join('');
         const win = window.open('', '_blank');
-        win.document.write(`<html><body style="font-family:sans-serif; padding:20px;"><h2>CANIL MY BABY - RELATÓRIO</h2><p>Vendedor: GERSON</p><div style="background:#eee; padding:15px; margin-bottom:20px;">Vendas: R$ ${fat.toLocaleString()} | Saldo: R$ ${((fat*0.03)+2000-vales).toLocaleString('pt-BR',{minimumFractionDigits:2})}</div><table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#000; color:#fff;"><th>DATA</th><th>CLIENTE</th><th>VALOR</th><th>STATUS</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`);
+        win.document.write(`<html><body><h2>RELATÓRIO GERSON</h2>${rows}</body></html>`);
     }
     renderizar();
 </script>
