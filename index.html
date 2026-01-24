@@ -34,15 +34,15 @@
         .venda-row.entregue { border-left: 3px solid var(--success); padding-left: 10px; }
         .venda-row.cancelada { border-left: 3px solid var(--danger); padding-left: 10px; }
         .venda-row .info b { font-size: 13px; display: block; text-transform: uppercase; cursor: pointer; }
-        .venda-row .info b:hover { color: var(--accent); }
         .venda-row .info small { color: #555; font-size: 10px; }
         .venda-row .price { text-align: right; font-weight: 900; font-size: 14px; padding-right: 8px; }
-        .btn-main { background: #fff; color: #000; border: none; padding: 16px; border-radius: 16px; font-weight: 900; width: 100%; font-size: 14px; cursor: pointer; }
+        .btn-main { background: #fff; color: #000; border: none; padding: 16px; border-radius: 16px; font-weight: 900; width: 100%; font-size: 14px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(255,255,255,0.1); }
+        .btn-main:active { transform: scale(0.98); }
         .btn-pdf { background: transparent; color: var(--accent); border: 1px solid var(--accent); margin-top: 10px; }
         .btn-action-group { display: flex; gap: 6px; }
         .btn-act { background: #111; border: 1px solid #222; color: #fff; width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-        .btn-act.active-ent { background: var(--success); color: #000; }
-        .btn-act.active-can { background: var(--danger); color: #fff; }
+        .btn-act.active-ent { background: var(--success); color: #000; border-color: var(--success); }
+        .btn-act.active-can { background: var(--danger); color: #fff; border-color: var(--danger); }
         input, select { background: #080808; border: 1px solid #222; color: #fff; padding: 14px; border-radius: 14px; width: 100%; box-sizing: border-box; margin-bottom: 10px; font-family: 'Inter'; }
     </style>
 </head>
@@ -52,10 +52,10 @@
     <header><span>VENDEDOR: GERSON</span><h1>CANIL MY BABY</h1></header>
 
     <div class="quick-stats">
-        <div class="q-box"><b><span id="cS">0</span></b><span>Spitz</span></div>
-        <div class="q-box"><b><span id="cB">0</span></b><span>Bengal</span></div>
-        <div class="q-box"><b><span id="cM">0</span></b><span>Macho</span></div>
-        <div class="q-box"><b><span id="cF">0</span></b><span>Fêmea</span></div>
+        <div class="q-box"><b><span id="cS">0</span></b><span>🐶 Spitz</span></div>
+        <div class="q-box"><b><span id="cB">0</span></b><span>🐱 Bengal</span></div>
+        <div class="q-box"><b><span id="cM">0</span></b><span>♂ Macho</span></div>
+        <div class="q-box"><b><span id="cF">0</span></b><span>♀ Fêmea</span></div>
     </div>
 
     <div class="premium-card">
@@ -96,16 +96,20 @@
     let meta = localStorage.getItem('metaV12') || 100000;
     document.getElementById('metaVal').value = meta;
 
+    // Converte data DD/MM/AAAA para objeto Date para ordenar
+    function formatarDataParaOrdem(dataStr) {
+        const partes = dataStr.split('/');
+        return new Date(partes[2], partes[1] - 1, partes[0]);
+    }
+
     function salvar() { 
+        // Ordena antes de salvar: Recentes no topo, mas por DATA real.
+        vendas.sort((a, b) => formatarDataParaOrdem(b.data) - formatarDataParaOrdem(a.data));
         localStorage.setItem('vendasV12', JSON.stringify(vendas)); 
         renderizar(); 
     }
     
-    function atualizarMeta() { 
-        meta = document.getElementById('metaVal').value; 
-        localStorage.setItem('metaV12', meta); 
-        renderizar(); 
-    }
+    function atualizarMeta() { meta = document.getElementById('metaVal').value; localStorage.setItem('metaV12', meta); renderizar(); }
 
     function addVenda() {
         const c = document.getElementById('cliente').value, vt = parseFloat(document.getElementById('valorTotal').value);
@@ -118,7 +122,7 @@
 
     function editarData(id) {
         const i = vendas.findIndex(x => x.id == id);
-        const novaData = prompt("Editar data (formato DD/MM/AAAA):", vendas[i].data);
+        const novaData = prompt("Editar data (DD/MM/AAAA):", vendas[i].data);
         if(novaData) {
             vendas[i].data = novaData;
             salvar();
@@ -133,9 +137,9 @@
     function alternarCancelado(id) {
         const i = vendas.findIndex(x => x.id == id);
         if (!vendas[i].cancelada) {
-            const valorSinal = prompt("CANCELAMENTO: Valor do SINAL RETIDO?");
-            if (valorSinal !== null) {
-                vendas[i].sinal = parseFloat(valorSinal) || 0;
+            const vS = prompt("SINAL RETIDO?");
+            if (vS !== null) {
+                vendas[i].sinal = Number(vS) || 0; // Garantindo que vira número
                 vendas[i].cancelada = true;
             }
         } else { 
@@ -153,16 +157,16 @@
         vendas.forEach((v) => {
             if(v.isVale) {
                 vales += v.valor;
-                lista.innerHTML = `<div class="venda-row" style="opacity:0.4"><div class="icon">💸</div><div class="info"><b>VALE</b><small>${v.data}</small></div><div class="price">- R$ ${v.valor.toLocaleString()}</div><div onclick="vendas=vendas.filter(x=>x.id!=${v.id});salvar()" style="text-align:right">🗑</div></div>` + lista.innerHTML;
+                lista.innerHTML += `<div class="venda-row" style="opacity:0.4"><div class="icon">💸</div><div class="info"><b>VALE</b><small>${v.data}</small></div><div class="price">- R$ ${v.valor.toLocaleString()}</div><div onclick="vendas=vendas.filter(x=>x.id!=${v.id});salvar()" style="text-align:right">🗑</div></div>`;
             } else {
                 fat += v.valor; countVendas++;
                 if(v.tipo === 'Spitz') cS++; else if(v.tipo === 'Bengal') cB++;
                 if(v.sexo === 'Macho') cM++; else if(v.sexo === 'Fêmea') cF++;
                 let dia = v.data.substring(0,5); hist[dia] = (hist[dia] || 0) + v.valor;
                 
-                let textoSinal = v.cancelada ? `<br><b style="color:var(--danger);font-size:10px;">SINAL RETIDO: R$ ${parseFloat(v.sinal || 0).toLocaleString('pt-BR')}</b>` : '';
+                let textoSinal = v.cancelada ? `<br><b style="color:var(--danger);font-size:10px;">SINAL RETIDO: R$ ${Number(v.sinal).toLocaleString('pt-BR')}</b>` : '';
 
-                lista.innerHTML = `<div class="venda-row ${v.entregue?'entregue':''} ${v.cancelada?'cancelada':''}"><div class="icon">${v.tipo=='Spitz'?'🐶':'🐱'}</div><div class="info"><b onclick="editarData(${v.id})">${v.cliente}</b><small>${v.sexo} | ${v.data}</small>${textoSinal}</div><div class="price">R$ ${v.valor.toLocaleString()}</div><div class="btn-action-group"><button class="btn-act ent ${v.entregue?'active-ent':''}" onclick="const i=vendas.findIndex(x=>x.id==${v.id});vendas[i].entregue=!vendas[i].entregue;salvar()">🏠</button><button class="btn-act can ${v.cancelada?'active-can':''}" onclick="alternarCancelado(${v.id})">🚫</button></div></div>` + lista.innerHTML;
+                lista.innerHTML += `<div class="venda-row ${v.entregue?'entregue':''} ${v.cancelada?'cancelada':''}"><div class="icon">${v.tipo=='Spitz'?'🐶':'🐱'}</div><div class="info"><b onclick="editarData(${v.id})">${v.cliente}</b><small>${v.sexo} | ${v.data}</small>${textoSinal}</div><div class="price">R$ ${v.valor.toLocaleString()}</div><div class="btn-action-group"><button class="btn-act ent ${v.entregue?'active-ent':''}" onclick="const i=vendas.findIndex(x=>x.id==${v.id});vendas[i].entregue=!vendas[i].entregue;salvar()">🏠</button><button class="btn-act can ${v.cancelada?'active-can':''}" onclick="alternarCancelado(${v.id})">🚫</button></div></div>`;
             }
         });
 
@@ -185,7 +189,7 @@
         let fat = 0, vales = 0;
         let rows = vendas.map(v => {
             if(!v.isVale) fat += v.valor; else vales += v.valor;
-            let status = v.isVale ? 'VALE' : (v.cancelada ? `CANCELADO (SINAL: R$ ${parseFloat(v.sinal || 0).toLocaleString()})` : (v.entregue ? 'ENTREGUE' : 'AGUARDANDO ENTREGA'));
+            let status = v.isVale ? 'VALE' : (v.cancelada ? `CANCELADO (SINAL: R$ ${Number(v.sinal || 0).toLocaleString()})` : (v.entregue ? 'ENTREGUE' : 'AGUARDANDO ENTREGA'));
             return `<tr><td style="padding:12px; border-bottom:1px solid #eee;">${v.data}</td><td style="padding:12px; border-bottom:1px solid #eee;"><b>${v.cliente}</b></td><td style="padding:12px; border-bottom:1px solid #eee; text-align:right;">R$ ${v.valor.toLocaleString()}</td><td style="padding:12px; border-bottom:1px solid #eee; text-align:center; font-size:10px; font-weight:bold;">${status}</td></tr>`;
         }).join('');
         const win = window.open('', '_blank');
