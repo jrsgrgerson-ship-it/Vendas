@@ -3,246 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PAINEL NEON - GERSON</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+    <title>SISTEMA GERSON - RECUPERAÇÃO TOTAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { 
-            --neon-blue: #00f2ff; 
-            --neon-green: #00ff88; 
-            --neon-red: #ff0055;
-            --bg-dark: #050505; 
-            --card-bg: #111111; 
-            --border: #222; 
-        }
-        body { background: var(--bg-dark); color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 15px; -webkit-font-smoothing: antialiased; }
+        :root { --neon: #00f2ff; --green: #00ff88; --bg: #000000; --card: #0d0d0d; }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 15px; }
         .container { max-width: 450px; margin: auto; }
-
-        /* CABEÇALHO */
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid #222; padding-bottom: 15px; }
-        .brand h1 { margin: 0; font-size: 18px; font-weight: 900; letter-spacing: -0.5px; background: linear-gradient(90deg, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .brand span { font-size: 10px; color: var(--neon-blue); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
-        .status-dot { height: 8px; width: 8px; background: var(--neon-green); border-radius: 50%; box-shadow: 0 0 10px var(--neon-green); }
-
-        /* ESTATÍSTICAS RÁPIDAS */
-        .quick-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
-        .q-box { background: var(--card-bg); border: 1px solid var(--border); padding: 10px; border-radius: 12px; text-align: center; transition: 0.3s; }
-        .q-box:hover { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 242, 255, 0.1); }
-        .q-box b { font-size: 16px; font-weight: 900; display: block; color: #fff; }
-        .q-box span { font-size: 9px; color: #666; text-transform: uppercase; font-weight: 700; }
-
-        /* CARTÃO PRINCIPAL */
-        .main-card { background: var(--card-bg); border-radius: 24px; padding: 25px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.8); position: relative; overflow: hidden; }
-        .glow-effect { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,242,255,0.03) 0%, rgba(0,0,0,0) 70%); pointer-events: none; }
         
-        .label-top { font-size: 10px; font-weight: 800; color: #555; text-transform: uppercase; letter-spacing: 1px; }
-        .big-number { font-size: 38px; font-weight: 900; display: block; margin: 5px 0; letter-spacing: -1px; text-shadow: 0 0 20px rgba(255,255,255,0.1); }
+        /* HEADER NEON */
+        header { border-left: 5px solid var(--neon); padding-left: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { margin: 0; font-size: 20px; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; }
         
-        .progress-container { background: #1a1a1a; height: 6px; border-radius: 10px; margin: 15px 0; overflow: hidden; }
-        .progress-bar { background: linear-gradient(90deg, var(--neon-blue), var(--neon-green)); height: 100%; width: 0%; box-shadow: 0 0 15px var(--neon-blue); transition: width 1.5s ease-out; }
-
-        .meta-row { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: #666; }
-        .meta-input { background: none; border: none; color: #888; width: 80px; text-align: right; font-family: inherit; font-size: 11px; }
-
-        /* GRÁFICO */
-        .chart-box { height: 110px; margin-top: 15px; }
-
-        /* GRID FINANCEIRO */
-        .finance-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .f-card { background: var(--card-bg); padding: 15px; border-radius: 16px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: center; }
-        .f-card b { font-size: 18px; font-weight: 900; }
-
-        /* FORMULÁRIO */
-        .input-group { display: flex; gap: 10px; margin-bottom: 10px; }
-        input, select { background: #0a0a0a; border: 1px solid #333; color: #fff; padding: 14px; border-radius: 12px; width: 100%; font-family: 'Inter'; font-size: 13px; outline: none; transition: 0.3s; }
-        input:focus, select:focus { border-color: var(--neon-blue); box-shadow: 0 0 10px rgba(0, 242, 255, 0.1); }
+        .main-card { background: var(--card); border-radius: 25px; padding: 25px; border: 1px solid #222; box-shadow: 0 0 30px rgba(0, 242, 255, 0.05); text-align: center; margin-bottom: 15px; }
+        .big-val { font-size: 40px; font-weight: 900; display: block; margin: 10px 0; color: #fff; }
         
-        .btn-add { background: #fff; color: #000; border: none; padding: 16px; border-radius: 12px; width: 100%; font-weight: 900; font-size: 14px; cursor: pointer; transition: 0.2s; margin-bottom: 10px; }
-        .btn-add:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(255,255,255,0.2); }
-        
-        .btn-pdf { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 12px; border-radius: 12px; width: 100%; font-weight: 800; cursor: pointer; font-size: 12px; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .s-box { background: var(--card); padding: 15px; border-radius: 15px; border: 1px solid #1a1a1a; }
+        .s-box span { font-size: 10px; color: #666; font-weight: 800; display: block; margin-bottom: 5px; }
+        .s-box b { font-size: 18px; color: var(--green); }
 
-        /* LISTA */
-        .list-header { margin: 25px 0 10px 0; font-size: 11px; font-weight: 800; color: #444; text-transform: uppercase; letter-spacing: 1px; }
-        
-        .item { display: grid; grid-template-columns: 40px 1fr auto 40px; align-items: center; padding: 15px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 8px; transition: 0.3s; }
-        .item.entregue { border-left: 3px solid var(--neon-green); background: linear-gradient(90deg, rgba(0,255,136,0.05) 0%, var(--card-bg) 50%); }
-        
-        .item-icon { font-size: 18px; }
-        .item-info b { display: block; font-size: 13px; color: #eee; margin-bottom: 2px; }
-        .item-info span { font-size: 10px; color: #666; font-weight: 600; }
-        .item-price { text-align: right; font-weight: 900; font-size: 14px; color: #fff; margin-right: 15px; }
-        
-        .actions { display: flex; gap: 5px; }
-        .btn-icon { width: 30px; height: 30px; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s; }
-        .btn-check { background: #1a1a1a; color: #444; border: 1px solid #333; }
-        .btn-check:hover, .btn-check.active { background: var(--neon-green); color: #000; box-shadow: 0 0 10px var(--neon-green); border-color: var(--neon-green); }
-        .btn-del { background: transparent; color: #444; }
-        .btn-del:hover { color: var(--neon-red); }
+        .item { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 8px; border: 1px solid #111; display: flex; justify-content: space-between; align-items: center; }
+        .item b { font-size: 14px; text-transform: uppercase; display: block; }
+        .item small { color: #555; font-size: 10px; }
+        .item .val { font-weight: 900; color: var(--neon); }
 
-        .vale-item { border-color: rgba(255,0,85,0.3); opacity: 0.8; }
-        .vale-item .item-price { color: var(--neon-red); }
+        .btn-main { background: #fff; color: #000; border: none; padding: 16px; border-radius: 15px; width: 100%; font-weight: 900; cursor: pointer; margin-top: 10px; }
+        input, select { background: #080808; border: 1px solid #222; color: #fff; padding: 12px; border-radius: 12px; width: 100%; margin-bottom: 8px; box-sizing: border-box; }
+        
+        .debug-btn { background: #111; color: #444; border: none; font-size: 10px; padding: 10px; border-radius: 10px; width: 100%; margin-top: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <div class="brand">
-            <span>PAINEL DE VENDAS</span>
-            <h1>CANIL MY BABY</h1>
+        <div>
+            <span style="font-size: 10px; color: var(--neon); font-weight: 800;">PAINEL VENDEDOR</span>
+            <h1>GERSON</h1>
         </div>
-        <div style="text-align:right">
-            <div class="status-dot" style="display:inline-block; margin-right:5px;"></div>
-            <span style="font-size:9px; color:#666; font-weight:700;">ONLINE</span>
-        </div>
+        <div style="text-align: right; font-size: 9px; color: #444;">V6 STABLE</div>
     </header>
 
-    <div class="quick-stats">
-        <div class="q-box"><b><span id="cS">0</span></b><span>🐶 Spitz</span></div>
-        <div class="q-box"><b><span id="cB">0</span></b><span>🐱 Bengal</span></div>
-        <div class="q-box"><b><span id="cM">0</span></b><span>♂ Macho</span></div>
-        <div class="q-box"><b><span id="cF">0</span></b><span>♀ Fêmea</span></div>
-    </div>
-
     <div class="main-card">
-        <div class="glow-effect"></div>
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span class="label-top">Faturamento Bruto</span>
-            <span id="pctTxt" style="color:var(--neon-blue); font-size:12px; font-weight:900;">0%</span>
-        </div>
-        <strong class="big-number" id="totalVendas">R$ 0</strong>
-        
-        <div class="progress-container"><div id="barra" class="progress-bar"></div></div>
-        
-        <div class="meta-row">
-            <span>META MENSAL</span>
-            <input type="number" id="metaVal" class="meta-input" value="100000" onchange="salvarMeta()">
-        </div>
-
-        <div class="chart-box"><canvas id="graficoVendas"></canvas></div>
+        <span style="font-size: 11px; color: #666; font-weight: 800; letter-spacing: 1px;">FATURAMENTO TOTAL</span>
+        <strong class="big-val" id="totalVendas">R$ 0</strong>
+        <div style="height: 80px;"><canvas id="grafico"></canvas></div>
     </div>
 
-    <div class="finance-grid">
-        <div class="f-card" style="border-color: rgba(0,255,136,0.2);">
-            <span class="label-top" style="color:var(--neon-green); margin-bottom:5px;">💰 SEU SALDO (3% + 2k)</span>
-            <b id="saldoGerson" style="color:var(--neon-green);">R$ 0,00</b>
+    <div class="stat-grid">
+        <div class="s-box">
+            <span>SALDO (3% + 2k)</span>
+            <b id="saldoGerson">R$ 0,00</b>
         </div>
-        <div class="f-card">
-            <span class="label-top" style="color:var(--neon-red); margin-bottom:5px;">🔻 VALES</span>
-            <b id="totalVales" style="color:var(--neon-red);">R$ 0</b>
+        <div class="s-box">
+            <span>DADOS RECUPERADOS</span>
+            <b id="statusRec" style="color: var(--neon); font-size: 12px;">Buscando...</b>
         </div>
     </div>
 
-    <div style="background:var(--card-bg); padding:20px; border-radius:20px; border:1px solid var(--border); margin-bottom:20px;">
-        <div class="input-group">
+    <div class="main-card" style="text-align: left;">
+        <div style="display:flex; gap:5px;">
             <select id="tipo"><option value="Spitz">Spitz 🐶</option><option value="Bengal">Bengal 🐱</option></select>
             <select id="sexo"><option value="Macho">Macho ♂</option><option value="Fêmea">Fêmea ♀</option></select>
         </div>
-        <input type="text" id="cliente" placeholder="Nome do Cliente" style="margin-bottom:10px;">
-        <input type="number" id="valorTotal" placeholder="Valor da Venda (R$)" style="margin-bottom:15px;">
-        
-        <button class="btn-add" onclick="addVenda()">REGISTRAR VENDA</button>
-        <div style="display:flex; gap:10px;">
-            <button class="btn-pdf" onclick="gerarPDF()">📄 BAIXAR PDF TOP</button>
-            <button class="btn-pdf" style="border-color:var(--neon-red); color:var(--neon-red);" onclick="addVale()">💸 VALE</button>
-        </div>
+        <input type="text" id="cliente" placeholder="Nome do Cliente">
+        <input type="number" id="valor" placeholder="Valor R$">
+        <button class="btn-main" onclick="addVenda()">REGISTRAR VENDA</button>
     </div>
 
-    <div class="list-header">Últimos Lançamentos</div>
     <div id="listaVendas"></div>
-    <div style="height:30px;"></div>
+    
+    <button class="debug-btn" onclick="varrerMemorias()">NÃO APARECEU? CLIQUE AQUI PARA VARRER TUDO</button>
 </div>
 
 <script>
     let chartInstance = null;
     let vendas = [];
-    
-    // --- RECUPERAÇÃO SEGURA DOS 74K ---
-    function carregarDados() {
-        // Tenta pegar a versão principal
-        let dados = localStorage.getItem('vendasV12');
+
+    // --- A SUPER VARREDURA ---
+    function varrerMemorias() {
+        // Lista de todas as gavetas que já usamos
+        const gavetas = [
+            'vendasV12', 'vendasV5', 'mybaby_v1', 'vendas_final_v1', 
+            'vendas_backup', 'vendas_gerson', 'vendas_v10', 'vendas'
+        ];
         
-        // Se estiver vazia ou com problema, tenta o backup V5
-        if (!dados || dados === "[]") {
-            dados = localStorage.getItem('vendasV5');
+        let maiorLote = [];
+        let maiorValor = -1;
+        let gavetaEncontrada = "Nenhuma";
+
+        gavetas.forEach(gaveta => {
+            let item = localStorage.getItem(gaveta);
+            if (item) {
+                try {
+                    let lista = JSON.parse(item);
+                    if (Array.isArray(lista) && lista.length > 0) {
+                        let soma = lista.reduce((a, b) => a + (b.valor || 0), 0);
+                        if (soma > maiorValor) {
+                            maiorValor = soma;
+                            maiorLote = lista;
+                            gavetaEncontrada = gaveta;
+                        }
+                    }
+                } catch(e) {}
+            }
+        });
+
+        if (maiorLote.length > 0) {
+            vendas = maiorLote;
+            document.getElementById('statusRec').innerText = "Gaveta: " + gavetaEncontrada;
+            salvar(); // Consolida na gaveta principal
+        } else {
+            document.getElementById('statusRec').innerText = "Vazio";
         }
-        
-        if (dados) {
-            vendas = JSON.parse(dados);
-        }
+        renderizar();
     }
-    
-    carregarDados();
-    
-    // Meta
-    let meta = localStorage.getItem('meta_gerson') || 100000;
-    document.getElementById('metaVal').value = meta;
 
     function salvar() {
+        // Salva na gaveta oficial e cria um backup
         localStorage.setItem('vendasV12', JSON.stringify(vendas));
-        localStorage.setItem('vendasV5', JSON.stringify(vendas)); // Backup duplo
+        localStorage.setItem('vendas_backup_seguro', JSON.stringify(vendas));
         renderizar();
     }
-
-    function salvarMeta() {
-        meta = document.getElementById('metaVal').value;
-        localStorage.setItem('meta_gerson', meta);
-        renderizar();
-    }
-
-    function gerarID() { return 'id_' + Date.now(); }
 
     function addVenda() {
-        const c = document.getElementById('cliente').value;
-        const v = parseFloat(document.getElementById('valorTotal').value);
-        
+        const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valor').value);
         if (c && v) {
             vendas.push({
-                id: gerarID(),
+                id: Date.now(),
                 cliente: c,
                 valor: v,
                 tipo: document.getElementById('tipo').value,
                 sexo: document.getElementById('sexo').value,
-                data: new Date().toLocaleDateString('pt-BR'),
-                entregue: false,
-                timestamp: Date.now() // Importante para ordenação
+                data: new Date().toLocaleDateString('pt-BR')
             });
-            // Limpa campos
             document.getElementById('cliente').value = '';
-            document.getElementById('valorTotal').value = '';
-            salvar();
-        } else {
-            alert('Preencha nome e valor!');
-        }
-    }
-
-    function addVale() {
-        const val = prompt("Valor do Vale:");
-        if (val) {
-            vendas.push({
-                id: gerarID(),
-                cliente: 'VALE',
-                valor: parseFloat(val),
-                data: new Date().toLocaleDateString('pt-BR'),
-                isVale: true,
-                timestamp: Date.now()
-            });
-            salvar();
-        }
-    }
-
-    function toggleEntregue(id) {
-        const idx = vendas.findIndex(x => x.id === id);
-        if(idx > -1) {
-            vendas[idx].entregue = !vendas[idx].entregue;
-            salvar();
-        }
-    }
-
-    function deletar(id) {
-        if(confirm("Tem certeza que deseja apagar este lançamento?")) {
-            vendas = vendas.filter(x => x.id !== id);
+            document.getElementById('valor').value = '';
             salvar();
         }
     }
@@ -250,156 +147,51 @@
     function renderizar() {
         const lista = document.getElementById('listaVendas');
         lista.innerHTML = '';
-        
         let total = 0;
-        let vales = 0;
-        let cS=0, cB=0, cM=0, cF=0;
-        let dadosGrafico = {};
+        let hist = {};
 
-        // Ordena por data (mais recente primeiro na lista)
-        let vendasOrdenadas = [...vendas].sort((a,b) => b.timestamp - a.timestamp);
+        // Mostra do mais novo para o mais antigo
+        [...vendas].reverse().forEach(v => {
+            total += v.valor;
+            let dia = v.data.substring(0, 5);
+            hist[dia] = (hist[dia] || 0) + v.valor;
 
-        vendasOrdenadas.forEach(v => {
-            if(v.isVale) {
-                vales += v.valor;
-                lista.innerHTML += `
-                <div class="item vale-item">
-                    <div class="item-icon">💸</div>
-                    <div class="item-info"><b>VALE</b><span>${v.data}</span></div>
-                    <div class="item-price">- R$ ${v.valor.toLocaleString()}</div>
-                    <button class="btn-icon btn-del" onclick="deletar('${v.id}')">🗑</button>
-                </div>`;
-            } else {
-                total += v.valor;
-                
-                // Contagens
-                if(v.tipo === 'Spitz') cS++; else cB++;
-                if(v.sexo === 'Macho') cM++; else cF++;
-
-                // Dados Gráfico (Agrupar por data)
-                let dia = v.data.substring(0, 5); // DD/MM
-                dadosGrafico[dia] = (dadosGrafico[dia] || 0) + v.valor;
-
-                lista.innerHTML += `
-                <div class="item ${v.entregue ? 'entregue' : ''}">
-                    <div class="item-icon">${v.tipo === 'Spitz' ? '🐶' : '🐱'}</div>
-                    <div class="item-info">
+            lista.innerHTML += `
+                <div class="item">
+                    <div>
                         <b>${v.cliente}</b>
-                        <span>${v.sexo} | ${v.data}</span>
+                        <small>${v.data} | ${v.tipo} ${v.sexo}</small>
                     </div>
-                    <div class="item-price">R$ ${v.valor.toLocaleString()}</div>
-                    <div class="actions">
-                        <button class="btn-icon btn-check ${v.entregue ? 'active' : ''}" onclick="toggleEntregue('${v.id}')">✔</button>
-                        <button class="btn-icon btn-del" onclick="deletar('${v.id}')">🗑</button>
-                    </div>
-                </div>`;
-            }
+                    <div class="val">R$ ${v.valor.toLocaleString()}</div>
+                </div>
+            `;
         });
 
-        // Atualiza Cards
         document.getElementById('totalVendas').innerText = "R$ " + total.toLocaleString();
-        document.getElementById('saldoGerson').innerText = "R$ " + ((total * 0.03) + 2000 - vales).toLocaleString('pt-BR', {minimumFractionDigits: 2});
-        document.getElementById('totalVales').innerText = "R$ " + vales.toLocaleString();
-        
-        document.getElementById('cS').innerText = cS; document.getElementById('cB').innerText = cB;
-        document.getElementById('cM').innerText = cM; document.getElementById('cF').innerText = cF;
+        document.getElementById('saldoGerson').innerText = "R$ " + ((total * 0.03) + 2000).toLocaleString('pt-BR', {minimumFractionDigits: 2});
 
-        // Barra de Progresso
-        let pct = Math.min((total / meta) * 100, 100);
-        document.getElementById('barra').style.width = pct + "%";
-        document.getElementById('pctTxt').innerText = Math.floor(pct) + "%";
-
-        // Gráfico Neon
-        const ctx = document.getElementById('graficoVendas').getContext('2d');
+        const ctx = document.getElementById('grafico').getContext('2d');
         if (chartInstance) chartInstance.destroy();
-        
-        // Ordenar datas do gráfico cronologicamente
-        let labelsGrafico = Object.keys(dadosGrafico).sort((a,b) => {
-            let [da, ma] = a.split('/'); let [db, mb] = b.split('/');
-            return new Date(2025, ma-1, da) - new Date(2025, mb-1, db);
-        });
-
         chartInstance = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labelsGrafico,
+                labels: Object.keys(hist),
                 datasets: [{
-                    data: labelsGrafico.map(d => dadosGrafico[d]),
-                    borderColor: '#00d2ff',
-                    borderWidth: 3,
-                    backgroundColor: (context) => {
-                        const ctx = context.chart.ctx;
-                        const gradient = ctx.createLinearGradient(0, 0, 0, 200);
-                        gradient.addColorStop(0, 'rgba(0, 210, 255, 0.4)');
-                        gradient.addColorStop(1, 'rgba(0, 210, 255, 0)');
-                        return gradient;
-                    },
+                    data: Object.values(hist),
+                    borderColor: '#00f2ff',
+                    borderWidth: 2,
                     fill: true,
-                    tension: 0.4, // Curva suave
-                    pointRadius: 4,
-                    pointBackgroundColor: '#fff'
+                    backgroundColor: 'rgba(0, 242, 255, 0.05)',
+                    tension: 0.4,
+                    pointRadius: 0
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: { 
-                    x: { display: false }, 
-                    y: { display: false } 
-                },
-                layout: { padding: { left: -10, right: -10, top: 10, bottom: 0 } }
-            }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } }
         });
     }
 
-    function gerarPDF() {
-        let total = 0, vales = 0;
-        
-        // Ordena cronologicamente para o PDF
-        let listaImpressao = [...vendas].sort((a,b) => a.timestamp - b.timestamp);
-        
-        let linhas = listaImpressao.map(v => {
-            if(v.isVale) {
-                vales += v.valor;
-                return `<tr style="color:red; background:#fff5f5;">
-                    <td style="padding:12px; border-bottom:1px solid #ddd;">${v.data}</td>
-                    <td style="padding:12px; border-bottom:1px solid #ddd;"><b>VALE</b></td>
-                    <td style="padding:12px; border-bottom:1px solid #ddd; text-align:right;">- R$ ${v.valor.toLocaleString()}</td>
-                    <td style="padding:12px; border-bottom:1px solid #ddd; text-align:center;">-</td>
-                </tr>`;
-            } else {
-                total += v.valor;
-                return `<tr>
-                    <td style="padding:12px; border-bottom:1px solid #eee;">${v.data}</td>
-                    <td style="padding:12px; border-bottom:1px solid #eee;"><b>${v.cliente}</b><br><small style="color:#666">${v.tipo} | ${v.sexo}</small></td>
-                    <td style="padding:12px; border-bottom:1px solid #eee; text-align:right;">R$ ${v.valor.toLocaleString()}</td>
-                    <td style="padding:12px; border-bottom:1px solid #eee; text-align:center;">
-                        <span style="background:${v.entregue ? '#d4edda' : '#fff3cd'}; color:${v.entregue ? '#155724' : '#856404'}; padding:4px 8px; border-radius:10px; font-size:10px; font-weight:bold;">
-                            ${v.entregue ? 'ENTREGUE' : 'PENDENTE'}
-                        </span>
-                    </td>
-                </tr>`;
-            }
-        }).join('');
-
-        const saldoLiq = ((total * 0.03) + 2000 - vales).toLocaleString('pt-BR', {minimumFractionDigits: 2});
-        
-        const win = window.open('', '_blank');
-        win.document.write(`
-            <html>
-            <head><title>Relatório Canil My Baby</title></head>
-            <body style="font-family: 'Helvetica', sans-serif; padding: 40px; color: #333; max-width: 800px; margin: auto;">
-                
-                <div style="display:flex; justify-content:space-between; border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 30px;">
-                    <div>
-                        <h1 style="margin:0; font-size: 24px;">CANIL MY BABY</h1>
-                        <p style="margin:5px 0; color:#555;">Relatório de Vendas - Vendedor: <b>GERSON</b></p>
-                    </div>
-                    <div style="text-align:right;">
-                        <p style="margin:0; font-size:12px; color:#888;">Data de Emissão</p>
-                        <b style="font-size:14px;">${new Date().toLocaleDateString()}</b>
-                    </div>
-                </div>
-
- 
+    // Tenta carregar assim que abre
+    varrerMemorias();
+</script>
+</body>
+</html>
