@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MY BABY | GERSON ELITE</title>
+    <title>MY BABY | GERSON V10</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -17,38 +17,41 @@
         }
         .container { max-width: 450px; margin: auto; }
         header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-        .logo-text { font-size: 22px; font-weight: 900; color: var(--accent); margin: 0; text-transform: uppercase; }
-        .sub-logo { font-size: 11px; font-weight: 600; color: #888; margin-top: 5px; }
+        .logo-text { font-size: 20px; font-weight: 900; color: var(--accent); margin: 0; text-transform: uppercase; }
+        .sub-logo { font-size: 10px; font-weight: 600; color: #888; margin-top: 5px; letter-spacing: 1px; }
 
         .premium-card { background: var(--card); border-radius: 16px; padding: 18px; margin-bottom: 12px; border: 1px solid var(--border); }
-        .total-pets-box { background: var(--accent); color: #000; padding: 10px; border-radius: 10px; text-align: center; font-weight: 900; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; }
 
-        .pets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-        .pet-stat { background: #080808; padding: 12px; border-radius: 12px; border: 1px solid #151515; text-align: center; }
-        .pet-stat b { display: block; font-size: 10px; color: #666; text-transform: uppercase; margin-bottom: 5px; }
-        .pet-stat .row { display: flex; justify-content: space-around; font-size: 13px; font-weight: 800; }
-
+        /* BARRAS DE STATUS */
         .bar-stat { padding: 18px; border-radius: 15px; border: 1px solid #222; margin-bottom: 10px; }
         .bar-stat span { display: block; font-size: 9px; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; opacity: 0.8; }
         .bar-stat strong { font-size: 24px; font-weight: 900; display: block; }
-        .formula { font-size: 10px; color: #aaa; font-weight: 700; margin-top: 5px; background: rgba(255,255,255,0.05); padding: 5px; border-radius: 5px; }
+        .formula { font-size: 10px; color: var(--success); font-weight: 700; margin-top: 5px; opacity: 0.9; }
 
-        .venda-row { display: grid; grid-template-columns: 35px 1fr 100px 85px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
-        .venda-row.vale-row { color: var(--danger); background: rgba(255, 71, 87, 0.08); border-radius: 10px; margin: 8px 0; padding: 12px; border: none; }
-        .venda-row .info b { display: block; font-size: 13px; font-weight: 800; }
-        .venda-row .price { text-align: right; font-weight: 900; font-size: 13px; }
-        .comissao-tag { font-size: 9px; color: var(--success); font-weight: 800; display: block; margin-top: 2px; }
+        /* PETS GRID */
+        .total-pets-box { background: var(--accent); color: #000; padding: 8px; border-radius: 8px; text-align: center; font-weight: 900; font-size: 13px; margin-bottom: 10px; }
+        .pets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+        .pet-stat { background: #080808; padding: 10px; border-radius: 12px; border: 1px solid #151515; text-align: center; }
+        .pet-stat b { display: block; font-size: 9px; color: #555; text-transform: uppercase; margin-bottom: 4px; }
+        .pet-stat div { font-size: 13px; font-weight: 800; }
+
+        /* HISTÓRICO SIMPLIFICADO */
+        .venda-row { display: grid; grid-template-columns: 40px 1fr 100px 80px; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border); }
+        .venda-row.vale-row { color: var(--danger); background: rgba(255, 71, 87, 0.05); border-radius: 10px; margin: 8px 0; padding: 15px; border: none; }
+        .venda-row .info b { display: block; font-size: 14px; font-weight: 800; color: #fff; }
+        .venda-row .info small { color: #666; font-size: 10px; font-weight: 600; text-transform: uppercase; }
+        .venda-row .price-box { text-align: right; }
+        .venda-row .v-bruto { display: block; font-weight: 900; font-size: 13px; color: #eee; }
+        .venda-row .v-com { display: block; font-weight: 800; font-size: 10px; color: var(--success); }
         
-        .btn-action { background: #111; border: 1px solid #222; color: #fff; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; }
+        /* BOTÕES */
+        .btn-action { background: #111; border: 1px solid #222; color: #fff; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 12px; }
         .btn-action.active-home { background: var(--success); border-color: var(--success); }
         .btn-action.active-cancel { background: var(--danger); border-color: var(--danger); }
-
         .btn-main { background: #ffffff; color: #000; border: none; padding: 16px; border-radius: 12px; font-weight: 900; width: 100%; cursor: pointer; text-transform: uppercase; }
-        input, select { background: #000; border: 1px solid #222; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; font-family: 'Inter'; }
-        
+
+        input, select { background: #000; border: 1px solid #222; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; font-family: 'Inter'; font-size: 14px; }
         .chart-wrap { height: 180px; }
-        .backup-btns { display: flex; gap: 10px; margin: 20px 0 50px; }
-        .btn-small { background: #111; color: #eee; border: 1px solid #222; padding: 12px; border-radius: 10px; flex: 1; font-size: 10px; font-weight: 800; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -56,7 +59,7 @@
 <div class="container">
     <header>
         <p class="logo-text">MY BABY - Painel de Vendas</p>
-        <p class="sub-logo">Vendedor Bengal e Spitz Alemão: Gerson</p>
+        <p class="sub-logo">Vendedor: Gerson</p>
     </header>
 
     <div class="premium-card">
@@ -70,41 +73,32 @@
 
     <div class="premium-card" style="padding: 10px;"><div class="chart-wrap"><canvas id="meuGrafico"></canvas></div></div>
 
-    <div class="total-pets-box">Vendas Totais: <span id="totalPets">0</span> Filhotes</div>
-    
+    <div class="total-pets-box">Vendas: <span id="totalPets">0</span> Filhotes</div>
     <div class="pets-grid">
-        <div class="pet-stat"><b>🐶 Spitz</b><div class="row"><span>♂ <span id="mS">0</span></span> <span>♀ <span id="fS">0</span></span></div></div>
-        <div class="pet-stat"><b>🐱 Bengal</b><div class="row"><span>♂ <span id="mB">0</span></span> <span>♀ <span id="fB">0</span></span></div></div>
+        <div class="pet-stat"><b>🐶 Spitz</b><div id="countSpitz">0</div></div>
+        <div class="pet-stat"><b>🐱 Bengal</b><div id="countBengal">0</div></div>
     </div>
 
     <div class="bar-stat" style="border-color: var(--danger); background: rgba(255,0,0,0.03);">
-        <span style="color: var(--danger);">Retiradas / Vales Realizados</span>
+        <span>Adiantamentos / Vales</span>
         <strong id="totalVales" style="color: var(--danger);">R$ 0,00</strong>
     </div>
 
     <div class="bar-stat" style="border-color: var(--success); background: rgba(0,255,0,0.05);">
-        <span style="color: var(--success);">Saldo para Receber (Fixo + Comissões - Vales)</span>
+        <span>Saldo Real (Fixo + 3% de Tudo)</span>
         <strong id="totalComissao" style="color: var(--success);">R$ 0,00</strong>
-        <div class="formula" id="detalheCalculo">Base 3%: R$ 0,00</div>
+        <div class="formula" id="detalheCalculo">Comissão acumulada: R$ 0,00</div>
     </div>
 
     <div class="premium-card">
         <div style="display:flex; gap:5px;"><select id="tipo"><option value="Spitz">🐶 SPITZ</option><option value="Bengal">🐱 BENGAL</option></select><select id="sexo"><option value="Macho">♂ MACHO</option><option value="Fêmea">♀ FÊMEA</option></select></div>
         <input type="text" id="cliente" placeholder="NOME DO CLIENTE">
         <input type="number" id="valorVenda" placeholder="VALOR DA VENDA R$">
-        <button class="btn-main" onclick="adicionarVenda()">CONFIRMAR VENDA</button>
-        <button onclick="adicionarVale()" style="background:none; border:none; color:var(--danger); font-size:10px; font-weight:900; margin-top:15px; width:100%; cursor:pointer; text-decoration: underline;">REGISTRAR VALE / RETIRADA</button>
+        <button class="btn-main" onclick="adicionarVenda()">LANÇAR VENDA</button>
+        <button onclick="adicionarVale()" style="background:none; border:none; color:var(--danger); font-size:10px; font-weight:900; margin-top:15px; width:100%; cursor:pointer; text-decoration: underline;">REGISTRAR VALE</button>
     </div>
 
     <div id="listaVendas"></div>
-    
-    <button class="btn-main" style="background:var(--danger); color:#fff; margin-top:20px;" onclick="imprimirRelatorio()">GERAR RELATÓRIO PDF</button>
-
-    <div class="backup-btns">
-        <button class="btn-small" onclick="exportarBackup()">SALVAR BACKUP</button>
-        <button class="btn-small" onclick="document.getElementById('importFile').click()">IMPORTAR</button>
-        <input type="file" id="importFile" style="display:none" onchange="importarBackup(this)">
-    </div>
 </div>
 
 <script>
@@ -118,7 +112,7 @@
     function adicionarVenda() {
         const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valorVenda').value);
         if(c && v) {
-            vendas.push({ tipo: document.getElementById('tipo').value, sexo: document.getElementById('sexo').value, cliente: c, valor: v, data: new Date().toLocaleDateString('pt-BR'), entregue: false, cancelada: false, sinal: 0, isVale: false });
+            vendas.push({ tipo: document.getElementById('tipo').value, sexo: document.getElementById('sexo').value, cliente: c, valor: v, data: new Date().toLocaleDateString('pt-BR'), entregue: false, cancelada: false, isVale: false });
             localStorage.setItem('vendasV5', JSON.stringify(vendas));
             document.getElementById('cliente').value = ''; document.getElementById('valorVenda').value = '';
             renderizar();
@@ -126,19 +120,15 @@
     }
 
     function adicionarVale() {
-        const v = prompt("VALOR DA RETIRADA:");
+        const v = prompt("VALOR DO VALE:");
         if(v) {
-            vendas.push({ cliente: 'Retirada', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true });
+            vendas.push({ cliente: 'Vale', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true });
             localStorage.setItem('vendasV5', JSON.stringify(vendas));
             renderizar();
         }
     }
 
     function alternarEstado(i, campo) {
-        if(campo === 'cancelada' && !vendas[i].cancelada) {
-            let s = prompt("SINAL RETIDO:", "1000");
-            vendas[i].sinal = s ? parseFloat(s) : 0;
-        }
         vendas[i][campo] = !vendas[i][campo];
         localStorage.setItem('vendasV5', JSON.stringify(vendas));
         renderizar();
@@ -146,41 +136,46 @@
 
     function renderizar() {
         const listaDiv = document.getElementById('listaVendas');
-        let totalParaComissao = 0, totalVales = 0, totalPets = 0, faturamentoGrafico = 0;
-        let mS=0, fS=0, mB=0, fB=0;
+        let faturamentoParaComissao = 0; // Soma TUDO para os 3%
+        let totalVales = 0;
+        let faturamentoAtivo = 0; // Apenas para o gráfico e meta
+        let nSpitz = 0, nBengal = 0;
         let dadosG = {}; listaDiv.innerHTML = '';
 
         vendas.forEach((v, i) => {
             if(v.isVale) {
                 totalVales += v.valor;
                 listaDiv.innerHTML = `<div class="venda-row vale-row">
-                    <div class="icon">💸</div>
-                    <div class="info"><b>RETIRADA DE DINHEIRO</b><small>${v.data}</small></div>
-                    <div class="price">- R$ ${v.valor.toLocaleString()}</div>
-                    <div style="text-align:right"><button onclick="vendas.splice(${i},1); localStorage.setItem('vendasV5', JSON.stringify(vendas)); renderizar();" style="background:none; border:none; color:white; opacity:0.3; padding:10px;">✕</button></div>
+                    <div style="font-size:20px">💸</div>
+                    <div class="info"><b>VALE RETIRADO</b><small>${v.data}</small></div>
+                    <div class="price-box"><span class="v-bruto" style="color:var(--danger)">- R$ ${v.valor.toLocaleString()}</span></div>
+                    <div style="text-align:right"><button onclick="vendas.splice(${i},1); localStorage.setItem('vendasV5', JSON.stringify(vendas)); renderizar();" style="background:none; border:none; color:#555;">✕</button></div>
                 </div>` + listaDiv.innerHTML;
             } else {
-                // Comissões contam SEMPRE (mesmo canceladas)
-                totalParaComissao += v.valor;
+                // REGRA PRINCIPAL: COMISSÃO SEMPRE CONTA
+                faturamentoParaComissao += v.valor;
 
                 if(!v.cancelada) {
-                    totalPets++;
-                    faturamentoGrafico += v.valor;
-                    if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? mS++ : fS++; } else { v.sexo === 'Macho' ? mB++ : fB++; }
-                    
-                    // Alimenta o gráfico apenas com VENDAS reais
+                    faturamentoAtivo += v.valor;
+                    v.tipo === 'Spitz' ? nSpitz++ : nBengal++;
                     let dia = v.data.substring(0,5); 
                     dadosG[dia] = (dadosG[dia] || 0) + v.valor;
                 }
 
-                let comV = v.valor * 0.03;
-                let tags = v.cancelada ? `<br><span style="color:var(--danger); font-size:9px; font-weight:900;">🚫 CANCELADO (COMISSÃO MANTIDA)</span>` : (v.entregue ? '<br><span style="color:var(--success); font-size:9px; font-weight:900;">ENTREGUE ✅</span>' : '');
+                let minhaCom = v.valor * 0.03;
+                let statusTag = v.cancelada ? `<span style="color:var(--danger)">CANCELADA</span>` : (v.entregue ? `<span style="color:var(--success)">ENTREGUE ✅</span>` : `PENDENTE`);
 
-                listaDiv.innerHTML = `<div class="venda-row" style="${v.cancelada?'opacity:0.5':''}">
-                    <div class="icon">${v.tipo=='Spitz'?'🐶':'🐱'}</div>
-                    <div class="info"><b>${v.cliente}</b><small>${v.sexo} | ${v.data}</small>${tags}</div>
-                    <div class="price">R$ ${v.valor.toLocaleString()}<span class="comissao-tag">+ R$ ${comV.toLocaleString()}</span></div>
-                    <div style="display:flex; gap:5px;">
+                listaDiv.innerHTML = `<div class="venda-row" style="${v.cancelada ? 'opacity:0.5' : ''}">
+                    <div style="font-size:20px">${v.tipo=='Spitz'?'🐶':'🐱'}</div>
+                    <div class="info">
+                        <b>${v.cliente}</b>
+                        <small>${v.tipo} ${v.sexo} | ${statusTag}</small>
+                    </div>
+                    <div class="price-box">
+                        <span class="v-bruto">R$ ${v.valor.toLocaleString()}</span>
+                        <span class="v-com">+ R$ ${minhaCom.toLocaleString()}</span>
+                    </div>
+                    <div style="display:flex; gap:4px; justify-content:flex-end;">
                         <button class="btn-action ${v.entregue?'active-home':''}" onclick="alternarEstado(${i},'entregue')">🏠</button>
                         <button class="btn-action ${v.cancelada?'active-cancel':''}" onclick="alternarEstado(${i},'cancelada')">🚫</button>
                     </div>
@@ -188,40 +183,32 @@
             }
         });
 
-        document.getElementById('totalPets').innerText = totalPets;
-        document.getElementById('mS').innerText = mS; document.getElementById('fS').innerText = fS;
-        document.getElementById('mB').innerText = mB; document.getElementById('fB').innerText = fB;
+        // Atualiza Painéis
+        document.getElementById('totalPets').innerText = nSpitz + nBengal;
+        document.getElementById('countSpitz').innerText = nSpitz;
+        document.getElementById('countBengal').innerText = nBengal;
         document.getElementById('totalVales').innerText = "R$ " + totalVales.toLocaleString();
         
-        const valorComissoes = totalParaComissao * 0.03;
+        const valorComissoes = faturamentoParaComissao * 0.03;
         const saldoFinal = 2000 + valorComissoes - totalVales;
         
         document.getElementById('totalComissao').innerText = "R$ " + saldoFinal.toLocaleString();
-        document.getElementById('detalheCalculo').innerText = `Comissão Total (3%): R$ ${valorComissoes.toLocaleString()}`;
+        document.getElementById('detalheCalculo').innerText = `3% de comissão garantidos sobre R$ ${faturamentoParaComissao.toLocaleString()}`;
 
-        let progresso = meta > 0 ? (faturamentoGrafico/meta)*100 : 0;
+        // Meta e Gráfico
+        let progresso = meta > 0 ? (faturamentoAtivo/meta)*100 : 0;
         document.getElementById('barraProgresso').style.width = Math.min(progresso, 100) + "%";
         document.getElementById('porcentoTxt').innerText = Math.floor(progresso) + "%";
-        document.getElementById('faltaTxt').innerText = meta - faturamentoGrafico > 0 ? "FALTA R$ " + (meta-faturamentoGrafico).toLocaleString() : "META ATINGIDA!";
+        document.getElementById('faltaTxt').innerText = meta - faturamentoAtivo > 0 ? "FALTA R$ " + (meta-faturamentoAtivo).toLocaleString() : "META BATIDA!";
 
         const ctx = document.getElementById('meuGrafico').getContext('2d');
         if(chartInstance) chartInstance.destroy();
         chartInstance = new Chart(ctx, {
             type: 'line',
-            data: { labels: Object.keys(dadosG), datasets: [{ data: Object.values(dadosG), borderColor: '#d4af37', backgroundColor: 'rgba(212, 175, 55, 0.1)', fill: true, tension: 0.3, borderWidth: 3, pointRadius: 2, pointBackgroundColor: '#d4af37' }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { color: '#ffffff', font: { weight: 'bold' } }, grid: { color: '#1a1a1a' } }, x: { ticks: { color: '#444' }, grid: { display: false } } } }
+            data: { labels: Object.keys(dadosG), datasets: [{ data: Object.values(dadosG), borderColor: '#d4af37', backgroundColor: 'rgba(212, 175, 55, 0.1)', fill: true, tension: 0.4, borderWidth: 3, pointRadius: 3 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { color: '#666' }, grid: { color: '#1a1a1a' } }, x: { ticks: { color: '#666' }, grid: { display: false } } } }
         });
     }
-
-    function imprimirRelatorio() {
-        let fatCom = 0, vls = 0;
-        vendas.forEach(v => { if(!v.isVale) fatCom += v.valor; else vls += v.valor; });
-        const win = window.open('', '_blank');
-        win.document.write(`<html><head><style>body{font-family:sans-serif;padding:30px;}table{width:100%;border-collapse:collapse;}td,th{padding:10px;border-bottom:1px solid #eee;text-align:left;}</style></head><body><h1>RELATÓRIO DE VENDAS - GERSON</h1><h3>Saldo Final: R$ ${(2000 + (fatCom*0.03) - vls).toLocaleString()}</h3><table><tr><th>Data</th><th>Cliente</th><th>Valor</th><th>Comissão (3%)</th></tr>${vendas.map(v => v.isVale ? '' : `<tr><td>${v.data}</td><td>${v.cliente}</td><td>R$ ${v.valor.toLocaleString()}</td><td>R$ ${(v.valor*0.03).toLocaleString()}</td></tr>`).join('')}</table></body></html>`);
-    }
-
-    function exportarBackup() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(vendas)], {type: 'application/json'})); a.download = `backup_gerson.json`; a.click(); }
-    function importarBackup(input) { const reader = new FileReader(); reader.onload = () => { vendas = JSON.parse(reader.result); localStorage.setItem('vendasV5', JSON.stringify(vendas)); renderizar(); }; reader.readAsText(input.files[0]); }
 
     renderizar();
 </script>
