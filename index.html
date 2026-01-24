@@ -14,7 +14,6 @@
         header h1 { margin: 0; font-size: 18px; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px var(--blue); }
         header p { margin: 5px 0 0 0; font-size: 11px; color: var(--blue); font-weight: 600; }
 
-        /* META DESTAQUE */
         .meta-container { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 15px; }
         .meta-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
         .meta-label { font-size: 10px; color: #666; font-weight: 800; text-transform: uppercase; }
@@ -24,7 +23,6 @@
         .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #0088ff, var(--blue)); box-shadow: 0 0 15px var(--blue); border-radius: 20px; transition: 1s; position: relative; }
         .rocket { position: absolute; right: -8px; top: -5px; font-size: 16px; }
 
-        /* FINANCEIRO */
         .fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
         .fin-box { background: var(--card); padding: 12px; border-radius: 14px; border: 1px solid var(--border); }
         .fin-box span { font-size: 8px; color: #666; font-weight: 700; display: block; margin-bottom: 3px; text-transform: uppercase; }
@@ -34,7 +32,7 @@
         .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 250px; padding: 15px; box-sizing: border-box; }
 
         .inputs { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
-        .inputs input, .inputs select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; box-sizing: border-box; font-size: 13px; font-family: inherit; }
+        input, select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; box-sizing: border-box; font-size: 13px; font-family: inherit; }
         
         .btn-main { background: #fff; color: #000; width: 100%; padding: 14px; border-radius: 10px; font-weight: 800; border: none; margin-bottom: 8px; cursor: pointer; }
         .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
@@ -76,7 +74,7 @@
     </div>
 
     <div class="chart-wrapper">
-        <div style="height: 100%; width: 100%;"><canvas id="graficoVendas"></canvas></div>
+        <canvas id="graficoVendas"></canvas>
     </div>
 
     <div class="inputs">
@@ -99,7 +97,18 @@
 <script>
     const CHAVE = 'vendas_gerson_oficial';
     const META_FIXA = 100000;
-    let vendas = JSON.parse(localStorage.getItem(CHAVE)) || [];
+    
+    // Função para recuperar de qualquer lugar que tenha dados
+    function carregarDados() {
+        const nomesPossiveis = [CHAVE, 'vendas_v10_final', 'vendas_v9_glow', 'vendas_v8_final'];
+        for (let nome of nomesPossiveis) {
+            let d = localStorage.getItem(nome);
+            if (d && JSON.parse(d).length > 0) return JSON.parse(d);
+        }
+        return [];
+    }
+
+    let vendas = carregarDados();
     let chart = null;
 
     function salvar() { localStorage.setItem(CHAVE, JSON.stringify(vendas)); render(); }
@@ -128,7 +137,7 @@
             const dtCurta = v.data.substring(0, 5);
             if (v.isVale) {
                 vales += v.valor;
-                div.innerHTML += `<div class="item" style="opacity:0.5"><div class="item-info"><b>VALE</b><small>${dtCurta}</small></div><div class="val-venda" style="color:var(--red)">- R$ ${v.valor.toLocaleString()}</div></div>`;
+                div.innerHTML += `<div class="item" style="opacity:0.5"><div class="item-info"><b>VALE</b><small>${dtCurta}</small></div><div class="val-venda" style="color:var(--red)">- R$ ${v.valor.toLocaleString()}</div><button onclick="del(${v.id})" style="background:none;border:none;color:#444;margin-left:10px">🗑</button></div>`;
             } else {
                 bruto += v.valor; com += (v.valor * 0.03);
                 div.innerHTML += `<div class="item ${v.entregue ? 'entregue' : 'pendente'}"><div class="item-info"><b>${v.cliente}</b><small>${dtCurta} • ${v.tipo}</small></div><div style="display:flex;align-items:center"><div class="val-venda">R$ ${v.valor.toLocaleString()}</div><button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button></div></div>`;
@@ -157,31 +166,10 @@
         const bruto = vendas.filter(v=>!v.isVale).reduce((a,b)=>a+b.valor,0);
         const vls = vendas.filter(v=>v.isVale).reduce((a,b)=>a+b.valor,0);
         const comTotal = bruto * 0.03;
-        const vendasOrdenadas = [...vendas].filter(v=>!v.isVale).sort((a,b) => {
-            const dateA = a.data.split('/').reverse().join('');
-            const dateB = b.data.split('/').reverse().join('');
-            return dateA.localeCompare(dateB);
-        });
+        const vOrdenadas = [...vendas].filter(v=>!v.isVale).sort((a,b) => a.ts - b.ts);
 
         const win = window.open('','_blank');
-        win.document.write(`<html><head><style>
-            body{background:#000;color:#fff;font-family:sans-serif;padding:30px}
-            .card{background:#111;padding:20px;border-radius:10px;border:1px solid #333}
-            table{width:100%;border-collapse:collapse;margin-top:20px}
-            th{text-align:left;color:#00f2ff;border-bottom:1px solid #333;padding:10px}
-            td{padding:10px;border-bottom:1px solid #222; font-size: 12px;}
-            .green{color:#00ff88}
-        </style></head><body>
-            <h1>Relatório Canil My Baby - Gerson</h1>
-            <div class="card">
-                <h3>Bruto: R$ ${bruto.toLocaleString()}</h3>
-                <h3>Comissão Total: R$ ${comTotal.toLocaleString()}</h3>
-                <hr>
-                <h2>Líquido Real: R$ ${(2000+comTotal-vls).toLocaleString()}</h2>
-            </div>
-            <table><thead><tr><th>DATA</th><th>CLIENTE</th><th>VALOR</th><th>COMISSÃO (3%)</th></tr></thead><tbody>
-            ${vendasOrdenadas.map(v=>`<tr><td>${v.data}</td><td>${v.cliente}</td><td>R$ ${v.valor.toLocaleString()}</td><td class="green">R$ ${(v.valor*0.03).toLocaleString()}</td></tr>`).join('')}
-            </tbody></table><script>window.onload=()=>{window.print();}</script></body></html>`);
+        win.document.write(`<html><head><style>body{background:#000;color:#fff;font-family:sans-serif;padding:30px}.card{background:#111;padding:20px;border-radius:10px;border:1px solid #333}table{width:100%;border-collapse:collapse;margin-top:20px}th{text-align:left;color:#00f2ff;border-bottom:1px solid #333;padding:10px}td{padding:10px;border-bottom:1px solid #222}.green{color:#00ff88}</style></head><body><h1>Canil My Baby - Gerson</h1><div class="card"><h3>Bruto: R$ ${bruto.toLocaleString()}</h3><h3>Comissão Total: R$ ${comTotal.toLocaleString()}</h3><hr><h2>Líquido: R$ ${(2000+comTotal-vls).toLocaleString()}</h2></div><table><thead><tr><th>DATA</th><th>CLIENTE</th><th>VALOR</th><th>COMISSÃO (3%)</th></tr></thead><tbody>${vOrdenadas.map(v=>`<tr><td>${v.data}</td><td>${v.cliente}</td><td>R$ ${v.valor.toLocaleString()}</td><td class="green">R$ ${(v.valor*0.03).toLocaleString()}</td></tr>`).join('')}</tbody></table><script>window.print();<\/script></body></html>`);
     }
 
     function exportarDados() {
