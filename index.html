@@ -33,16 +33,16 @@
         .venda-row { display: grid; grid-template-columns: 42px 1fr 90px 85px; align-items: center; padding: 16px 0; border-bottom: 1px solid #151515; }
         .venda-row.entregue { border-left: 3px solid var(--success); padding-left: 10px; }
         .venda-row.cancelada { border-left: 3px solid var(--danger); padding-left: 10px; }
-        .venda-row .info b { font-size: 13px; display: block; text-transform: uppercase; }
+        .venda-row .info b { font-size: 13px; display: block; text-transform: uppercase; cursor: pointer; }
+        .venda-row .info b:hover { color: var(--accent); }
         .venda-row .info small { color: #555; font-size: 10px; }
         .venda-row .price { text-align: right; font-weight: 900; font-size: 14px; padding-right: 8px; }
-        .btn-main { background: #fff; color: #000; border: none; padding: 16px; border-radius: 16px; font-weight: 900; width: 100%; font-size: 14px; cursor: pointer; transition: 0.2s; }
-        .btn-main:active { transform: scale(0.98); }
+        .btn-main { background: #fff; color: #000; border: none; padding: 16px; border-radius: 16px; font-weight: 900; width: 100%; font-size: 14px; cursor: pointer; }
         .btn-pdf { background: transparent; color: var(--accent); border: 1px solid var(--accent); margin-top: 10px; }
         .btn-action-group { display: flex; gap: 6px; }
         .btn-act { background: #111; border: 1px solid #222; color: #fff; width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-        .btn-act.active-ent { background: var(--success); color: #000; border-color: var(--success); }
-        .btn-act.active-can { background: var(--danger); color: #fff; border-color: var(--danger); }
+        .btn-act.active-ent { background: var(--success); color: #000; }
+        .btn-act.active-can { background: var(--danger); color: #fff; }
         input, select { background: #080808; border: 1px solid #222; color: #fff; padding: 14px; border-radius: 14px; width: 100%; box-sizing: border-box; margin-bottom: 10px; font-family: 'Inter'; }
     </style>
 </head>
@@ -60,7 +60,7 @@
 
     <div class="premium-card">
         <div class="media-tag"><span>Média</span><b id="mediaVendas">R$ 0</b></div>
-        <span style="font-size:10px; font-weight:800; color:#555;">FATURAMENTO BRUTO</span>
+        <span style="font-size:10px; font-weight:800; color:#555;">VENDAS DO MÊS</span>
         <strong id="totalVendas" style="font-size: 34px; font-weight: 900; display: block;">R$ 0</strong>
         <div class="progress-bg"><div id="barra" class="progress-fill"></div></div>
         <div style="display:flex; justify-content:space-between; align-items: center;">
@@ -92,33 +92,36 @@
 
 <script>
     let chartInstance = null;
-    
-    // CARREGA E LIMPA VALORES ANTIGOS TRAVADOS
-    function carregarDados() {
-        let storage = localStorage.getItem('vendasV12') || "[]";
-        let lista = JSON.parse(storage);
-        
-        // Aqui limpamos o erro: se a venda estiver cancelada e o sinal for EXATAMENTE 1000, 
-        // nós zeramos para você poder colocar o valor real.
-        lista = lista.map(v => {
-            if(v.cancelada && v.sinal == 1000) { v.sinal = 0; }
-            return v;
-        });
-        return lista;
-    }
-
-    let vendas = carregarDados();
+    let vendas = JSON.parse(localStorage.getItem('vendasV12') || "[]");
     let meta = localStorage.getItem('metaV12') || 100000;
     document.getElementById('metaVal').value = meta;
 
-    function salvar() { localStorage.setItem('vendasV12', JSON.stringify(vendas)); renderizar(); }
-    function atualizarMeta() { meta = document.getElementById('metaVal').value; localStorage.setItem('metaV12', meta); renderizar(); }
+    function salvar() { 
+        localStorage.setItem('vendasV12', JSON.stringify(vendas)); 
+        renderizar(); 
+    }
+    
+    function atualizarMeta() { 
+        meta = document.getElementById('metaVal').value; 
+        localStorage.setItem('metaV12', meta); 
+        renderizar(); 
+    }
 
     function addVenda() {
         const c = document.getElementById('cliente').value, vt = parseFloat(document.getElementById('valorTotal').value);
         if(c && vt) {
             vendas.push({ id: Date.now(), tipo: document.getElementById('tipo').value, sexo: document.getElementById('sexo').value, cliente: c, valor: vt, sinal: 0, data: new Date().toLocaleDateString('pt-BR'), entregue: false, cancelada: false });
-            document.getElementById('cliente').value = ''; document.getElementById('valorTotal').value = ''; salvar();
+            document.getElementById('cliente').value = ''; document.getElementById('valorTotal').value = ''; 
+            salvar();
+        }
+    }
+
+    function editarData(id) {
+        const i = vendas.findIndex(x => x.id == id);
+        const novaData = prompt("Editar data (formato DD/MM/AAAA):", vendas[i].data);
+        if(novaData) {
+            vendas[i].data = novaData;
+            salvar();
         }
     }
 
@@ -130,7 +133,7 @@
     function alternarCancelado(id) {
         const i = vendas.findIndex(x => x.id == id);
         if (!vendas[i].cancelada) {
-            const valorSinal = prompt("CANCELAMENTO: Digite o valor real do SINAL RETIDO:");
+            const valorSinal = prompt("CANCELAMENTO: Valor do SINAL RETIDO?");
             if (valorSinal !== null) {
                 vendas[i].sinal = parseFloat(valorSinal) || 0;
                 vendas[i].cancelada = true;
@@ -157,9 +160,9 @@
                 if(v.sexo === 'Macho') cM++; else if(v.sexo === 'Fêmea') cF++;
                 let dia = v.data.substring(0,5); hist[dia] = (hist[dia] || 0) + v.valor;
                 
-                let textoSinal = v.cancelada ? `<br><b style="color:var(--danger);font-size:10px;">SINAL RETIDO: R$ ${(v.sinal).toLocaleString()}</b>` : '';
+                let textoSinal = v.cancelada ? `<br><b style="color:var(--danger);font-size:10px;">SINAL RETIDO: R$ ${parseFloat(v.sinal || 0).toLocaleString('pt-BR')}</b>` : '';
 
-                lista.innerHTML = `<div class="venda-row ${v.entregue?'entregue':''} ${v.cancelada?'cancelada':''}"><div class="icon">${v.tipo=='Spitz'?'🐶':'🐱'}</div><div class="info"><b>${v.cliente}</b><small>${v.sexo} | ${v.data}</small>${textoSinal}</div><div class="price">R$ ${v.valor.toLocaleString()}</div><div class="btn-action-group"><button class="btn-act ent ${v.entregue?'active-ent':''}" onclick="const i=vendas.findIndex(x=>x.id==${v.id});vendas[i].entregue=!vendas[i].entregue;salvar()">🏠</button><button class="btn-act can ${v.cancelada?'active-can':''}" onclick="alternarCancelado(${v.id})">🚫</button></div></div>` + lista.innerHTML;
+                lista.innerHTML = `<div class="venda-row ${v.entregue?'entregue':''} ${v.cancelada?'cancelada':''}"><div class="icon">${v.tipo=='Spitz'?'🐶':'🐱'}</div><div class="info"><b onclick="editarData(${v.id})">${v.cliente}</b><small>${v.sexo} | ${v.data}</small>${textoSinal}</div><div class="price">R$ ${v.valor.toLocaleString()}</div><div class="btn-action-group"><button class="btn-act ent ${v.entregue?'active-ent':''}" onclick="const i=vendas.findIndex(x=>x.id==${v.id});vendas[i].entregue=!vendas[i].entregue;salvar()">🏠</button><button class="btn-act can ${v.cancelada?'active-can':''}" onclick="alternarCancelado(${v.id})">🚫</button></div></div>` + lista.innerHTML;
             }
         });
 
@@ -182,11 +185,11 @@
         let fat = 0, vales = 0;
         let rows = vendas.map(v => {
             if(!v.isVale) fat += v.valor; else vales += v.valor;
-            let status = v.isVale ? 'VALE' : (v.cancelada ? `CANCELADO (SINAL: R$ ${(v.sinal || 0).toLocaleString()})` : (v.entregue ? 'ENTREGUE' : 'AGUARDANDO ENTREGA'));
+            let status = v.isVale ? 'VALE' : (v.cancelada ? `CANCELADO (SINAL: R$ ${parseFloat(v.sinal || 0).toLocaleString()})` : (v.entregue ? 'ENTREGUE' : 'AGUARDANDO ENTREGA'));
             return `<tr><td style="padding:12px; border-bottom:1px solid #eee;">${v.data}</td><td style="padding:12px; border-bottom:1px solid #eee;"><b>${v.cliente}</b></td><td style="padding:12px; border-bottom:1px solid #eee; text-align:right;">R$ ${v.valor.toLocaleString()}</td><td style="padding:12px; border-bottom:1px solid #eee; text-align:center; font-size:10px; font-weight:bold;">${status}</td></tr>`;
         }).join('');
         const win = window.open('', '_blank');
-        win.document.write(`<html><body style="font-family:sans-serif; padding:40px;"><h1 style="margin:0; border-bottom:3px solid #000; padding-bottom:10px;">PAINEL DE VENDAS - CANIL MY BABY</h1><p>Vendedor: <b>GERSON</b> | Relatório: ${new Date().toLocaleDateString()}</p><div style="display:flex; justify-content:space-between; background:#f4f4f4; padding:25px; border-radius:15px; margin:20px 0; font-size:18px;"><div>Faturamento: <b>R$ ${fat.toLocaleString()}</b></div><div>Saldo Líquido: <b style="color:#2ecc71;">R$ ${((fat*0.03)+2000-vales).toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div></div><table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#000; color:#fff;"><th style="padding:12px; text-align:left;">DATA</th><th style="padding:12px; text-align:left;">CLIENTE</th><th style="padding:12px; text-align:right;">VALOR TOTAL</th><th style="padding:12px; text-align:center;">STATUS</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`);
+        win.document.write(`<html><body style="font-family:sans-serif; padding:40px;"><h1 style="margin:0; border-bottom:3px solid #000; padding-bottom:10px;">PAINEL DE VENDAS - CANIL MY BABY</h1><p>Vendedor: <b>GERSON</b> | Relatório: ${new Date().toLocaleDateString()}</p><div style="display:flex; justify-content:space-between; background:#f4f4f4; padding:25px; border-radius:15px; margin:20px 0; font-size:18px;"><div>Vendas do Mês: <b>R$ ${fat.toLocaleString()}</b></div><div>Saldo Líquido: <b style="color:#2ecc71;">R$ ${((fat*0.03)+2000-vales).toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div></div><table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#000; color:#fff;"><th style="padding:12px; text-align:left;">DATA</th><th style="padding:12px; text-align:left;">CLIENTE</th><th style="padding:12px; text-align:right;">VALOR TOTAL</th><th style="padding:12px; text-align:center;">STATUS</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`);
     }
     renderizar();
 </script>
