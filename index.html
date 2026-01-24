@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>GERSON CANIL | ELITE FINAL</title>
+    <title>MY BABY | GESTÃO ELITE</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --accent: #00d2ff; --danger: #ff4757; --success: #2ecc71;
+            --accent: #d4af37; --danger: #ff4757; --success: #2ecc71;
             --bg: #000000; --card: #0a0a0a; --border: #1a1a1a;
         }
         body { 
@@ -16,9 +16,11 @@
             margin: 0; padding: 15px; -webkit-font-smoothing: antialiased;
         }
         .container { max-width: 450px; margin: auto; }
-        header { border-left: 4px solid var(--accent); padding-left: 15px; margin-bottom: 20px; }
-        header h1 { margin: 0; font-size: 22px; font-weight: 900; }
-        header h2 { margin: 0; font-size: 10px; letter-spacing: 3px; opacity: 0.6; text-transform: uppercase; }
+        
+        /* CABEÇALHO COM LOGO */
+        header { text-align: center; margin-bottom: 25px; }
+        .logo-text { font-size: 28px; font-weight: 900; color: var(--accent); letter-spacing: -1px; margin: 0; }
+        .sub-logo { font-size: 10px; letter-spacing: 3px; opacity: 0.7; text-transform: uppercase; }
 
         .premium-card { background: var(--card); border-radius: 16px; padding: 18px; margin-bottom: 12px; border: 1px solid var(--border); }
 
@@ -27,9 +29,9 @@
         .pet-stat b { display: block; font-size: 10px; color: #666; text-transform: uppercase; margin-bottom: 5px; }
         .pet-stat .row { display: flex; justify-content: space-around; font-size: 13px; font-weight: 800; }
 
-        .bar-stat { padding: 18px; border-radius: 15px; border: 1px solid #222; margin-bottom: 10px; }
+        .bar-stat { padding: 18px; border-radius: 15px; border: 1px solid #222; margin-bottom: 10px; text-align: center; }
         .bar-stat span { display: block; font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
-        .bar-stat strong { font-size: 24px; font-weight: 900; display: block; }
+        .bar-stat strong { font-size: 26px; font-weight: 900; display: block; }
 
         .venda-row { display: grid; grid-template-columns: 35px 1fr 95px 85px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
         .venda-row.vale-row { color: var(--danger); background: rgba(255, 71, 87, 0.08); border-radius: 10px; margin: 8px 0; padding: 12px; border: none; }
@@ -40,7 +42,7 @@
         .btn-action.active-home { background: var(--success); border-color: var(--success); }
         .btn-action.active-cancel { background: var(--danger); border-color: var(--danger); }
 
-        .btn-main { background: #ffffff; color: #000; border: none; padding: 16px; border-radius: 12px; font-weight: 900; width: 100%; cursor: pointer; }
+        .btn-main { background: #ffffff; color: #000; border: none; padding: 16px; border-radius: 12px; font-weight: 900; width: 100%; cursor: pointer; text-transform: uppercase; }
         input, select { background: #000; border: 1px solid #222; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; font-family: 'Inter'; }
         
         .chart-wrap { height: 180px; }
@@ -52,13 +54,13 @@
 
 <div class="container">
     <header>
-        <h2>Elite Dashboard</h2>
-        <h1>GERSON CANIL</h1>
+        <p class="logo-text">MY BABY</p>
+        <p class="sub-logo">CRIADOR DE CÃES E GATOS</p>
     </header>
 
     <div class="premium-card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <span style="font-size:10px; font-weight:900; color:#444;">OBJETIVO</span>
+            <span style="font-size:10px; font-weight:900; color:#444;">OBJETIVO MENSAL</span>
             <input type="number" id="metaVal" style="width:100px; margin:0; border:none; background:transparent; text-align:right; font-size:16px; font-weight:900; color:var(--accent);" onchange="salvarMeta()">
         </div>
         <div style="background:#111; height:6px; border-radius:10px; margin-bottom:8px;"><div id="barraProgresso" style="background:var(--accent); height:100%; width:0%; border-radius:10px;"></div></div>
@@ -72,12 +74,12 @@
         <div class="pet-stat"><b>🐱 Bengal</b><div class="row"><span>♂ <span id="mB">0</span></span> <span>♀ <span id="fB">0</span></span></div></div>
     </div>
 
-    <div class="bar-stat" style="border-color: var(--danger); background: linear-gradient(180deg, #000, #110000);">
+    <div class="bar-stat" style="border-color: var(--danger); background: rgba(255,0,0,0.05);">
         <span style="color: var(--danger);">VALES / RETIRADAS</span>
         <strong id="totalVales" style="color: var(--danger);">R$ 0,00</strong>
     </div>
 
-    <div class="bar-stat" style="border-color: var(--success); background: linear-gradient(180deg, #000, #001100);">
+    <div class="bar-stat" style="border-color: var(--success); background: rgba(0,255,0,0.05);">
         <span style="color: var(--success);">DISPONÍVEL LÍQUIDO</span>
         <strong id="totalComissao" style="color: var(--success);">R$ 0,00</strong>
     </div>
@@ -87,7 +89,7 @@
         <input type="text" id="cliente" placeholder="NOME DO CLIENTE">
         <input type="number" id="valorVenda" placeholder="VALOR R$">
         <button class="btn-main" onclick="adicionarVenda()">CADASTRAR VENDA</button>
-        <button onclick="adicionarVale()" style="background:none; border:none; color:var(--danger); font-size:10px; font-weight:900; margin-top:15px; width:100%; cursor:pointer; text-decoration: underline;">LANÇAR VALE</button>
+        <button onclick="adicionarVale()" style="background:none; border:none; color:var(--danger); font-size:10px; font-weight:900; margin-top:15px; width:100%; cursor:pointer; text-decoration: underline;">LANÇAR VALE / ADIANTAMENTO</button>
     </div>
 
     <div id="listaVendas"></div>
@@ -107,7 +109,11 @@
     let chartInstance = null;
     document.getElementById('metaVal').value = meta;
 
-    function salvarMeta() { meta = document.getElementById('metaVal').value; localStorage.setItem('metaV5', meta); renderizar(); }
+    function salvarMeta() { 
+        meta = document.getElementById('metaVal').value; 
+        localStorage.setItem('metaV5', meta); 
+        renderizar(); 
+    }
 
     function adicionarVenda() {
         const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valorVenda').value);
@@ -150,7 +156,7 @@
                     <div class="icon">💸</div>
                     <div class="info"><b>DÉBITO / VALE</b><small>${v.data}</small></div>
                     <div class="price">- R$ ${v.valor.toLocaleString()}</div>
-                    <div style="text-align:right"><button onclick="vendas.splice(${i},1); localStorage.setItem('vendasV5', JSON.stringify(vendas)); renderizar();" style="background:none; border:none; color:white; opacity:0.3;">✕</button></div>
+                    <div style="text-align:right"><button onclick="vendas.splice(${i},1); localStorage.setItem('vendasV5', JSON.stringify(vendas)); renderizar();" style="background:none; border:none; color:white; opacity:0.3; padding:10px;">✕</button></div>
                 </div>` + listaDiv.innerHTML;
             } else {
                 fat += v.valor;
@@ -177,13 +183,13 @@
         let p = meta > 0 ? (fat/meta)*100 : 0;
         document.getElementById('barraProgresso').style.width = Math.min(p, 100) + "%";
         document.getElementById('porcentoTxt').innerText = Math.floor(p) + "%";
-        document.getElementById('faltaTxt').innerText = meta - fat > 0 ? "FALTA R$ " + (meta-fat).toLocaleString() : "META BATIDA!";
+        document.getElementById('faltaTxt').innerText = meta - fat > 0 ? "FALTA R$ " + (meta-fat).toLocaleString() : "META ALCANÇADA!";
 
         const ctx = document.getElementById('meuGrafico').getContext('2d');
         if(chartInstance) chartInstance.destroy();
         chartInstance = new Chart(ctx, {
             type: 'line',
-            data: { labels: Object.keys(dadosG), datasets: [{ data: Object.values(dadosG), borderColor: '#00d2ff', backgroundColor: 'rgba(0, 210, 255, 0.1)', fill: true, tension: 0.3, borderWidth: 3, pointRadius: 0 }] },
+            data: { labels: Object.keys(dadosG), datasets: [{ data: Object.values(dadosG), borderColor: '#d4af37', backgroundColor: 'rgba(212, 175, 55, 0.1)', fill: true, tension: 0.3, borderWidth: 3, pointRadius: 0 }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { color: '#ffffff', font: { weight: 'bold' }, callback: (v) => v >= 1000 ? (v/1000)+'k' : v }, grid: { color: '#1a1a1a' } }, x: { ticks: { color: '#444' }, grid: { display: false } } } }
         });
     }
@@ -193,13 +199,13 @@
         let linhas = vendas.map(v => {
             if(!v.isVale) fat += v.valor; else vales += v.valor;
             let st = v.isVale ? 'VALE' : (v.cancelada ? `CANCELADO (SINAL R$ ${v.sinal})` : (v.entregue ? 'ENTREGUE' : 'PENDENTE'));
-            return `<tr style="border-bottom: 1px solid #eee; font-size:12px;"><td style="padding:10px 0;">${v.data}</td><td><b>${v.cliente.toUpperCase()}</b></td><td style="text-align:right;">R$ ${v.valor.toLocaleString()}</td><td style="text-align:right;">${st}</td></tr>`;
+            return `<tr style="border-bottom: 1px solid #eee; font-size:12px;"><td style="padding:10px 0;">${v.data}</td><td><b>${v.cliente.toUpperCase()}</b><br>${v.isVale?'':v.tipo}</td><td style="text-align:right;">R$ ${v.valor.toLocaleString()}</td><td style="text-align:right;">${st}</td></tr>`;
         }).join('');
         const win = window.open('', '_blank');
-        win.document.write(`<html><head><style>body{font-family:'Inter',sans-serif;padding:30px;}.card{background:#000;color:#fff;padding:20px;border-radius:12px;display:flex;justify-content:space-between;margin-bottom:20px;}table{width:100%;border-collapse:collapse;}</style></head><body><h1>RELATÓRIO GERSON CANIL</h1><div class="card"><div><small>SALDO LÍQUIDO</small><br><b style="font-size:22px;">R$ ${((fat*0.03)+2000-vales).toLocaleString()}</b></div><div style="text-align:right;"><small>VALES</small><br><b>R$ ${vales.toLocaleString()}</b></div></div><table>${linhas}</table><script>window.onload=function(){window.print();}</script></body></html>`);
+        win.document.write(`<html><head><style>body{font-family:'Inter',sans-serif;padding:30px;}.card{background:#000;color:#fff;padding:20px;border-radius:12px;display:flex;justify-content:space-between;margin-bottom:20px;}table{width:100%;border-collapse:collapse;}</style></head><body><h1 style="color:#d4af37">MY BABY - RELATÓRIO</h1><div class="card"><div><small>SALDO LÍQUIDO</small><br><b style="font-size:22px;">R$ ${((fat*0.03)+2000-vales).toLocaleString()}</b></div><div style="text-align:right;"><small>VALES</small><br><b>R$ ${vales.toLocaleString()}</b></div></div><table>${linhas}</table><script>window.onload=function(){window.print();}<\/script></body></html>`);
     }
 
-    function exportarBackup() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(vendas)], {type: 'application/json'})); a.download = `backup_canil.json`; a.click(); }
+    function exportarBackup() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(vendas)], {type: 'application/json'})); a.download = `backup_mybaby.json`; a.click(); }
     function importarBackup(input) { const reader = new FileReader(); reader.onload = () => { vendas = JSON.parse(reader.result); localStorage.setItem('vendasV5', JSON.stringify(vendas)); renderizar(); }; reader.readAsText(input.files[0]); }
 
     renderizar();
