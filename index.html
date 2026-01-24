@@ -26,7 +26,7 @@
         .stat-item { background: var(--card); padding: 15px; border-radius: 18px; border: 1px solid var(--border); }
         .stat-item span { display: block; font-size: 9px; font-weight: 800; color: #666; text-transform: uppercase; }
         .stat-item b { font-size: 19px; font-weight: 900; }
-        .venda-row { display: grid; grid-template-columns: 42px 1fr 85px 85px; align-items: center; padding: 16px 0; border-bottom: 1px solid #151515; }
+        .venda-row { display: grid; grid-template-columns: 42px 1fr 85px 95px; align-items: center; padding: 16px 0; border-bottom: 1px solid #151515; }
         .venda-row.entregue { border-left: 3px solid var(--success); padding-left: 10px; }
         .venda-row.cancelada { border-left: 3px solid var(--danger); padding-left: 10px; }
         .venda-row .info b { font-size: 13px; display: block; text-transform: uppercase; cursor: pointer; }
@@ -34,11 +34,11 @@
         .venda-row .price { text-align: right; font-weight: 900; font-size: 13px; padding-right: 5px; }
         .btn-main { background: #fff; color: #000; border: none; padding: 16px; border-radius: 16px; font-weight: 900; width: 100%; font-size: 14px; cursor: pointer; }
         .btn-pdf { background: transparent; color: var(--accent); border: 1px solid var(--accent); margin-top: 10px; }
-        .btn-action-group { display: flex; gap: 4px; justify-content: flex-end; }
+        .btn-action-group { display: flex; gap: 5px; justify-content: flex-end; align-items: center; }
         .btn-act { background: #111; border: 1px solid #222; color: #fff; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; }
         .btn-act.active-ent { background: var(--success); color: #000; border-color: var(--success); }
         .btn-act.active-can { background: var(--danger); color: #fff; border-color: var(--danger); }
-        .btn-del { color: #444; font-size: 12px; margin-left: 5px; cursor: pointer; }
+        .btn-del { color: #333; font-size: 12px; cursor: pointer; padding: 5px; }
         input, select { background: #080808; border: 1px solid #222; color: #fff; padding: 14px; border-radius: 14px; width: 100%; box-sizing: border-box; margin-bottom: 10px; font-family: 'Inter'; }
     </style>
 </head>
@@ -92,13 +92,15 @@
     let meta = localStorage.getItem('metaV12') || 100000;
     document.getElementById('metaVal').value = meta;
 
-    function parseData(str) {
+    // Converte DD/MM/AAAA para objeto Date real para ordenar
+    function stringParaData(str) {
         const p = str.split('/');
         return new Date(p[2], p[1] - 1, p[0]);
     }
 
     function salvar() {
-        vendas.sort((a, b) => parseData(b.data) - parseData(a.data));
+        // Ordena sempre: Data mais recente no topo da lista
+        vendas.sort((a, b) => stringParaData(b.data) - stringParaData(a.data));
         localStorage.setItem('vendasV12', JSON.stringify(vendas));
         renderizar();
     }
@@ -108,44 +110,44 @@
     function addVenda() {
         const c = document.getElementById('cliente').value, vt = parseFloat(document.getElementById('valorTotal').value);
         if(c && vt) {
-            vendas.push({ id: "v-" + Date.now(), tipo: document.getElementById('tipo').value, sexo: document.getElementById('sexo').value, cliente: c, valor: vt, sinal: 0, data: new Date().toLocaleDateString('pt-BR'), entregue: false, cancelada: false });
+            vendas.push({ id: Date.now().toString(), tipo: document.getElementById('tipo').value, sexo: document.getElementById('sexo').value, cliente: c, valor: vt, sinal: 0, data: new Date().toLocaleDateString('pt-BR'), entregue: false, cancelada: false });
             document.getElementById('cliente').value = ''; document.getElementById('valorTotal').value = '';
             salvar();
         }
     }
 
     function editarData(id) {
-        const i = vendas.findIndex(x => x.id === id);
-        const nD = prompt("Data (DD/MM/AAAA):", vendas[i].data);
-        if(nD) { vendas[i].data = nD; salvar(); }
+        const idx = vendas.findIndex(x => x.id === id);
+        const nD = prompt("Alterar Data (DD/MM/AAAA):", vendas[idx].data);
+        if(nD) { vendas[idx].data = nD; salvar(); }
     }
 
     function deletarVenda(id) {
-        if(confirm("Deseja excluir permanentemente esta venda?")) {
+        if(confirm("Excluir esta venda?")) {
             vendas = vendas.filter(x => x.id !== id);
             salvar();
         }
     }
 
     function alternarCancelado(id) {
-        const i = vendas.findIndex(x => x.id === id);
-        if (!vendas[i].cancelada) {
-            const s = prompt("Digite o valor do sinal retido:");
+        const idx = vendas.findIndex(v => v.id === id);
+        if (!vendas[idx].cancelada) {
+            const s = prompt("Digite o valor do SINAL RETIDO:");
             if (s !== null) {
-                vendas[i].sinal = Number(s) || 0;
-                vendas[i].cancelada = true;
+                vendas[idx].sinal = Number(s) || 0;
+                vendas[idx].cancelada = true;
                 salvar();
             }
         } else {
-            vendas[i].cancelada = false;
-            vendas[i].sinal = 0;
+            vendas[idx].cancelada = false;
+            vendas[idx].sinal = 0;
             salvar();
         }
     }
 
     function alternarEntrega(id) {
-        const i = vendas.findIndex(x => x.id === id);
-        vendas[i].entregue = !vendas[i].entregue;
+        const idx = vendas.findIndex(v => v.id === id);
+        vendas[idx].entregue = !vendas[idx].entregue;
         salvar();
     }
 
@@ -207,10 +209,10 @@
         let rows = vendas.map(v => {
             if(!v.isVale) fat += v.valor; else vales += v.valor;
             let status = v.isVale ? 'VALE' : (v.cancelada ? `CANCELADO (SINAL: R$ ${Number(v.sinal || 0).toLocaleString()})` : (v.entregue ? 'ENTREGUE' : 'AGUARDANDO ENTREGA'));
-            return `<tr><td style="padding:12px; border-bottom:1px solid #eee;">${v.data}</td><td style="padding:12px; border-bottom:1px solid #eee;"><b>${v.cliente}</b></td><td style="padding:12px; border-bottom:1px solid #eee; text-align:right;">R$ ${v.valor.toLocaleString()}</td><td style="padding:12px; border-bottom:1px solid #eee; text-align:center; font-size:10px; font-weight:bold;">${status}</td></tr>`;
+            return `<tr><td style="padding:10px; border-bottom:1px solid #eee;">${v.data}</td><td style="padding:10px; border-bottom:1px solid #eee;"><b>${v.cliente}</b></td><td style="padding:10px; border-bottom:1px solid #eee; text-align:right;">R$ ${v.valor.toLocaleString()}</td><td style="padding:10px; border-bottom:1px solid #eee; text-align:center;">${status}</td></tr>`;
         }).join('');
         const win = window.open('', '_blank');
-        win.document.write(`<html><body style="font-family:sans-serif; padding:40px;"><h1 style="margin:0; border-bottom:3px solid #000; padding-bottom:10px;">CANIL MY BABY</h1><p>Relatório de Vendas - Vendedor GERSON</p><div style="display:flex; justify-content:space-between; background:#f4f4f4; padding:25px; border-radius:15px; margin:20px 0; font-size:18px;"><div>Vendas: <b>R$ ${fat.toLocaleString()}</b></div><div>Saldo: <b style="color:#2ecc71;">R$ ${((fat*0.03)+2000-vales).toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div></div><table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#000; color:#fff;"><th>DATA</th><th>CLIENTE</th><th>VALOR</th><th>STATUS</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`);
+        win.document.write(`<html><body style="font-family:sans-serif; padding:20px;"><h2>CANIL MY BABY - RELATÓRIO</h2><p>Vendedor: GERSON</p><div style="background:#eee; padding:15px; margin-bottom:20px;">Vendas: R$ ${fat.toLocaleString()} | Saldo: R$ ${((fat*0.03)+2000-vales).toLocaleString('pt-BR',{minimumFractionDigits:2})}</div><table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#000; color:#fff;"><th>DATA</th><th>CLIENTE</th><th>VALOR</th><th>STATUS</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`);
     }
     renderizar();
 </script>
