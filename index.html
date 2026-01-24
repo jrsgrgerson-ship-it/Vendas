@@ -36,14 +36,14 @@
         .venda-row .info b { font-size: 13px; display: block; text-transform: uppercase; }
         .venda-row .info small { color: #555; font-size: 10px; }
         .venda-row .price { text-align: right; font-weight: 900; font-size: 14px; padding-right: 8px; }
-        .btn-main { background: #fff; color: #000; border: none; padding: 16px; border-radius: 16px; font-weight: 900; width: 100%; font-size: 14px; cursor: pointer; }
+        .btn-main { background: #fff; color: #000; border: none; padding: 16px; border-radius: 16px; font-weight: 900; width: 100%; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .btn-main:active { transform: scale(0.98); }
         .btn-pdf { background: transparent; color: var(--accent); border: 1px solid var(--accent); margin-top: 10px; }
         .btn-action-group { display: flex; gap: 6px; }
-        .btn-act { background: #111; border: 1px solid #222; color: #fff; width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: 0.2s; }
+        .btn-act { background: #111; border: 1px solid #222; color: #fff; width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
         .btn-act.active-ent { background: var(--success); color: #000; border-color: var(--success); }
         .btn-act.active-can { background: var(--danger); color: #fff; border-color: var(--danger); }
         input, select { background: #080808; border: 1px solid #222; color: #fff; padding: 14px; border-radius: 14px; width: 100%; box-sizing: border-box; margin-bottom: 10px; font-family: 'Inter'; }
-        .chart-container { height: 110px; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -67,7 +67,7 @@
             <span id="pctTxt" style="color:var(--accent); font-size: 12px; font-weight: 900;">0%</span>
             <input type="number" id="metaVal" style="width:85px; background:none; border:none; color:#444; text-align:right; font-size:12px;" onchange="atualizarMeta()">
         </div>
-        <div class="chart-container"><canvas id="graficoVendas"></canvas></div>
+        <div class="chart-container" style="height:100px;"><canvas id="graficoVendas"></canvas></div>
     </div>
 
     <div class="stats-grid">
@@ -92,7 +92,22 @@
 
 <script>
     let chartInstance = null;
-    let vendas = JSON.parse(localStorage.getItem('vendasV12') || "[]");
+    
+    // CARREGA E LIMPA VALORES ANTIGOS TRAVADOS
+    function carregarDados() {
+        let storage = localStorage.getItem('vendasV12') || "[]";
+        let lista = JSON.parse(storage);
+        
+        // Aqui limpamos o erro: se a venda estiver cancelada e o sinal for EXATAMENTE 1000, 
+        // nós zeramos para você poder colocar o valor real.
+        lista = lista.map(v => {
+            if(v.cancelada && v.sinal == 1000) { v.sinal = 0; }
+            return v;
+        });
+        return lista;
+    }
+
+    let vendas = carregarDados();
     let meta = localStorage.getItem('metaV12') || 100000;
     document.getElementById('metaVal').value = meta;
 
@@ -115,7 +130,7 @@
     function alternarCancelado(id) {
         const i = vendas.findIndex(x => x.id == id);
         if (!vendas[i].cancelada) {
-            const valorSinal = prompt("VENDA CANCELADA. Digite o valor do sinal retido:");
+            const valorSinal = prompt("CANCELAMENTO: Digite o valor real do SINAL RETIDO:");
             if (valorSinal !== null) {
                 vendas[i].sinal = parseFloat(valorSinal) || 0;
                 vendas[i].cancelada = true;
@@ -142,7 +157,7 @@
                 if(v.sexo === 'Macho') cM++; else if(v.sexo === 'Fêmea') cF++;
                 let dia = v.data.substring(0,5); hist[dia] = (hist[dia] || 0) + v.valor;
                 
-                let textoSinal = v.cancelada ? `<br><b style="color:var(--danger);font-size:10px;">SINAL RETIDO: R$ ${(v.sinal || 0).toLocaleString()}</b>` : '';
+                let textoSinal = v.cancelada ? `<br><b style="color:var(--danger);font-size:10px;">SINAL RETIDO: R$ ${(v.sinal).toLocaleString()}</b>` : '';
 
                 lista.innerHTML = `<div class="venda-row ${v.entregue?'entregue':''} ${v.cancelada?'cancelada':''}"><div class="icon">${v.tipo=='Spitz'?'🐶':'🐱'}</div><div class="info"><b>${v.cliente}</b><small>${v.sexo} | ${v.data}</small>${textoSinal}</div><div class="price">R$ ${v.valor.toLocaleString()}</div><div class="btn-action-group"><button class="btn-act ent ${v.entregue?'active-ent':''}" onclick="const i=vendas.findIndex(x=>x.id==${v.id});vendas[i].entregue=!vendas[i].entregue;salvar()">🏠</button><button class="btn-act can ${v.cancelada?'active-can':''}" onclick="alternarCancelado(${v.id})">🚫</button></div></div>` + lista.innerHTML;
             }
