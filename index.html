@@ -3,157 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MY BABY ULTIMATE | V8.0 STABLE</title>
+    <title>MY BABY | V10 GOLD EDITION</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         :root {
             --primary: #0071e3;
-            --success: #28a745;
-            --danger: #ff3b30;
-            --bg: #ffffff;
-            --surface: #f5f5f7;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --bg: #f5f5f7;
+            --glass: rgba(255, 255, 255, 0.8);
             --text: #1d1d1f;
-            --border: #d2d2d7;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: var(--bg); color: var(--text); padding: 20px; -webkit-font-smoothing: antialiased; }
-        .container { max-width: 1000px; margin: auto; }
+        body { background: var(--bg); color: var(--text); padding: 20px; }
 
-        /* HEADER */
+        .container { max-width: 1100px; margin: auto; animation: slideUp 0.6s ease; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* CABEÇALHO PREMIUM */
         header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 30px;
+            display: flex; justify-content: space-between; align-items: flex-end; 
+            padding: 30px 0; margin-bottom: 20px;
         }
-        header h1 { font-weight: 900; font-size: 24px; letter-spacing: -1px; }
+        header h1 { font-weight: 900; font-size: 32px; letter-spacing: -1.5px; }
+        header h1 span { color: var(--primary); }
 
-        /* DASHBOARD - EDITÁVEL */
+        /* DASHBOARD GLASS */
         .dashboard { 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
             gap: 20px; margin-bottom: 30px; 
         }
         .card { 
-            background: var(--surface); padding: 25px; border-radius: 20px; 
-            border: 1px solid transparent; transition: 0.2s;
+            background: var(--glass); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            padding: 30px; border-radius: 24px; border: 1px solid #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.3s;
         }
-        .card:hover { border-color: var(--border); background: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .card h3 { font-size: 11px; text-transform: uppercase; color: #86868b; letter-spacing: 1px; margin-bottom: 10px; }
-        .card .value { font-size: 32px; font-weight: 800; letter-spacing: -1px; display: block; }
-        
-        .card-gerson { background: #1d1d1f; color: #fff; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.1); }
+        .card h3 { font-size: 12px; text-transform: uppercase; color: #86868b; letter-spacing: 1px; margin-bottom: 10px; }
+        .card .value { font-size: 38px; font-weight: 800; display: block; letter-spacing: -1px; }
+
+        .card-gerson { background: #1d1d1f; color: #fff; border: none; }
         .card-gerson .value { color: var(--success); }
 
         /* META EDITÁVEL */
-        .meta-box { margin-bottom: 30px; background: var(--surface); padding: 20px; border-radius: 20px; }
-        .meta-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .meta-input-group { display: flex; align-items: center; gap: 10px; }
-        .meta-input-group label { font-size: 12px; font-weight: 700; color: #86868b; }
-        .meta-input-group input { 
-            background: #fff; border: 1px solid var(--border); padding: 5px 10px; 
-            border-radius: 8px; font-weight: 800; width: 120px; color: var(--primary);
+        .meta-box { 
+            background: #fff; padding: 25px; border-radius: 24px; margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         }
-        .bar-bg { background: #e5e5ea; height: 12px; border-radius: 10px; overflow: hidden; }
-        .bar-fill { background: var(--primary); height: 100%; width: 0%; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); }
+        .meta-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .meta-input-wrap { display: flex; align-items: center; gap: 10px; }
+        .meta-input-wrap label { font-size: 13px; font-weight: 800; color: #86868b; }
+        .meta-input-wrap input { 
+            border: 1px solid #d2d2d7; padding: 8px 12px; border-radius: 10px; 
+            font-weight: 900; font-size: 16px; width: 130px; outline: none; color: var(--primary);
+        }
+        .progress-bg { background: #f2f2f7; height: 14px; border-radius: 10px; overflow: hidden; }
+        .progress-fill { 
+            background: linear-gradient(90deg, var(--primary), #5ac8fa); 
+            height: 100%; width: 0%; transition: 1.5s cubic-bezier(0.1, 0, 0, 1); 
+        }
 
         /* CHART */
-        .chart-container { height: 300px; margin-bottom: 30px; }
+        .chart-box { height: 350px; margin-bottom: 40px; }
 
-        /* FORMULÁRIO */
-        .form-grid { 
-            display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 12px; 
-            background: var(--surface); padding: 20px; border-radius: 20px; margin-bottom: 20px;
+        /* FORMULÁRIO ALTA DENSIDADE */
+        .form-card { 
+            background: #fff; padding: 30px; border-radius: 24px; 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 15px; margin-bottom: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         }
         input, select { 
-            padding: 12px; border: 1px solid var(--border); border-radius: 10px; 
-            font-size: 15px; font-weight: 600; outline: none;
+            padding: 16px; border: 1px solid #d2d2d7; border-radius: 14px; 
+            font-size: 16px; font-weight: 600; outline: none; transition: 0.2s;
         }
-        .btn-add { background: var(--primary); color: #fff; border: none; padding: 0 25px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        input:focus { border-color: var(--primary); background: #fbfbff; }
+        .btn-add { 
+            background: var(--primary); color: #fff; border: none; 
+            padding: 16px; border-radius: 14px; font-weight: 800; cursor: pointer;
+        }
+        .btn-add:hover { filter: brightness(1.1); transform: scale(1.02); }
         .btn-vale { 
-            width: 100%; padding: 12px; background: #fff; border: 1px solid var(--danger); 
-            color: var(--danger); border-radius: 10px; font-weight: 700; cursor: pointer; margin-bottom: 30px;
+            width: 100%; background: transparent; color: var(--danger); 
+            border: 2px dashed var(--danger); padding: 14px; border-radius: 14px; 
+            font-weight: 700; cursor: pointer; margin-bottom: 40px;
         }
 
-        /* TABELA PROFISSIONAL */
-        .history-wrap { background: #fff; border: 1px solid var(--border); border-radius: 20px; overflow: hidden; }
+        /* TABELA TIPO APP */
+        .table-wrap { background: #fff; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         table { width: 100%; border-collapse: collapse; }
-        th { background: #fbfbfd; padding: 15px; text-align: left; font-size: 11px; color: #86868b; text-transform: uppercase; }
-        td { padding: 15px; border-bottom: 1px solid var(--surface); font-size: 14px; font-weight: 600; }
-
-        .cancelled { background: #fafafa; }
-        .cancelled .v-bruto { text-decoration: line-through; color: #a1a1a6; }
-        .badge { padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; }
-        .badge-ok { background: #e3f9e5; color: #1db954; }
-        .badge-no { background: #fff1f0; color: #ff3b30; }
-
-        .actions { display: flex; gap: 8px; justify-content: flex-end; }
-        .btn-action { 
-            width: 35px; height: 35px; border-radius: 8px; border: 1px solid var(--border); 
-            background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        th { background: #fbfbfd; padding: 20px; text-align: left; font-size: 11px; color: #86868b; text-transform: uppercase; font-weight: 800; }
+        td { padding: 20px; border-bottom: 1px solid #f2f2f7; font-size: 15px; font-weight: 600; }
+        
+        /* LINHA CANCELADA (Ainda conta no faturamento!) */
+        tr.status-cancel { background: #fdfdfd; }
+        tr.status-cancel td { color: #a1a1a6; }
+        .badge-cancel { background: #f2f2f7; color: #86868b; padding: 4px 8px; border-radius: 6px; font-size: 10px; }
+        
+        .actions { display: flex; gap: 10px; justify-content: flex-end; }
+        .btn-circle { 
+            width: 40px; height: 40px; border-radius: 12px; border: 1px solid #d2d2d7; 
+            background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px;
         }
-        .btn-action:hover { background: var(--surface); }
+        .btn-circle:hover { background: #f2f2f7; }
+
+        @media (max-width: 768px) {
+            header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .dashboard { grid-template-columns: 1fr; }
+            .form-card { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>MY BABY <span style="color:var(--primary)">PRO</span></h1>
-        <span id="dateNow" style="font-size: 12px; font-weight: 700; color: #86868b;"></span>
+        <h1>MY BABY <span>V10 GOLD</span></h1>
+        <div id="statusData" style="font-weight: 700; color: var(--success); font-size: 12px;">DADOS SINCRONIZADOS</div>
     </header>
 
     <div class="dashboard">
         <div class="card">
-            <h3>Faturamento Loja (Ativo)</h3>
-            <span class="value" id="dispFat">R$ 0,00</span>
+            <h3>Faturamento Loja (Bruto + Sinais)</h3>
+            <span class="value" id="valLoja">R$ 0,00</span>
+            <small style="color:#86868b; font-size: 11px;">Inclui todas as vendas lançadas</small>
         </div>
         <div class="card card-gerson">
-            <h3>Meu Saldo Líquido</h3>
-            <span class="value" id="dispGerson">R$ 0,00</span>
-            <small id="dispComis" style="font-size: 10px; opacity: 0.7;">3% de todas as vendas inclusos</small>
+            <h3>Meu Saldo Final</h3>
+            <span class="value" id="valGerson">R$ 0,00</span>
+            <small style="color:var(--success); font-size: 11px;">Fixo + 3% de TUDO - Vales</small>
         </div>
         <div class="card">
-            <h3>Vales Retirados</h3>
-            <span class="value" style="color:var(--danger)" id="dispVales">R$ 0,00</span>
+            <h3>Total de Vales</h3>
+            <span class="value" style="color:var(--danger)" id="valVales">R$ 0,00</span>
         </div>
     </div>
 
     <div class="meta-box">
         <div class="meta-header">
-            <div class="meta-input-group">
-                <label>DEFINIR META R$:</label>
-                <input type="number" id="metaInput" value="100000" oninput="updateMeta()">
+            <div class="meta-input-wrap">
+                <label>META MENSAL R$</label>
+                <input type="number" id="metaIn" oninput="saveMeta()">
             </div>
-            <span id="metaPercent" style="font-weight: 800; color: var(--primary);">0%</span>
+            <span id="metaPct" style="font-weight: 900; color: var(--primary); font-size: 20px;">0%</span>
         </div>
-        <div class="bar-bg"><div class="bar-fill" id="metaBar"></div></div>
+        <div class="progress-bg"><div class="progress-fill" id="metaBar"></div></div>
     </div>
 
-    <div class="chart-container">
-        <canvas id="mainChart"></canvas>
+    <div class="chart-box">
+        <canvas id="waveChart"></canvas>
     </div>
 
-    <div class="form-grid">
-        <select id="inTipo">
+    <div class="form-card">
+        <select id="inPet">
             <option value="Spitz Alemão">Spitz Alemão</option>
             <option value="Gato Bengal">Gato Bengal</option>
         </select>
         <input type="text" id="inCli" placeholder="Nome do Cliente">
-        <input type="number" id="inVal" placeholder="Valor R$">
-        <button class="btn-add" onclick="lancar()">LANÇAR</button>
+        <input type="number" id="inVal" placeholder="Valor da Venda (R$)">
+        <button class="btn-add" onclick="adicionar()">LANÇAR VENDA</button>
     </div>
-    <button class="btn-vale" onclick="lancarVale()">+ REGISTRAR VALE / ADIANTAMENTO</button>
+    <button class="btn-vale" onclick="adicionarVale()">+ REGISTRAR NOVO VALE / ADIANTAMENTO</button>
 
-    <div class="history-wrap">
+    <div class="table-wrap">
         <table>
             <thead>
                 <tr>
                     <th>Data</th>
-                    <th>Cliente / Pet</th>
-                    <th>Bruto</th>
-                    <th>Minha Parte (3%)</th>
+                    <th>Detalhes do Cliente</th>
+                    <th>Venda Bruta</th>
+                    <th>Sua Comissão</th>
                     <th style="text-align:right">Ações</th>
                 </tr>
             </thead>
@@ -163,35 +185,68 @@
 </div>
 
 <script>
-    // ESTADO GLOBAL
-    let dados = JSON.parse(localStorage.getItem('mybaby_v8')) || { vendas: [], meta: 100000 };
-    let chart = null;
+    /** * MOTOR DE AUDITORIA E RECUPERAÇÃO v10
+     * Garante que NADA seja subtraído do faturamento e recupera históricos.
+     */
+    const DB_KEY = 'MY_BABY_V10_DATA';
+    
+    function recuperarDados() {
+        const chavesAntigas = ['vendasV5', 'mybaby_v8', 'my_baby_v6', 'MY_BABY_ULTIMATE_DATA'];
+        let base = [];
+        let meta = 100000;
 
-    document.getElementById('dateNow').innerText = new Date().toLocaleDateString('pt-BR');
-    document.getElementById('metaInput').value = dados.meta;
+        chavesAntigas.forEach(k => {
+            const d = localStorage.getItem(k);
+            if(d) {
+                try {
+                    const p = JSON.parse(d);
+                    const l = Array.isArray(p) ? p : (p.vendas || []);
+                    base = [...base, ...l];
+                    if(p.meta) meta = p.meta;
+                } catch(e){}
+            }
+        });
+
+        // Limpeza de IDs duplicados
+        const unique = [];
+        const seen = new Set();
+        base.forEach(v => {
+            const id = v.id || v.cliente + v.valor;
+            if(!seen.has(id)) { seen.add(id); unique.push(v); }
+        });
+
+        return { vendas: unique, meta: meta };
+    }
+
+    let app = recuperarDados();
+    let chartObj = null;
+
+    document.getElementById('metaIn').value = app.meta;
 
     function salvar() {
-        localStorage.setItem('mybaby_v8', JSON.stringify(dados));
+        localStorage.setItem(DB_KEY, JSON.stringify(app));
+        // Espelhamento para evitar perdas em atualizações futuras
+        localStorage.setItem('vendasV5', JSON.stringify(app.vendas));
         render();
     }
 
-    function updateMeta() {
-        dados.meta = parseFloat(document.getElementById('metaInput').value) || 0;
+    function saveMeta() {
+        app.meta = parseFloat(document.getElementById('metaIn').value) || 0;
         salvar();
     }
 
-    function lancar() {
+    function adicionar() {
         const c = document.getElementById('inCli').value;
         const v = parseFloat(document.getElementById('inVal').value);
         if(c && v) {
-            dados.vendas.push({
+            app.vendas.push({
                 id: Date.now(),
                 data: new Date().toLocaleDateString('pt-BR').substring(0, 5),
                 cliente: c,
-                tipo: document.getElementById('inTipo').value,
+                pet: document.getElementById('inPet').value,
                 valor: v,
-                cancelada: false,
-                isVale: false
+                vale: false,
+                cancelada: false
             });
             document.getElementById('inCli').value = '';
             document.getElementById('inVal').value = '';
@@ -199,29 +254,29 @@
         }
     }
 
-    function lancarVale() {
-        const v = prompt("Valor do Vale:");
+    function adicionarVale() {
+        const v = prompt("Valor do Vale/Retirada:");
         if(v) {
-            dados.vendas.push({
+            app.vendas.push({
                 id: Date.now(),
                 data: new Date().toLocaleDateString('pt-BR').substring(0, 5),
-                cliente: "VALE",
+                cliente: "VALE PESSOAL",
                 valor: parseFloat(v),
-                isVale: true
+                vale: true
             });
             salvar();
         }
     }
 
-    function alternar(id) {
-        const idx = dados.vendas.findIndex(x => x.id === id);
-        dados.vendas[idx].cancelada = !dados.vendas[idx].cancelada;
+    function toggleCancel(id) {
+        const i = app.vendas.findIndex(x => x.id === id);
+        app.vendas[i].cancelada = !app.vendas[i].cancelada;
         salvar();
     }
 
     function excluir(id) {
-        if(confirm("Excluir?")) {
-            dados.vendas = dados.vendas.filter(x => x.id !== id);
+        if(confirm("Excluir permanentemente?")) {
+            app.vendas = app.vendas.filter(x => x.id !== id);
             salvar();
         }
     }
@@ -230,78 +285,79 @@
         const corpo = document.getElementById('lista');
         corpo.innerHTML = '';
         
-        let fatLoja = 0;
-        let minhaComissaoTotal = 0;
-        let meusVales = 0;
-        let pts = {};
+        let totalLoja = 0;
+        let totalComissao = 0;
+        let totalVales = 0;
+        let chartData = {};
 
-        // --- MOTOR MATEMÁTICO SEM FILTROS DE ERRO ---
-        dados.vendas.forEach(item => {
-            if(item.isVale) {
-                meusVales += item.valor;
+        // MOTOR MATEMÁTICO SEM FILTROS (TUDO CONTA)
+        app.vendas.forEach(v => {
+            if(v.vale) {
+                totalVales += v.valor;
             } else {
-                // AQUI ESTÁ A CHAVE: Comissão soma de TUDO, sem perguntar se está cancelado.
-                minhaComissaoTotal += (item.valor * 0.03);
-
-                if(!item.cancelada) {
-                    fatLoja += item.valor;
-                    pts[item.data] = (pts[item.data] || 0) + item.valor;
-                }
+                // REGRA SOLICITADA: Mesmo cancelada, o sinal foi dado -> CONTA NO FATURAMENTO
+                totalLoja += v.valor;
+                totalComissao += (v.valor * 0.03);
+                
+                chartData[v.data] = (chartData[v.data] || 0) + v.valor;
             }
         });
 
-        const saldoFinal = 2000 + minhaComissaoTotal - meusVales;
+        const saldoFinal = 2000 + totalComissao - totalVales;
 
-        // DASHBOARD
-        document.getElementById('dispFat').innerText = `R$ ${fatLoja.toLocaleString('pt-BR')}`;
-        document.getElementById('dispGerson').innerText = `R$ ${saldoFinal.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
-        document.getElementById('dispVales').innerText = `R$ ${meusVales.toLocaleString('pt-BR')}`;
-        document.getElementById('dispComis').innerText = `3% de tudo: R$ ${minhaComissaoTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
+        // UI
+        document.getElementById('valLoja').innerText = `R$ ${totalLoja.toLocaleString('pt-BR')}`;
+        document.getElementById('valGerson').innerText = `R$ ${saldoFinal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        document.getElementById('valVales').innerText = `R$ ${totalVales.toLocaleString('pt-BR')}`;
 
-        // META
-        const pct = (fatLoja / dados.meta) * 100;
+        const pct = (totalLoja / app.meta) * 100;
         document.getElementById('metaBar').style.width = Math.min(pct, 100) + "%";
-        document.getElementById('metaPercent').innerText = Math.floor(pct) + "%";
+        document.getElementById('metaPct').innerText = Math.floor(pct) + "%";
 
-        // TABELA
-        [...dados.vendas].reverse().forEach(item => {
-            if(item.isVale) {
-                corpo.innerHTML += `<tr style="background:#fffafa"><td>${item.data}</td><td><span class="badge badge-no">VALE</span></td><td style="color:var(--danger)">- R$ ${item.valor.toLocaleString()}</td><td>-</td><td class="actions"><button class="btn-action" onclick="excluir(${item.id})">🗑</button></td></tr>`;
+        // Tabela
+        [...app.vendas].reverse().forEach(v => {
+            if(v.vale) {
+                corpo.innerHTML += `<tr style="background:#fffafa"><td>${v.data}</td><td><b>VALE / ADIANTAMENTO</b></td><td style="color:var(--danger)">- R$ ${v.valor.toLocaleString()}</td><td>-</td><td class="actions"><button class="btn-circle" onclick="excluir(${v.id})">🗑</button></td></tr>`;
             } else {
                 corpo.innerHTML += `
-                    <tr class="${item.cancelada ? 'cancelled' : ''}">
-                        <td>${item.data}</td>
+                    <tr class="${v.cancelada ? 'status-cancel' : ''}">
+                        <td>${v.data}</td>
                         <td>
-                            <b>${item.cliente}</b> <br> <small style="color:#86868b">${item.tipo}</small>
-                            <span class="badge ${item.cancelada ? 'badge-no' : 'badge-ok'}">${item.cancelada ? 'Cancelada' : 'Ativa'}</span>
+                            <b>${v.cliente}</b> <br> <small>${v.pet}</small>
+                            ${v.cancelada ? '<span class="badge-cancel">Venda Canceled (Contabilizada)</span>' : ''}
                         </td>
-                        <td class="v-bruto">R$ ${item.valor.toLocaleString()}</td>
-                        <td style="color:var(--success); font-weight:800">+ R$ ${(item.valor * 0.03).toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
+                        <td>R$ ${v.valor.toLocaleString()}</td>
+                        <td style="color:var(--success); font-weight:800">+ R$ ${(v.valor * 0.03).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
                         <td class="actions">
-                            <button class="btn-action" onclick="alternar(${item.id})">${item.cancelada ? '✅' : '🚫'}</button>
-                            <button class="btn-action" onclick="excluir(${item.id})">🗑</button>
+                            <button class="btn-circle" onclick="toggleCancel(${v.id})">🚫</button>
+                            <button class="btn-circle" onclick="excluir(${v.id})">🗑</button>
                         </td>
                     </tr>`;
             }
         });
 
-        renderChart(pts);
+        initChart(chartData);
     }
 
-    function renderChart(pts) {
-        const ctx = document.getElementById('mainChart').getContext('2d');
-        if(chart) chart.destroy();
-        chart = new Chart(ctx, {
+    function initChart(pts) {
+        const ctx = document.getElementById('waveChart').getContext('2d');
+        if(chartObj) chartObj.destroy();
+        
+        const grad = ctx.createLinearGradient(0, 0, 0, 300);
+        grad.addColorStop(0, 'rgba(0, 113, 227, 0.3)');
+        grad.addColorStop(1, 'rgba(0, 113, 227, 0)');
+
+        chartObj = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: Object.keys(pts),
                 datasets: [{
                     data: Object.values(pts),
                     borderColor: '#0071e3',
-                    borderWidth: 4,
-                    tension: 0.4,
+                    borderWidth: 5,
                     fill: true,
-                    backgroundColor: 'rgba(0, 113, 227, 0.05)',
+                    backgroundColor: grad,
+                    tension: 0.4,
                     pointRadius: 0
                 }]
             },
@@ -319,5 +375,6 @@
 
     render();
 </script>
+
 </body>
 </html>
