@@ -3,110 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Painel Canil My Baby</title>
+    <title>Painel Canil My Baby - Dark Glass</title>
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 
     <style>
         :root {
-            --spitz: #ff9f43; --bengal: #54a0ff; --bg: #f8f9fa;
-            --dark: #2d3436; --danger: #ff4757;
-            --success: #2ecc71;
-            --glass: rgba(255, 255, 255, 0.85);
+            --spitz: #ff9f43; --bengal: #54a0ff; 
+            --dark-bg: #0f172a; 
+            --glass: rgba(30, 41, 59, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --danger: #ff4757; --success: #2ecc71;
         }
         
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #f0f2f5;
-            background-image: radial-gradient(#d1d9e6 1px, transparent 1px);
-            background-size: 20px 20px;
-            margin: 0; padding: 15px; color: var(--dark);
-        }
-
-        /* LOGO SUTIL */
-        .logo-box { text-align: center; padding: 10px 0; margin-bottom: 5px; }
-        .logo-box h1 { 
-            margin: 0; font-size: 18px; letter-spacing: 4px; color: #b89356; 
-            text-transform: uppercase; font-weight: 300;
+            font-family: -apple-system, system-ui, sans-serif; 
+            background: var(--dark-bg);
+            background-image: radial-gradient(circle at 20% 20%, #1e293b 0%, #0f172a 100%);
+            margin: 0; padding: 15px; color: #f1f5f9; min-height: 100vh;
         }
 
         .container { max-width: 500px; margin: auto; }
         
-        /* GLASSMORPHISM */
+        header { text-align: center; padding: 10px 0 20px; }
+        header h2 { margin: 0; font-size: 22px; font-weight: 800; color: #fff; }
+        header small { color: var(--bengal); letter-spacing: 2px; font-size: 10px; font-weight: bold; }
+
+        /* GLASSMORPHISM LÍQUIDO */
         .glass-card {
             background: var(--glass);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         .card-meta { 
-            background: linear-gradient(135deg, #2d3436 0%, #000000 100%); 
-            color: white; padding: 22px; border-radius: 30px; margin-bottom: 20px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            background: linear-gradient(135deg, #334155 0%, #0f172a 100%); 
+            color: white; padding: 22px; border-radius: 28px; margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .meta-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .meta-input { 
             background: rgba(255,255,255,0.1); border: none; color: white; 
-            width: 100px; font-weight: 800; font-size: 18px; border-radius: 12px; 
-            padding: 5px; text-align: center; outline: none;
+            width: 90px; font-weight: 800; font-size: 18px; outline: none; 
+            text-align: center; border-radius: 12px; padding: 5px;
         }
         
-        .progress-bg { background: rgba(255,255,255,0.1); height: 12px; border-radius: 10px; margin: 15px 0; }
-        .progress-bar { background: var(--bengal); height: 100%; border-radius: 10px; width: 0%; transition: 1.5s; }
+        .progress-container { background: rgba(0,0,0,0.3); height: 12px; border-radius: 10px; overflow: hidden; margin: 15px 0; }
+        .progress-bar { background: linear-gradient(90deg, #38bdf8, #818cf8); height: 100%; width: 0%; transition: 1.5s; }
 
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .stat-card { background: white; border-radius: 22px; padding: 15px; text-align: center; border: 1px solid rgba(0,0,0,0.03); }
-        .stat-card small { color: #888; text-transform: uppercase; font-size: 9px; font-weight: 800; }
-        .stat-card strong { font-size: 17px; font-weight: 800; display: block; margin-top: 4px; }
+        .stat-card { background: var(--glass); backdrop-filter: blur(8px); border-radius: 20px; padding: 15px; text-align: center; border: 1px solid var(--glass-border); }
+        .stat-card small { color: #94a3b8; display: block; font-size: 9px; text-transform: uppercase; font-weight: 800; }
+        .stat-card strong { font-size: 17px; font-weight: 800; color: #fff; }
 
-        /* LISTA ALINHADA */
-        .venda-card { 
-            background: white; padding: 15px; border-radius: 20px; margin-bottom: 12px; 
-            display: flex; align-items: center; border-left: 6px solid #ccc;
-            justify-content: space-between; box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        /* FORMULÁRIO */
+        input, select { 
+            padding: 14px; border: 1px solid var(--glass-border); 
+            background: rgba(255,255,255,0.05); border-radius: 14px; 
+            font-size: 14px; color: white; outline: none; width: 100%; box-sizing: border-box;
         }
-        .venda-main { flex: 1; }
-        .venda-valores { text-align: right; min-width: 100px; margin-right: 12px; }
         
-        .venda-card.cancelada { opacity: 0.6; filter: grayscale(0.4); }
+        button.btn-add { 
+            background: #fff; color: #000; border: none; padding: 16px; 
+            border-radius: 16px; font-weight: 800; cursor: pointer; width: 100%;
+        }
+
+        /* LISTA E ALINHAMENTO CORRIGIDO */
+        .venda-card { 
+            background: var(--glass); padding: 16px; border-radius: 20px; margin-bottom: 12px; 
+            display: flex; align-items: center; border-left: 6px solid #475569;
+            border: 1px solid var(--glass-border); justify-content: space-between;
+        }
+        
+        .venda-card.cancelada { opacity: 0.5; border-left-style: dashed; }
         .venda-Spitz { border-left-color: var(--spitz); }
         .venda-Bengal { border-left-color: var(--bengal); }
 
-        /* TAGS CANCELADO */
-        .tag-container { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
-        .badge { 
-            font-size: 8px; font-weight: 800; padding: 3px 8px; 
-            border-radius: 6px; color: white; display: inline-block; width: fit-content;
-        }
-        .badge-cancel { background: var(--danger); }
-        .badge-sinal { background: var(--bengal); }
-        .badge-entregue { background: var(--success); }
+        .venda-info { flex: 1; }
+        .venda-valores { text-align: right; min-width: 100px; margin-right: 10px; }
 
-        .btn-action { border: 1px solid #eee; background: white; border-radius: 12px; padding: 8px; cursor: pointer; transition: 0.2s; }
-        .btn-action.ativo { background: var(--success); color: white; border-color: var(--success); }
+        /* TAGS */
+        .tag-group { display: flex; flex-direction: column; gap: 4px; margin-top: 5px; }
+        .badge { 
+            color: white; padding: 3px 8px; border-radius: 8px; font-size: 8px; 
+            text-transform: uppercase; font-weight: 800; display: inline-block; width: fit-content;
+        }
+        .bg-cancel { background: var(--danger); }
+        .bg-sinal { background: var(--bengal); }
+        .bg-success { background: var(--success); }
+
+        .btn-action { border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); border-radius: 10px; padding: 8px; cursor: pointer; color: white; }
+        .btn-action.ativo { background: var(--success); color: white; }
         
-        .btn-pdf { background: var(--danger); color: white; border: none; padding: 15px 30px; border-radius: 18px; font-weight: 800; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn-pdf { background: var(--danger); color: white; border: none; padding: 15px; border-radius: 15px; font-weight: 800; width: 100%; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="logo-box"><h1>My Baby Canil</h1></div>
+    <header><h2>Canil My Baby</h2><small>PAINEL DE GESTÃO DARK</small></header>
 
     <div class="card-meta">
         <div class="meta-header">
-            <span style="font-size: 12px; font-weight: 800; opacity: 0.8;">OBJETIVO MENSAL</span>
+            <div style="font-weight: 800; font-size: 11px; opacity: 0.7;">OBJETIVO MENSAL</div>
             <input type="number" id="metaVal" class="meta-input" onchange="salvarMeta()">
         </div>
-        <div class="progress-bg"><div id="barraProgresso" class="progress-bar"></div></div>
-        <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 800;">
+        <div class="progress-container"><div id="barraProgresso" class="progress-bar"></div></div>
+        <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 800;">
             <span id="porcentoTxt">0%</span>
             <span id="faltaTxt">...</span>
         </div>
@@ -114,57 +124,52 @@
 
     <div class="stats-grid">
         <div class="stat-card"><small>Faturamento</small><strong id="totalVendas">R$ 0</strong></div>
-        <div class="stat-card"><small>A Entregar</small><strong id="countPendentes" style="color:var(--spitz)">0</strong></div>
+        <div class="stat-card"><small>Pendentes</small><strong id="countPendentes" style="color: var(--spitz);">0</strong></div>
         <div class="stat-card" style="grid-column: span 2;">
-            <small>Saldo Restante Líquido</small>
-            <strong id="totalComissao" style="color:var(--success); font-size: 22px;">R$ 0,00</strong>
-            <div id="subVale" style="font-size: 10px; color: var(--danger); font-weight: 800; margin-top: 4px;"></div>
+            <small>Saldo Líquido a Receber</small><strong id="totalComissao" style="color: var(--success); font-size: 22px;">R$ 0,00</strong>
+            <div id="subVale" style="font-size: 9px; color: var(--danger); font-weight: 800; margin-top: 4px;"></div>
         </div>
     </div>
 
     <div class="glass-card">
         <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-            <select id="tipo" style="padding:12px; border-radius:12px; border:1px solid #ddd; flex:1;"><option value="Spitz">🐶 Spitz</option><option value="Bengal">🐱 Bengal</option></select>
-            <select id="sexo" style="padding:12px; border-radius:12px; border:1px solid #ddd; flex:1;"><option value="Macho">♂ Macho</option><option value="Fêmea">♀ Fêmea</option></select>
+            <select id="tipo"><option value="Spitz">🐶 Spitz</option><option value="Bengal">🐱 Bengal</option></select>
+            <select id="sexo"><option value="Macho">♂ Macho</option><option value="Fêmea">♀ Fêmea</option></select>
         </div>
-        <input type="text" id="cliente" placeholder="Nome do Cliente" style="padding:14px; border-radius:14px; border:1px solid #ddd; width:100%; box-sizing:border-box; margin-bottom:10px;">
-        <input type="number" id="valorVenda" placeholder="Valor da Venda R$" style="padding:14px; border-radius:14px; border:1px solid #ddd; width:100%; box-sizing:border-box; margin-bottom:10px;">
-        <button onclick="adicionarVenda()" style="background:var(--dark); color:white; border:none; padding:16px; border-radius:15px; width:100%; font-weight:800; cursor:pointer;">REGISTRAR VENDA</button>
-        <button onclick="adicionarVale()" style="background:none; border:none; color:var(--danger); font-weight:800; font-size:11px; margin-top:10px; width:100%; text-decoration:underline;">REGISTRAR ADIANTAMENTO/VALE</button>
+        <input type="text" id="cliente" placeholder="Nome do Cliente" style="margin-bottom:10px;">
+        <input type="number" id="valorVenda" placeholder="Valor da Venda (R$)" style="margin-bottom:10px;">
+        <button class="btn-add" onclick="adicionarVenda()">REGISTRAR VENDA</button>
+        <button onclick="adicionarVale()" style="background:none; border:none; color:var(--danger); font-size:11px; font-weight:bold; margin-top:10px; width:100%; cursor:pointer;">+ REGISTRAR ADIANTAMENTO/VALE</button>
     </div>
 
     <div id="lista"></div>
 
-    <button class="btn-pdf" onclick="imprimirRelatorio()">📄 EXPORTAR RELATÓRIO PDF</button>
+    <div style="margin-bottom: 50px;">
+        <button class="btn-pdf" onclick="imprimirRelatorio()">📄 GERAR RELATÓRIO PDF</button>
+    </div>
 </div>
 
 <script>
-    let vendas = JSON.parse(localStorage.getItem('vendasV6')) || [];
-    let meta = localStorage.getItem('metaV6') || 0;
+    let vendas = JSON.parse(localStorage.getItem('vendasV5')) || [];
+    let meta = localStorage.getItem('metaV5') || 0;
     document.getElementById('metaVal').value = meta;
 
-    function salvarMeta() { meta = document.getElementById('metaVal').value; localStorage.setItem('metaV6', meta); renderizar(); }
+    function salvarMeta() { meta = document.getElementById('metaVal').value; localStorage.setItem('metaV5', meta); renderizar(); }
 
     function adicionarVenda() {
-        const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valorVenda').value);
+        const t = document.getElementById('tipo').value, c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valorVenda').value);
         if(c && v) {
-            vendas.push({ 
-                tipo: document.getElementById('tipo').value, 
-                sexo: document.getElementById('sexo').value, 
-                cliente: c, valor: v, data: new Date().toLocaleDateString('pt-BR'), 
-                entregue: false, cancelada: false, sinal: 0 
-            });
-            localStorage.setItem('vendasV6', JSON.stringify(vendas));
-            document.getElementById('cliente').value = ''; document.getElementById('valorVenda').value = '';
+            vendas.push({ tipo:t, sexo:document.getElementById('sexo').value, cliente:c, valor:v, data: new Date().toLocaleDateString('pt-BR'), isVale: false, entregue: false, cancelada: false, sinal: 0 });
+            localStorage.setItem('vendasV5', JSON.stringify(vendas));
             renderizar();
         }
     }
 
     function adicionarVale() {
-        const v = prompt("Valor do adiantamento recebido:");
+        const v = prompt("Valor do vale/adiantamento:");
         if(v) {
             vendas.push({ cliente: 'Adiantamento', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true });
-            localStorage.setItem('vendasV6', JSON.stringify(vendas));
+            localStorage.setItem('vendasV5', JSON.stringify(vendas));
             renderizar();
         }
     }
@@ -176,7 +181,7 @@
             vendas[i].entregue = false;
         }
         vendas[i][campo] = !vendas[i][campo];
-        localStorage.setItem('vendasV6', JSON.stringify(vendas));
+        localStorage.setItem('vendasV5', JSON.stringify(vendas));
         renderizar();
     }
 
@@ -188,28 +193,28 @@
         vendas.forEach((v, i) => {
             if(v.isVale) {
                 vales += v.valor;
-                listaDiv.innerHTML = `<div class="venda-card" style="border-left-color:var(--danger)"><span>💸 Adiantamento</span><strong>- R$ ${v.valor.toLocaleString()}</strong></div>` + listaDiv.innerHTML;
+                listaDiv.innerHTML = `<div class="venda-card" style="border-left-color:var(--danger)"><span>💸 Adiantamento</span><strong style="margin-left:auto; color:var(--danger)">- R$ ${v.valor.toLocaleString()}</strong></div>` + listaDiv.innerHTML;
             } else {
                 fat += v.valor;
                 if(!v.entregue && !v.cancelada) pendentes++;
                 
                 let tags = '';
                 if(v.cancelada) {
-                    tags = `<div class="tag-container"><span class="badge badge-cancel">RESERVA CANCELADA</span><span class="badge badge-sinal">SINAL: R$ ${v.sinal.toLocaleString()}</span></div>`;
+                    tags = `<div class="tag-group"><span class="badge bg-cancel">RESERVA CANCELADA</span><span class="badge bg-sinal">SINAL: R$ ${v.sinal.toLocaleString()}</span></div>`;
                 } else if(v.entregue) {
-                    tags = `<span class="badge badge-entregue">ENTREGUE ✅</span>`;
+                    tags = `<span class="badge bg-success">ENTREGUE ✅</span>`;
                 }
 
                 listaDiv.innerHTML = `
                     <div class="venda-card venda-${v.tipo} ${v.cancelada?'cancelada':''}">
-                        <div class="venda-main">
+                        <div class="venda-info">
                             <strong>${v.tipo == 'Spitz'?'🐶':'🐱'} ${v.cliente}</strong><br>
                             <small>${v.data} | ${v.sexo}</small>
                             ${tags}
                         </div>
                         <div class="venda-valores">
-                            <strong>R$ ${v.valor.toLocaleString()}</strong><br>
-                            <small style="color:green; font-weight:800">3%: R$ ${(v.valor*0.03).toFixed(2)}</small>
+                            <strong style="font-size: 15px;">R$ ${v.valor.toLocaleString()}</strong><br>
+                            <small style="color:var(--success); font-weight:800">3%: R$ ${(v.valor*0.03).toFixed(2)}</small>
                         </div>
                         <div style="display:flex; gap:5px;">
                             <button class="btn-action ${v.entregue?'ativo':''}" onclick="alternarEstado(${i},'entregue')">🏠</button>
@@ -219,16 +224,16 @@
             }
         });
 
-        let comissaoTotal = (fat * 0.03) + 2000;
+        let liq = (fat * 0.03) + 2000 - vales;
         document.getElementById('totalVendas').innerText = "R$ " + fat.toLocaleString();
-        document.getElementById('totalComissao').innerText = "R$ " + (comissaoTotal - vales).toLocaleString();
-        document.getElementById('subVale').innerText = vales > 0 ? "TOTAL DE VALES: R$ " + vales.toLocaleString() : "";
+        document.getElementById('totalComissao').innerText = "R$ " + liq.toLocaleString();
+        document.getElementById('subVale').innerText = vales > 0 ? "DESCONTADO: R$ " + vales.toLocaleString() : "";
         document.getElementById('countPendentes').innerText = pendentes;
-        
-        let p = meta > 0 ? (fat/meta)*100 : 0;
+
+        let p = meta > 0 ? (fat / meta) * 100 : 0;
         document.getElementById('barraProgresso').style.width = Math.min(p, 100) + "%";
         document.getElementById('porcentoTxt').innerText = Math.floor(p) + "%";
-        document.getElementById('faltaTxt').innerText = meta - fat > 0 ? "FALTA R$ " + (meta-fat).toLocaleString() : "META BATIDA! 🏆";
+        document.getElementById('faltaTxt').innerText = meta - fat > 0 ? "FALTA R$ " + (meta-fat).toLocaleString() : "🏆 META BATIDA!";
         if(p >= 100) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     }
 
@@ -242,20 +247,18 @@
         let liqTotal = (fat * 0.03) + 2000;
         const win = window.open('', '_blank');
         win.document.write(`<html><body style="font-family:sans-serif; padding:30px">
-            <h1 style="text-align:center">Relatório Canil My Baby</h1>
-            <div style="background:#f0f4f8; padding:20px; border-radius:15px; margin-bottom:20px; border-left: 6px solid #54a0ff">
+            <h1>Relatório Canil My Baby</h1>
+            <div style="background:#f1f5f9; padding:20px; border-radius:15px; margin-bottom:20px; border-left: 5px solid #54a0ff">
                 <b>Total de Comissões:</b> R$ ${liqTotal.toLocaleString()}<br>
-                <b>Total de Adiantamentos (Vales):</b> <span style="color:red">R$ ${vales.toLocaleString()}</span><br>
+                <b>Adiantamentos (Vales):</b> R$ ${vales.toLocaleString()}<br>
                 <hr>
-                <b style="font-size:18px">SALDO FINAL A RECEBER: <span style="color:green">R$ ${(liqTotal - vales).toLocaleString()}</span></b>
+                <b>SALDO FINAL A RECEBER: R$ ${(liqTotal - vales).toLocaleString()}</b>
             </div>
-            <table border="1" style="width:100%; border-collapse:collapse; text-align:left;">
-                <thead style="background:#eee"><tr><th>Data</th><th>Cliente</th><th>Valor Venda</th><th>Status</th></tr></thead>
-                <tbody>${linhas}</tbody>
+            <table border="1" style="width:100%; border-collapse:collapse; text-align:left">
+                <tr><th>Data</th><th>Cliente</th><th>Valor Venda</th><th>Status</th></tr>${linhas}
             </table>
         <script>window.onload=function(){window.print();}<\/script></body></html>`);
     }
-
     renderizar();
 </script>
 </body>
