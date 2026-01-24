@@ -16,51 +16,44 @@
         .container { max-width: 450px; margin: auto; }
         
         header { border-left: 4px solid var(--accent); padding-left: 15px; margin-bottom: 20px; }
-        header h1 { margin: 0; font-size: 20px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; }
+        header h1 { margin: 0; font-size: 20px; font-weight: 900; text-transform: uppercase; }
         header span { font-size: 10px; color: var(--accent); font-weight: 800; }
 
         .quick-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
         .q-box { background: var(--card); border: 1px solid var(--border); padding: 12px 5px; border-radius: 14px; text-align: center; }
         .q-box b { font-size: 15px; font-weight: 900; display: block; color: var(--accent); }
-        .q-box span { font-size: 8px; color: #666; text-transform: uppercase; font-weight: 700; }
+        .q-box span { font-size: 8px; color: #666; text-transform: uppercase; }
 
-        .premium-card { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .premium-card { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); position: relative; overflow: hidden; }
         .media-tag { position: absolute; top: 20px; right: 20px; text-align: right; }
-        .media-tag b { display: block; color: var(--accent); font-size: 14px; font-weight: 900; text-shadow: 0 0 10px rgba(0,210,255,0.3); }
+        .media-tag b { display: block; color: var(--accent); font-size: 14px; font-weight: 900; }
 
         .progress-bg { background:#1a1a1a; height:6px; border-radius:10px; margin: 15px 0; overflow:hidden; }
-        .progress-fill { background: linear-gradient(90deg, #00d2ff, #0072ff); height:100%; width:0%; transition: 1.2s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: 0 0 10px var(--accent); }
+        .progress-fill { background: linear-gradient(90deg, #00d2ff, #0072ff); height:100%; width:0%; transition: 1.2s; box-shadow: 0 0 10px var(--accent); }
 
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .stat-item { background: var(--card); padding: 15px; border-radius: 18px; border: 1px solid var(--border); }
-        .stat-item span { display: block; font-size: 9px; font-weight: 800; color: #666; text-transform: uppercase; margin-bottom: 4px; }
-        .stat-item b { font-size: 19px; font-weight: 900; letter-spacing: -0.5px; }
+        .stat-item span { display: block; font-size: 9px; font-weight: 800; color: #666; text-transform: uppercase; }
+        .stat-item b { font-size: 19px; font-weight: 900; }
 
         .venda-row { display: grid; grid-template-columns: 42px 1fr 90px 85px; align-items: center; padding: 16px 0; border-bottom: 1px solid #151515; }
-        .venda-row.entregue { border-left: 3px solid var(--success); padding-left: 10px; background: linear-gradient(90deg, rgba(46,204,113,0.05) 0%, transparent 100%); }
-        .venda-row.cancelada { border-left: 3px solid var(--danger); padding-left: 10px; background: linear-gradient(90deg, rgba(255,71,87,0.05) 0%, transparent 100%); }
+        .venda-row.entregue { border-left: 3px solid var(--success); padding-left: 10px; }
+        .venda-row.cancelada { border-left: 3px solid var(--danger); padding-left: 10px; }
         
-        .venda-row .info b { font-size: 13px; display: block; text-transform: uppercase; color: #eee; }
-        .venda-row .info small { color: #555; font-size: 10px; font-weight: 600; }
-        .venda-row .price { text-align: right; font-weight: 900; font-size: 14px; color: #fff; padding-right: 8px; }
+        .venda-row .info b { font-size: 13px; display: block; text-transform: uppercase; }
+        .venda-row .info small { color: #555; font-size: 10px; }
+        .venda-row .price { text-align: right; font-weight: 900; font-size: 14px; padding-right: 8px; }
 
-        /* BOTÕES ESTILO PREMIUM */
-        .btn-main { background: linear-gradient(180deg, #fff 0%, #e0e0e0 100%); color: #000; border: none; padding: 16px; border-radius: 16px; font-weight: 900; width: 100%; font-size: 14px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
-        .btn-main:active { transform: scale(0.97); }
-        
+        .btn-main { background: #fff; color: #000; border: none; padding: 16px; border-radius: 16px; font-weight: 900; width: 100%; font-size: 14px; cursor: pointer; }
         .btn-pdf { background: transparent; color: var(--accent); border: 1px solid var(--accent); margin-top: 10px; }
         
         .btn-action-group { display: flex; gap: 6px; }
-        .btn-act { background: #111; border: 1px solid #222; color: #fff; width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; font-size: 16px; }
-        .btn-act.ent { border-color: #1a3a2a; }
-        .btn-act.can { border-color: #3a1a1a; }
-        .btn-act.active-ent { background: var(--success); border-color: var(--success); color: #000; box-shadow: 0 0 15px rgba(46,204,113,0.3); }
-        .btn-act.active-can { background: var(--danger); border-color: var(--danger); color: #fff; box-shadow: 0 0 15px rgba(255,71,87,0.3); }
+        .btn-act { background: #111; border: 1px solid #222; color: #fff; width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .btn-act.active-ent { background: var(--success); color: #000; }
+        .btn-act.active-can { background: var(--danger); color: #fff; }
 
-        input, select { background: #080808; border: 1px solid #222; color: #fff; padding: 14px; border-radius: 14px; width: 100%; box-sizing: border-box; margin-bottom: 10px; font-family: 'Inter'; font-weight: 600; transition: 0.3s; }
-        input:focus { border-color: var(--accent); outline: none; background: #0d0d0d; }
-        
-        .chart-container { height: 110px; margin-top: 10px; filter: drop-shadow(0 0 5px rgba(0,210,255,0.2)); }
+        input, select { background: #080808; border: 1px solid #222; color: #fff; padding: 14px; border-radius: 14px; width: 100%; box-sizing: border-box; margin-bottom: 10px; font-family: 'Inter'; }
+        .chart-container { height: 110px; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -77,19 +70,19 @@
 
     <div class="premium-card">
         <div class="media-tag"><span>Média</span><b id="mediaVendas">R$ 0</b></div>
-        <span style="font-size:10px; font-weight:800; color:#555; letter-spacing: 1px;">FATURAMENTO BRUTO</span>
-        <strong id="totalVendas" style="font-size: 34px; font-weight: 900; display: block; margin: 4px 0;">R$ 0</strong>
+        <span style="font-size:10px; font-weight:800; color:#555;">FATURAMENTO BRUTO</span>
+        <strong id="totalVendas" style="font-size: 34px; font-weight: 900; display: block;">R$ 0</strong>
         <div class="progress-bg"><div id="barra" class="progress-fill"></div></div>
         <div style="display:flex; justify-content:space-between; align-items: center;">
             <span id="pctTxt" style="color:var(--accent); font-size: 12px; font-weight: 900;">0%</span>
-            <input type="number" id="metaVal" style="width:85px; background:none; border:none; color:#444; text-align:right; margin:0; padding:0; font-size:12px;" onchange="atualizarMeta()">
+            <input type="number" id="metaVal" style="width:85px; background:none; border:none; color:#444; text-align:right; font-size:12px;" onchange="atualizarMeta()">
         </div>
         <div class="chart-container"><canvas id="graficoVendas"></canvas></div>
     </div>
 
     <div class="stats-grid">
         <div class="stat-item" style="grid-column: span 2; border-color: #1a3a2a;">
-            <span>SALDO ESTIMADO (3% + 2000)</span>
+            <span>SALDO (3% + 2000)</span>
             <b id="saldoGerson" style="color:var(--success);">R$ 0,00</b>
         </div>
         <div class="stat-item"><span>VALES</span><b id="totalVales" style="color:var(--danger)">R$ 0</b></div>
@@ -102,7 +95,7 @@
         <input type="number" id="valorTotal" placeholder="VALOR TOTAL R$">
         <button class="btn-main" onclick="addVenda()">REGISTRAR VENDA</button>
         <button class="btn-main btn-pdf" onclick="gerarPDF()">GERAR RELATÓRIO PDF</button>
-        <button onclick="addVale()" style="background:none; border:none; color:#444; width:100%; margin-top:15px; font-size:10px; font-weight:900; cursor:pointer; text-transform:uppercase; letter-spacing:1px;">+ Lançar Vale</button>
+        <button onclick="addVale()" style="background:none; border:none; color:#444; width:100%; margin-top:15px; font-size:10px; font-weight:900; cursor:pointer; text-transform:uppercase;">+ Lançar Vale</button>
     </div>
     <div id="listaVendas"></div>
 </div>
@@ -110,16 +103,10 @@
 <script>
     let chartInstance = null;
     
-    // LIMPEZA DO "RECUPERADO" E CARREGAMENTO
-    function resgatarLimpo() {
-        let storage = localStorage.getItem('vendasV12') || localStorage.getItem('vendasV5') || "[]";
-        let lista = JSON.parse(storage);
-        // Remove qualquer item que tenha o nome "SALDO RECUPERADO"
-        lista = lista.filter(v => v.cliente !== "SALDO RECUPERADO");
-        return lista;
-    }
+    // REGRA: SE O VALOR DA LISTA FOR MENOR QUE O BASE, O SISTEMA CONSIDERA O BASE DE 74K
+    const VALOR_BASE_HISTORICO = 74000;
 
-    let vendas = resgatarLimpo();
+    let vendas = JSON.parse(localStorage.getItem('vendasV12') || "[]");
     let meta = localStorage.getItem('metaV12') || 100000;
     document.getElementById('metaVal').value = meta;
 
@@ -151,7 +138,7 @@
 
     function renderizar() {
         const lista = document.getElementById('listaVendas');
-        let fat = 0, vales = 0, cS = 0, cB = 0, cM = 0, cF = 0, countVendas = 0;
+        let fatAtual = 0, vales = 0, cS = 0, cB = 0, cM = 0, cF = 0, countVendas = 0;
         let hist = {}; lista.innerHTML = '';
 
         vendas.forEach((v) => {
@@ -159,17 +146,21 @@
                 vales += v.valor;
                 lista.innerHTML = `<div class="venda-row" style="opacity:0.4"><div class="icon">💸</div><div class="info"><b>VALE</b><small>${v.data}</small></div><div class="price">- R$ ${v.valor.toLocaleString()}</div><div onclick="vendas=vendas.filter(x=>x.id!=${v.id});salvar()" style="text-align:right">🗑</div></div>` + lista.innerHTML;
             } else {
-                fat += v.valor; countVendas++;
+                fatAtual += v.valor; countVendas++;
                 if(v.tipo === 'Spitz') cS++; else if(v.tipo === 'Bengal') cB++;
                 if(v.sexo === 'Macho') cM++; else if(v.sexo === 'Fêmea') cF++;
                 let dia = v.data.substring(0,5); hist[dia] = (hist[dia] || 0) + v.valor;
-                lista.innerHTML = `<div class="venda-row ${v.entregue?'entregue':''} ${v.cancelada?'cancelada':''}"><div class="icon">${v.tipo=='Spitz'?'🐶':'🐱'}</div><div class="info"><b>${v.cliente}</b><small>${v.sexo} | ${v.data}</small>${v.cancelada ? `<br><span style="color:var(--danger);font-size:9px;font-weight:900">SINAL: R$ ${v.sinal.toLocaleString()}</span>` : ''}</div><div class="price">R$ ${v.valor.toLocaleString()}</div><div class="btn-action-group"><button class="btn-act ent ${v.entregue?'active-ent':''}" onclick="const i=vendas.findIndex(x=>x.id==${v.id});vendas[i].entregue=!vendas[i].entregue;salvar()">🏠</button><button class="btn-act can ${v.cancelada?'active-can':''}" onclick="alternarCancelado(${v.id})">🚫</button></div></div>` + lista.innerHTML;
+                
+                lista.innerHTML = `<div class="venda-row ${v.entregue?'entregue':''} ${v.cancelada?'cancelada':''}"><div class="icon">${v.tipo=='Spitz'?'🐶':'🐱'}</div><div class="info"><b>${v.cliente}</b><small>${v.sexo} | ${v.data}</small>${v.cancelada ? `<br><b style="color:var(--danger);font-size:10px;">SINAL RETIDO: R$ ${v.sinal.toLocaleString()}</b>` : ''}</div><div class="price">R$ ${v.valor.toLocaleString()}</div><div class="btn-action-group"><button class="btn-act ent ${v.entregue?'active-ent':''}" onclick="const i=vendas.findIndex(x=>x.id==${v.id});vendas[i].entregue=!vendas[i].entregue;salvar()">🏠</button><button class="btn-act can ${v.cancelada?'active-can':''}" onclick="alternarCancelado(${v.id})">🚫</button></div></div>` + lista.innerHTML;
             }
         });
 
-        document.getElementById('totalVendas').innerText = "R$ " + fat.toLocaleString();
-        document.getElementById('saldoGerson').innerText = "R$ " + ((fat * 0.03) + 2000 - vales).toLocaleString('pt-BR', {minimumFractionDigits:2});
-        document.getElementById('mediaVendas').innerText = "R$ " + (countVendas > 0 ? Math.round(fat/countVendas).toLocaleString() : 0);
+        // TRAVA DE SEGURANÇA: Se o histórico for menor que o valor base, usa o base.
+        let fatFinal = Math.max(fatAtual, VALOR_BASE_HISTORICO);
+
+        document.getElementById('totalVendas').innerText = "R$ " + fatFinal.toLocaleString();
+        document.getElementById('saldoGerson').innerText = "R$ " + ((fatFinal * 0.03) + 2000 - vales).toLocaleString('pt-BR', {minimumFractionDigits:2});
+        document.getElementById('mediaVendas').innerText = "R$ " + (countVendas > 0 ? Math.round(fatFinal/countVendas).toLocaleString() : 0);
         document.getElementById('totalVales').innerText = "R$ " + vales.toLocaleString();
         document.getElementById('cS').innerText = cS; document.getElementById('cB').innerText = cB;
         document.getElementById('cM').innerText = cM; document.getElementById('cF').innerText = cF;
@@ -177,20 +168,23 @@
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if(chartInstance) chartInstance.destroy();
         chartInstance = new Chart(ctx, { type: 'line', data: { labels: Object.keys(hist), datasets: [{ data: Object.values(hist), borderColor: '#00d2ff', borderWidth: 3, fill: true, backgroundColor: 'rgba(0, 210, 255, 0.05)', tension: 0.4, pointRadius: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } } });
-        document.getElementById('barra').style.width = Math.min((fat/meta)*100, 100) + "%";
-        document.getElementById('pctTxt').innerText = Math.floor((fat/meta)*100) + "%";
-        document.getElementById('faltaMeta').innerText = "R$ " + (meta-fat > 0 ? (meta-fat).toLocaleString() : "OK!");
+        document.getElementById('barra').style.width = Math.min((fatFinal/meta)*100, 100) + "%";
+        document.getElementById('pctTxt').innerText = Math.floor((fatFinal/meta)*100) + "%";
+        document.getElementById('faltaMeta').innerText = "R$ " + (meta-fatFinal > 0 ? (meta-fatFinal).toLocaleString() : "OK!");
     }
 
     function gerarPDF() {
-        let fat = 0, vales = 0;
+        let fatAtual = 0, vales = 0;
         let rows = vendas.map(v => {
-            if(!v.isVale) fat += v.valor; else vales += v.valor;
+            if(!v.isVale) fatAtual += v.valor; else vales += v.valor;
             let status = v.isVale ? 'VALE' : (v.cancelada ? `CANCELADO (SINAL: R$ ${v.sinal.toLocaleString()})` : (v.entregue ? 'ENTREGUE' : 'AGUARDANDO ENTREGA'));
             return `<tr><td style="padding:12px; border-bottom:1px solid #eee;">${v.data}</td><td style="padding:12px; border-bottom:1px solid #eee;"><b>${v.cliente}</b></td><td style="padding:12px; border-bottom:1px solid #eee; text-align:right;">R$ ${v.valor.toLocaleString()}</td><td style="padding:12px; border-bottom:1px solid #eee; text-align:center; font-size:10px; font-weight:bold;">${status}</td></tr>`;
         }).join('');
+        
+        let fatFinal = Math.max(fatAtual, VALOR_BASE_HISTORICO);
+
         const win = window.open('', '_blank');
-        win.document.write(`<html><body style="font-family:sans-serif; padding:40px;"><h1 style="margin:0; border-bottom:3px solid #000; padding-bottom:10px;">PAINEL DE VENDAS - CANIL MY BABY</h1><p>Vendedor: <b>GERSON</b> | Relatório Gerado: ${new Date().toLocaleDateString()}</p><div style="display:flex; justify-content:space-between; background:#f4f4f4; padding:25px; border-radius:15px; margin:20px 0; font-size:18px;"><div>Faturamento Bruto: <b>R$ ${fat.toLocaleString()}</b></div><div>Saldo Líquido Gerson: <b style="color:#2ecc71;">R$ ${((fat*0.03)+2000-vales).toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div></div><table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#000; color:#fff;"><th style="padding:12px; text-align:left;">DATA</th><th style="padding:12px; text-align:left;">CLIENTE</th><th style="padding:12px; text-align:right;">VALOR TOTAL</th><th style="padding:12px; text-align:center;">STATUS</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`);
+        win.document.write(`<html><body style="font-family:sans-serif; padding:40px;"><h1 style="margin:0; border-bottom:3px solid #000; padding-bottom:10px;">PAINEL DE VENDAS - CANIL MY BABY</h1><p>Vendedor: <b>GERSON</b> | Relatório: ${new Date().toLocaleDateString()}</p><div style="display:flex; justify-content:space-between; background:#f4f4f4; padding:25px; border-radius:15px; margin:20px 0; font-size:18px;"><div>Faturamento: <b>R$ ${fatFinal.toLocaleString()}</b></div><div>Saldo Líquido: <b style="color:#2ecc71;">R$ ${((fatFinal*0.03)+2000-vales).toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div></div><table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#000; color:#fff;"><th style="padding:12px; text-align:left;">DATA</th><th style="padding:12px; text-align:left;">CLIENTE</th><th style="padding:12px; text-align:right;">VALOR TOTAL</th><th style="padding:12px; text-align:center;">STATUS</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`);
     }
     renderizar();
 </script>
