@@ -3,10 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="My Baby">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3503/3503554.png">
-    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3503/3503554.png">
     <title>PAINEL - CANIL MY BABY</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -30,19 +26,19 @@
         .stat-item { background: var(--card); padding: 15px; border-radius: 18px; border: 1px solid var(--border); }
         .stat-item span { display: block; font-size: 9px; font-weight: 800; color: #666; text-transform: uppercase; }
         .stat-item b { font-size: 19px; font-weight: 900; }
-        .venda-row { display: grid; grid-template-columns: 42px 1fr 90px 85px; align-items: center; padding: 16px 0; border-bottom: 1px solid #151515; }
+        .venda-row { display: grid; grid-template-columns: 42px 1fr 85px 85px; align-items: center; padding: 16px 0; border-bottom: 1px solid #151515; }
         .venda-row.entregue { border-left: 3px solid var(--success); padding-left: 10px; }
         .venda-row.cancelada { border-left: 3px solid var(--danger); padding-left: 10px; }
         .venda-row .info b { font-size: 13px; display: block; text-transform: uppercase; cursor: pointer; }
         .venda-row .info small { color: #555; font-size: 10px; }
-        .venda-row .price { text-align: right; font-weight: 900; font-size: 14px; padding-right: 8px; }
-        .btn-main { background: #fff; color: #000; border: none; padding: 16px; border-radius: 16px; font-weight: 900; width: 100%; font-size: 14px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 10px rgba(255,255,255,0.1); }
-        .btn-main:active { transform: scale(0.98); }
+        .venda-row .price { text-align: right; font-weight: 900; font-size: 13px; padding-right: 5px; }
+        .btn-main { background: #fff; color: #000; border: none; padding: 16px; border-radius: 16px; font-weight: 900; width: 100%; font-size: 14px; cursor: pointer; }
         .btn-pdf { background: transparent; color: var(--accent); border: 1px solid var(--accent); margin-top: 10px; }
-        .btn-action-group { display: flex; gap: 6px; }
-        .btn-act { background: #111; border: 1px solid #222; color: #fff; width: 38px; height: 38px; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .btn-action-group { display: flex; gap: 4px; justify-content: flex-end; }
+        .btn-act { background: #111; border: 1px solid #222; color: #fff; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; }
         .btn-act.active-ent { background: var(--success); color: #000; border-color: var(--success); }
         .btn-act.active-can { background: var(--danger); color: #fff; border-color: var(--danger); }
+        .btn-del { color: #444; font-size: 12px; margin-left: 5px; cursor: pointer; }
         input, select { background: #080808; border: 1px solid #222; color: #fff; padding: 14px; border-radius: 14px; width: 100%; box-sizing: border-box; margin-bottom: 10px; font-family: 'Inter'; }
     </style>
 </head>
@@ -96,87 +92,108 @@
     let meta = localStorage.getItem('metaV12') || 100000;
     document.getElementById('metaVal').value = meta;
 
-    // Converte data DD/MM/AAAA para objeto Date para ordenar
-    function formatarDataParaOrdem(dataStr) {
-        const partes = dataStr.split('/');
-        return new Date(partes[2], partes[1] - 1, partes[0]);
+    function parseData(str) {
+        const p = str.split('/');
+        return new Date(p[2], p[1] - 1, p[0]);
     }
 
-    function salvar() { 
-        // Ordena antes de salvar: Recentes no topo, mas por DATA real.
-        vendas.sort((a, b) => formatarDataParaOrdem(b.data) - formatarDataParaOrdem(a.data));
-        localStorage.setItem('vendasV12', JSON.stringify(vendas)); 
-        renderizar(); 
+    function salvar() {
+        vendas.sort((a, b) => parseData(b.data) - parseData(a.data));
+        localStorage.setItem('vendasV12', JSON.stringify(vendas));
+        renderizar();
     }
-    
+
     function atualizarMeta() { meta = document.getElementById('metaVal').value; localStorage.setItem('metaV12', meta); renderizar(); }
 
     function addVenda() {
         const c = document.getElementById('cliente').value, vt = parseFloat(document.getElementById('valorTotal').value);
         if(c && vt) {
-            vendas.push({ id: Date.now(), tipo: document.getElementById('tipo').value, sexo: document.getElementById('sexo').value, cliente: c, valor: vt, sinal: 0, data: new Date().toLocaleDateString('pt-BR'), entregue: false, cancelada: false });
-            document.getElementById('cliente').value = ''; document.getElementById('valorTotal').value = ''; 
+            vendas.push({ id: "v-" + Date.now(), tipo: document.getElementById('tipo').value, sexo: document.getElementById('sexo').value, cliente: c, valor: vt, sinal: 0, data: new Date().toLocaleDateString('pt-BR'), entregue: false, cancelada: false });
+            document.getElementById('cliente').value = ''; document.getElementById('valorTotal').value = '';
             salvar();
         }
     }
 
     function editarData(id) {
-        const i = vendas.findIndex(x => x.id == id);
-        const novaData = prompt("Editar data (DD/MM/AAAA):", vendas[i].data);
-        if(novaData) {
-            vendas[i].data = novaData;
+        const i = vendas.findIndex(x => x.id === id);
+        const nD = prompt("Data (DD/MM/AAAA):", vendas[i].data);
+        if(nD) { vendas[i].data = nD; salvar(); }
+    }
+
+    function deletarVenda(id) {
+        if(confirm("Deseja excluir permanentemente esta venda?")) {
+            vendas = vendas.filter(x => x.id !== id);
             salvar();
         }
     }
 
-    function addVale() {
-        const v = prompt("Valor do Vale:");
-        if(v) { vendas.push({ id: Date.now(), cliente: 'VALE', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true }); salvar(); }
+    function alternarCancelado(id) {
+        const i = vendas.findIndex(x => x.id === id);
+        if (!vendas[i].cancelada) {
+            const s = prompt("Digite o valor do sinal retido:");
+            if (s !== null) {
+                vendas[i].sinal = Number(s) || 0;
+                vendas[i].cancelada = true;
+                salvar();
+            }
+        } else {
+            vendas[i].cancelada = false;
+            vendas[i].sinal = 0;
+            salvar();
+        }
     }
 
-    function alternarCancelado(id) {
-        const i = vendas.findIndex(x => x.id == id);
-        if (!vendas[i].cancelada) {
-            const vS = prompt("SINAL RETIDO?");
-            if (vS !== null) {
-                vendas[i].sinal = Number(vS) || 0; // Garantindo que vira número
-                vendas[i].cancelada = true;
-            }
-        } else { 
-            vendas[i].cancelada = false; 
-            vendas[i].sinal = 0;
-        }
+    function alternarEntrega(id) {
+        const i = vendas.findIndex(x => x.id === id);
+        vendas[i].entregue = !vendas[i].entregue;
         salvar();
+    }
+
+    function addVale() {
+        const v = prompt("Valor do Vale:");
+        if(v) { vendas.push({ id: "vale-" + Date.now(), cliente: 'VALE', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true }); salvar(); }
     }
 
     function renderizar() {
         const lista = document.getElementById('listaVendas');
-        let fat = 0, vales = 0, cS = 0, cB = 0, cM = 0, cF = 0, countVendas = 0;
+        let fat = 0, vales = 0, cS = 0, cB = 0, cM = 0, cF = 0, count = 0;
         let hist = {}; lista.innerHTML = '';
 
         vendas.forEach((v) => {
             if(v.isVale) {
                 vales += v.valor;
-                lista.innerHTML += `<div class="venda-row" style="opacity:0.4"><div class="icon">💸</div><div class="info"><b>VALE</b><small>${v.data}</small></div><div class="price">- R$ ${v.valor.toLocaleString()}</div><div onclick="vendas=vendas.filter(x=>x.id!=${v.id});salvar()" style="text-align:right">🗑</div></div>`;
+                lista.innerHTML += `<div class="venda-row" style="opacity:0.4"><div class="icon">💸</div><div class="info"><b>VALE</b><small>${v.data}</small></div><div class="price">- R$ ${v.valor.toLocaleString()}</div><div class="btn-del" onclick="deletarVenda('${v.id}')">🗑</div></div>`;
             } else {
-                fat += v.valor; countVendas++;
-                if(v.tipo === 'Spitz') cS++; else if(v.tipo === 'Bengal') cB++;
-                if(v.sexo === 'Macho') cM++; else if(v.sexo === 'Fêmea') cF++;
+                fat += v.valor; count++;
+                if(v.tipo === 'Spitz') cS++; else cB++;
+                if(v.sexo === 'Macho') cM++; else cF++;
                 let dia = v.data.substring(0,5); hist[dia] = (hist[dia] || 0) + v.valor;
-                
-                let textoSinal = v.cancelada ? `<br><b style="color:var(--danger);font-size:10px;">SINAL RETIDO: R$ ${Number(v.sinal).toLocaleString('pt-BR')}</b>` : '';
 
-                lista.innerHTML += `<div class="venda-row ${v.entregue?'entregue':''} ${v.cancelada?'cancelada':''}"><div class="icon">${v.tipo=='Spitz'?'🐶':'🐱'}</div><div class="info"><b onclick="editarData(${v.id})">${v.cliente}</b><small>${v.sexo} | ${v.data}</small>${textoSinal}</div><div class="price">R$ ${v.valor.toLocaleString()}</div><div class="btn-action-group"><button class="btn-act ent ${v.entregue?'active-ent':''}" onclick="const i=vendas.findIndex(x=>x.id==${v.id});vendas[i].entregue=!vendas[i].entregue;salvar()">🏠</button><button class="btn-act can ${v.cancelada?'active-can':''}" onclick="alternarCancelado(${v.id})">🚫</button></div></div>`;
+                lista.innerHTML += `
+                <div class="venda-row ${v.entregue?'entregue':''} ${v.cancelada?'cancelada':''}">
+                    <div class="icon">${v.tipo=='Spitz'?'🐶':'🐱'}</div>
+                    <div class="info">
+                        <b onclick="editarData('${v.id}')">${v.cliente}</b>
+                        <small>${v.sexo} | ${v.data}</small>
+                        ${v.cancelada ? `<br><b style="color:var(--danger);font-size:10px;">SINAL: R$ ${Number(v.sinal).toLocaleString('pt-BR')}</b>` : ''}
+                    </div>
+                    <div class="price">R$ ${v.valor.toLocaleString()}</div>
+                    <div class="btn-action-group">
+                        <button class="btn-act ${v.entregue?'active-ent':''}" onclick="alternarEntrega('${v.id}')">🏠</button>
+                        <button class="btn-act ${v.cancelada?'active-can':''}" onclick="alternarCancelado('${v.id}')">🚫</button>
+                        <div class="btn-del" onclick="deletarVenda('${v.id}')">🗑</div>
+                    </div>
+                </div>`;
             }
         });
 
         document.getElementById('totalVendas').innerText = "R$ " + fat.toLocaleString();
         document.getElementById('saldoGerson').innerText = "R$ " + ((fat * 0.03) + 2000 - vales).toLocaleString('pt-BR', {minimumFractionDigits:2});
-        document.getElementById('mediaVendas').innerText = "R$ " + (countVendas > 0 ? Math.round(fat/countVendas).toLocaleString() : 0);
+        document.getElementById('mediaVendas').innerText = "R$ " + (count > 0 ? Math.round(fat/count).toLocaleString() : 0);
         document.getElementById('totalVales').innerText = "R$ " + vales.toLocaleString();
         document.getElementById('cS').innerText = cS; document.getElementById('cB').innerText = cB;
         document.getElementById('cM').innerText = cM; document.getElementById('cF').innerText = cF;
-        
+
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if(chartInstance) chartInstance.destroy();
         chartInstance = new Chart(ctx, { type: 'line', data: { labels: Object.keys(hist), datasets: [{ data: Object.values(hist), borderColor: '#00d2ff', borderWidth: 3, fill: true, backgroundColor: 'rgba(0, 210, 255, 0.05)', tension: 0.4, pointRadius: 0 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } } });
@@ -193,7 +210,7 @@
             return `<tr><td style="padding:12px; border-bottom:1px solid #eee;">${v.data}</td><td style="padding:12px; border-bottom:1px solid #eee;"><b>${v.cliente}</b></td><td style="padding:12px; border-bottom:1px solid #eee; text-align:right;">R$ ${v.valor.toLocaleString()}</td><td style="padding:12px; border-bottom:1px solid #eee; text-align:center; font-size:10px; font-weight:bold;">${status}</td></tr>`;
         }).join('');
         const win = window.open('', '_blank');
-        win.document.write(`<html><body style="font-family:sans-serif; padding:40px;"><h1 style="margin:0; border-bottom:3px solid #000; padding-bottom:10px;">PAINEL DE VENDAS - CANIL MY BABY</h1><p>Vendedor: <b>GERSON</b> | Relatório: ${new Date().toLocaleDateString()}</p><div style="display:flex; justify-content:space-between; background:#f4f4f4; padding:25px; border-radius:15px; margin:20px 0; font-size:18px;"><div>Vendas do Mês: <b>R$ ${fat.toLocaleString()}</b></div><div>Saldo Líquido: <b style="color:#2ecc71;">R$ ${((fat*0.03)+2000-vales).toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div></div><table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#000; color:#fff;"><th style="padding:12px; text-align:left;">DATA</th><th style="padding:12px; text-align:left;">CLIENTE</th><th style="padding:12px; text-align:right;">VALOR TOTAL</th><th style="padding:12px; text-align:center;">STATUS</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`);
+        win.document.write(`<html><body style="font-family:sans-serif; padding:40px;"><h1 style="margin:0; border-bottom:3px solid #000; padding-bottom:10px;">CANIL MY BABY</h1><p>Relatório de Vendas - Vendedor GERSON</p><div style="display:flex; justify-content:space-between; background:#f4f4f4; padding:25px; border-radius:15px; margin:20px 0; font-size:18px;"><div>Vendas: <b>R$ ${fat.toLocaleString()}</b></div><div>Saldo: <b style="color:#2ecc71;">R$ ${((fat*0.03)+2000-vales).toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div></div><table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#000; color:#fff;"><th>DATA</th><th>CLIENTE</th><th>VALOR</th><th>STATUS</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`);
     }
     renderizar();
 </script>
