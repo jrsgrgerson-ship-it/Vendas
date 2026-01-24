@@ -3,105 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MY BABY | GERSON V10</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <title>MY BABY | GERSON PREMIUM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --accent: #d4af37; --danger: #ff4757; --success: #2ecc71;
+            --accent: #00d2ff; --danger: #ff4757; --success: #2ecc71;
             --bg: #000000; --card: #0a0a0a; --border: #1a1a1a;
+            --neon: 0 0 15px rgba(0, 210, 255, 0.3);
         }
         body { 
             background: var(--bg); color: #ffffff; font-family: 'Inter', sans-serif;
             margin: 0; padding: 15px; -webkit-font-smoothing: antialiased;
         }
         .container { max-width: 450px; margin: auto; }
-        header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-        .logo-text { font-size: 20px; font-weight: 900; color: var(--accent); margin: 0; text-transform: uppercase; }
-        .sub-logo { font-size: 10px; font-weight: 600; color: #888; margin-top: 5px; letter-spacing: 1px; }
-
-        .premium-card { background: var(--card); border-radius: 16px; padding: 18px; margin-bottom: 12px; border: 1px solid var(--border); }
-
-        /* BARRAS DE STATUS */
-        .bar-stat { padding: 18px; border-radius: 15px; border: 1px solid #222; margin-bottom: 10px; }
-        .bar-stat span { display: block; font-size: 9px; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; opacity: 0.8; }
-        .bar-stat strong { font-size: 24px; font-weight: 900; display: block; }
-        .formula { font-size: 10px; color: var(--success); font-weight: 700; margin-top: 5px; opacity: 0.9; }
-
-        /* PETS GRID */
-        .total-pets-box { background: var(--accent); color: #000; padding: 8px; border-radius: 8px; text-align: center; font-weight: 900; font-size: 13px; margin-bottom: 10px; }
-        .pets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-        .pet-stat { background: #080808; padding: 10px; border-radius: 12px; border: 1px solid #151515; text-align: center; }
-        .pet-stat b { display: block; font-size: 9px; color: #555; text-transform: uppercase; margin-bottom: 4px; }
-        .pet-stat div { font-size: 13px; font-weight: 800; }
-
-        /* HISTÓRICO SIMPLIFICADO */
-        .venda-row { display: grid; grid-template-columns: 40px 1fr 100px 80px; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border); }
-        .venda-row.vale-row { color: var(--danger); background: rgba(255, 71, 87, 0.05); border-radius: 10px; margin: 8px 0; padding: 15px; border: none; }
-        .venda-row .info b { display: block; font-size: 14px; font-weight: 800; color: #fff; }
-        .venda-row .info small { color: #666; font-size: 10px; font-weight: 600; text-transform: uppercase; }
-        .venda-row .price-box { text-align: right; }
-        .venda-row .v-bruto { display: block; font-weight: 900; font-size: 13px; color: #eee; }
-        .venda-row .v-com { display: block; font-weight: 800; font-size: 10px; color: var(--success); }
         
-        /* BOTÕES */
-        .btn-action { background: #111; border: 1px solid #222; color: #fff; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 12px; }
+        header { text-align: center; margin-bottom: 25px; }
+        .logo-text { font-size: 24px; font-weight: 900; color: var(--accent); text-shadow: var(--neon); margin: 0; }
+        .sub-logo { font-size: 10px; letter-spacing: 2px; opacity: 0.6; text-transform: uppercase; }
+
+        .premium-card { 
+            background: var(--card); border-radius: 20px; padding: 20px; 
+            margin-bottom: 15px; border: 1px solid var(--border);
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.02);
+        }
+
+        /* STATUS BARS NEON */
+        .bar-stat { 
+            padding: 20px; border-radius: 18px; border: 1px solid #222; margin-bottom: 12px;
+            position: relative; overflow: hidden;
+        }
+        .bar-stat.blue { border-color: var(--accent); box-shadow: var(--neon); }
+        .bar-stat.red { border-color: var(--danger); }
+        .bar-stat.green { border-color: var(--success); box-shadow: 0 0 15px rgba(46, 204, 113, 0.2); }
+        
+        .bar-stat span { display: block; font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; opacity: 0.7; }
+        .bar-stat strong { font-size: 28px; font-weight: 900; display: block; letter-spacing: -1px; }
+
+        /* PET COUNTER */
+        .pets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .pet-stat { background: #080808; padding: 15px; border-radius: 15px; border: 1px solid #151515; text-align: center; }
+        .pet-stat b { font-size: 10px; color: #555; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        .pet-stat span { font-size: 18px; font-weight: 900; color: #fff; }
+
+        /* LISTA SIMPLIFICADA */
+        .venda-row { display: grid; grid-template-columns: 45px 1fr 110px; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border); }
+        .venda-row.vale { background: rgba(255, 71, 87, 0.05); border-radius: 12px; padding: 15px; border: none; margin: 10px 0; }
+        .venda-row b { font-size: 15px; display: block; }
+        .venda-row small { font-size: 10px; color: #666; font-weight: 700; text-transform: uppercase; }
+        .venda-row .price-info { text-align: right; }
+        .venda-row .v-bruto { font-weight: 900; font-size: 14px; display: block; }
+        .venda-row .v-com { font-weight: 800; font-size: 11px; color: var(--success); display: block; }
+
+        .btn-action { background: #111; border: 1px solid #222; color: #fff; width: 35px; height: 35px; border-radius: 10px; cursor: pointer; margin-left: 5px; }
         .btn-action.active-home { background: var(--success); border-color: var(--success); }
         .btn-action.active-cancel { background: var(--danger); border-color: var(--danger); }
-        .btn-main { background: #ffffff; color: #000; border: none; padding: 16px; border-radius: 12px; font-weight: 900; width: 100%; cursor: pointer; text-transform: uppercase; }
 
-        input, select { background: #000; border: 1px solid #222; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; font-family: 'Inter'; font-size: 14px; }
-        .chart-wrap { height: 180px; }
+        .btn-main { 
+            background: var(--accent); color: #000; border: none; padding: 18px; 
+            border-radius: 15px; font-weight: 900; width: 100%; cursor: pointer;
+            box-shadow: var(--neon); transition: 0.3s;
+        }
+        input, select { background: #000; border: 1px solid #222; color: #fff; padding: 15px; border-radius: 12px; width: 100%; margin-bottom: 10px; font-family: 'Inter'; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <p class="logo-text">MY BABY - Painel de Vendas</p>
-        <p class="sub-logo">Vendedor: Gerson</p>
+        <p class="logo-text">MY BABY - PAINEL ELITE</p>
+        <p class="sub-logo">Vendedor Gerson | Gestão de Comissões</p>
     </header>
 
     <div class="premium-card">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <span style="font-size:10px; font-weight:900; color:#444;">OBJETIVO MENSAL</span>
-            <input type="number" id="metaVal" style="width:100px; margin:0; border:none; background:transparent; text-align:right; font-size:16px; font-weight:900; color:var(--accent);" onchange="salvarMeta()">
+            <span style="font-size:10px; font-weight:900;">OBJETIVO MENSAL</span>
+            <input type="number" id="metaVal" style="width:120px; margin:0; border:none; background:transparent; text-align:right; font-size:18px; font-weight:900; color:var(--accent);" onchange="salvarMeta()">
         </div>
-        <div style="background:#111; height:6px; border-radius:10px; margin-bottom:8px;"><div id="barraProgresso" style="background:var(--accent); height:100%; width:0%; border-radius:10px;"></div></div>
-        <div style="display:flex; justify-content:space-between; font-size:10px; font-weight:900;"><span id="porcentoTxt" style="color:var(--accent)">0%</span><span id="faltaTxt">...</span></div>
+        <div style="background:#111; height:8px; border-radius:10px; margin-bottom:10px;"><div id="barraProgresso" style="background:var(--accent); height:100%; width:0%; border-radius:10px; box-shadow: var(--neon);"></div></div>
+        <div style="display:flex; justify-content:space-between; font-size:10px; font-weight:900;"><span id="porcentoTxt" style="color:var(--accent)">0%</span><span id="faltaTxt" style="opacity:0.5">...</span></div>
     </div>
 
-    <div class="premium-card" style="padding: 10px;"><div class="chart-wrap"><canvas id="meuGrafico"></canvas></div></div>
+    <div class="premium-card" style="padding: 10px;"><canvas id="meuGrafico" style="height:180px;"></canvas></div>
 
-    <div class="total-pets-box">Vendas: <span id="totalPets">0</span> Filhotes</div>
     <div class="pets-grid">
-        <div class="pet-stat"><b>🐶 Spitz</b><div id="countSpitz">0</div></div>
-        <div class="pet-stat"><b>🐱 Bengal</b><div id="countBengal">0</div></div>
+        <div class="pet-stat"><b>🐶 Spitz</b><span id="nS">0</span></div>
+        <div class="pet-stat"><b>🐱 Bengal</b><span id="nB">0</span></div>
     </div>
 
-    <div class="bar-stat" style="border-color: var(--danger); background: rgba(255,0,0,0.03);">
-        <span>Adiantamentos / Vales</span>
-        <strong id="totalVales" style="color: var(--danger);">R$ 0,00</strong>
+    <div class="bar-stat red">
+        <span>Total de Vales / Retiradas</span>
+        <strong id="totalVales">R$ 0,00</strong>
     </div>
 
-    <div class="bar-stat" style="border-color: var(--success); background: rgba(0,255,0,0.05);">
-        <span>Saldo Real (Fixo + 3% de Tudo)</span>
-        <strong id="totalComissao" style="color: var(--success);">R$ 0,00</strong>
-        <div class="formula" id="detalheCalculo">Comissão acumulada: R$ 0,00</div>
+    <div class="bar-stat green">
+        <span>Saldo Disponível (Fixo + 3%)</span>
+        <strong id="totalComissao">R$ 0,00</strong>
+        <div style="font-size:10px; margin-top:5px; color:#aaa;" id="baseCom">Base: R$ 0,00</div>
     </div>
 
     <div class="premium-card">
-        <div style="display:flex; gap:5px;"><select id="tipo"><option value="Spitz">🐶 SPITZ</option><option value="Bengal">🐱 BENGAL</option></select><select id="sexo"><option value="Macho">♂ MACHO</option><option value="Fêmea">♀ FÊMEA</option></select></div>
+        <div style="display:flex; gap:8px;"><select id="tipo"><option value="Spitz">🐶 SPITZ</option><option value="Bengal">🐱 BENGAL</option></select><select id="sexo"><option value="Macho">♂ MACHO</option><option value="Fêmea">♀ FÊMEA</option></select></div>
         <input type="text" id="cliente" placeholder="NOME DO CLIENTE">
         <input type="number" id="valorVenda" placeholder="VALOR DA VENDA R$">
-        <button class="btn-main" onclick="adicionarVenda()">LANÇAR VENDA</button>
-        <button onclick="adicionarVale()" style="background:none; border:none; color:var(--danger); font-size:10px; font-weight:900; margin-top:15px; width:100%; cursor:pointer; text-decoration: underline;">REGISTRAR VALE</button>
+        <button class="btn-main" onclick="adicionarVenda()">CONFIRMAR VENDA</button>
+        <button onclick="adicionarVale()" style="background:none; border:none; color:var(--danger); font-size:11px; font-weight:900; margin-top:20px; width:100%; cursor:pointer; text-decoration: underline;">REGISTRAR RETIRADA (VALE)</button>
     </div>
 
     <div id="listaVendas"></div>
 </div>
 
 <script>
+    // Recupera os dados da chave correta onde estão seus 74k
     let vendas = JSON.parse(localStorage.getItem('vendasV5')) || [];
     let meta = localStorage.getItem('metaV5') || 0;
     let chartInstance = null;
@@ -120,7 +133,7 @@
     }
 
     function adicionarVale() {
-        const v = prompt("VALOR DO VALE:");
+        const v = prompt("VALOR DA RETIRADA:");
         if(v) {
             vendas.push({ cliente: 'Vale', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true });
             localStorage.setItem('vendasV5', JSON.stringify(vendas));
@@ -136,77 +149,67 @@
 
     function renderizar() {
         const listaDiv = document.getElementById('listaVendas');
-        let faturamentoParaComissao = 0; // Soma TUDO para os 3%
-        let totalVales = 0;
-        let faturamentoAtivo = 0; // Apenas para o gráfico e meta
-        let nSpitz = 0, nBengal = 0;
+        let fatComissao = 0, vales = 0, fatAtivo = 0, nS = 0, nB = 0;
         let dadosG = {}; listaDiv.innerHTML = '';
 
         vendas.forEach((v, i) => {
             if(v.isVale) {
-                totalVales += v.valor;
-                listaDiv.innerHTML = `<div class="venda-row vale-row">
+                vales += v.valor;
+                listaDiv.innerHTML = `<div class="venda-row vale">
                     <div style="font-size:20px">💸</div>
-                    <div class="info"><b>VALE RETIRADO</b><small>${v.data}</small></div>
-                    <div class="price-box"><span class="v-bruto" style="color:var(--danger)">- R$ ${v.valor.toLocaleString()}</span></div>
-                    <div style="text-align:right"><button onclick="vendas.splice(${i},1); localStorage.setItem('vendasV5', JSON.stringify(vendas)); renderizar();" style="background:none; border:none; color:#555;">✕</button></div>
+                    <div><b>RETIRADA</b><small>${v.data}</small></div>
+                    <div class="price-info"><span class="v-bruto" style="color:var(--danger)">- R$ ${v.valor.toLocaleString()}</span>
+                    <button onclick="vendas.splice(${i},1); localStorage.setItem('vendasV5', JSON.stringify(vendas)); renderizar();" style="background:none; border:none; color:#444; margin-top:5px;">Excluir</button></div>
                 </div>` + listaDiv.innerHTML;
             } else {
-                // REGRA PRINCIPAL: COMISSÃO SEMPRE CONTA
-                faturamentoParaComissao += v.valor;
+                // COMISSÃO DE 3% SOBRE TUDO (ATIVO OU CANCELADO)
+                fatComissao += v.valor;
 
                 if(!v.cancelada) {
-                    faturamentoAtivo += v.valor;
-                    v.tipo === 'Spitz' ? nSpitz++ : nBengal++;
-                    let dia = v.data.substring(0,5); 
-                    dadosG[dia] = (dadosG[dia] || 0) + v.valor;
+                    fatAtivo += v.valor;
+                    v.tipo === 'Spitz' ? nS++ : nB++;
+                    let dia = v.data.substring(0,5); dadosG[dia] = (dadosG[dia] || 0) + v.valor;
                 }
 
-                let minhaCom = v.valor * 0.03;
-                let statusTag = v.cancelada ? `<span style="color:var(--danger)">CANCELADA</span>` : (v.entregue ? `<span style="color:var(--success)">ENTREGUE ✅</span>` : `PENDENTE`);
-
-                listaDiv.innerHTML = `<div class="venda-row" style="${v.cancelada ? 'opacity:0.5' : ''}">
-                    <div style="font-size:20px">${v.tipo=='Spitz'?'🐶':'🐱'}</div>
-                    <div class="info">
+                let com = v.valor * 0.03;
+                listaDiv.innerHTML = `<div class="venda-row" style="${v.cancelada?'opacity:0.4':''}">
+                    <div style="font-size:22px">${v.tipo=='Spitz'?'🐶':'🐱'}</div>
+                    <div>
                         <b>${v.cliente}</b>
-                        <small>${v.tipo} ${v.sexo} | ${statusTag}</small>
+                        <small>${v.tipo} ${v.sexo} | ${v.cancelada?'Cancelada':'Ativa'}</small>
                     </div>
-                    <div class="price-box">
+                    <div class="price-info">
                         <span class="v-bruto">R$ ${v.valor.toLocaleString()}</span>
-                        <span class="v-com">+ R$ ${minhaCom.toLocaleString()}</span>
-                    </div>
-                    <div style="display:flex; gap:4px; justify-content:flex-end;">
-                        <button class="btn-action ${v.entregue?'active-home':''}" onclick="alternarEstado(${i},'entregue')">🏠</button>
-                        <button class="btn-action ${v.cancelada?'active-cancel':''}" onclick="alternarEstado(${i},'cancelada')">🚫</button>
+                        <span class="v-com">+ R$ ${com.toLocaleString()}</span>
+                        <div style="margin-top:8px;">
+                            <button class="btn-action ${v.entregue?'active-home':''}" onclick="alternarEstado(${i},'entregue')">🏠</button>
+                            <button class="btn-action ${v.cancelada?'active-cancel':''}" onclick="alternarEstado(${i},'cancelada')">🚫</button>
+                        </div>
                     </div>
                 </div>` + listaDiv.innerHTML;
             }
         });
 
-        // Atualiza Painéis
-        document.getElementById('totalPets').innerText = nSpitz + nBengal;
-        document.getElementById('countSpitz').innerText = nSpitz;
-        document.getElementById('countBengal').innerText = nBengal;
-        document.getElementById('totalVales').innerText = "R$ " + totalVales.toLocaleString();
+        // Totais
+        document.getElementById('nS').innerText = nS; document.getElementById('nB').innerText = nB;
+        document.getElementById('totalVales').innerText = "R$ " + vales.toLocaleString();
         
-        const valorComissoes = faturamentoParaComissao * 0.03;
-        const saldoFinal = 2000 + valorComissoes - totalVales;
-        
-        document.getElementById('totalComissao').innerText = "R$ " + saldoFinal.toLocaleString();
-        document.getElementById('detalheCalculo').innerText = `3% de comissão garantidos sobre R$ ${faturamentoParaComissao.toLocaleString()}`;
+        const totalCom = (fatComissao * 0.03) + 2000 - vales;
+        document.getElementById('totalComissao').innerText = "R$ " + totalCom.toLocaleString();
+        document.getElementById('baseCom').innerText = `Comissão Total Acumulada: R$ ${(fatComissao * 0.03).toLocaleString()}`;
 
-        // Meta e Gráfico
-        let progresso = meta > 0 ? (faturamentoAtivo/meta)*100 : 0;
-        document.getElementById('barraProgresso').style.width = Math.min(progresso, 100) + "%";
-        document.getElementById('porcentoTxt').innerText = Math.floor(progresso) + "%";
-        document.getElementById('faltaTxt').innerText = meta - faturamentoAtivo > 0 ? "FALTA R$ " + (meta-faturamentoAtivo).toLocaleString() : "META BATIDA!";
+        // Meta
+        let p = meta > 0 ? (fatAtivo/meta)*100 : 0;
+        document.getElementById('barraProgresso').style.width = Math.min(p, 100) + "%";
+        document.getElementById('porcentoTxt').innerText = Math.floor(p) + "%";
+        document.getElementById('faltaTxt').innerText = meta - fatAtivo > 0 ? "FALTA R$ " + (meta-fatAtivo).toLocaleString() : "META ALCANÇADA!";
 
         const ctx = document.getElementById('meuGrafico').getContext('2d');
         if(chartInstance) chartInstance.destroy();
         chartInstance = new Chart(ctx, {
             type: 'line',
-            data: { labels: Object.keys(dadosG), datasets: [{ data: Object.values(dadosG), borderColor: '#d4af37', backgroundColor: 'rgba(212, 175, 55, 0.1)', fill: true, tension: 0.4, borderWidth: 3, pointRadius: 3 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { color: '#666' }, grid: { color: '#1a1a1a' } }, x: { ticks: { color: '#666' }, grid: { display: false } } } }
+            data: { labels: Object.keys(dadosG), datasets: [{ data: Object.values(dadosG), borderColor: '#00d2ff', backgroundColor: 'rgba(0, 210, 255, 0.1)', fill: true, tension: 0.4, borderWidth: 3, pointRadius: 4, pointBackgroundColor: '#00d2ff' }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { color: '#444' }, grid: { display: false } } } }
         });
     }
 
