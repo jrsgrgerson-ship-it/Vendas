@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PAINEL PREMIUM V6 - GERSON</title>
+    <title>PAINEL PREMIUM V6.1 - GERSON</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -41,14 +41,16 @@
         .btn-add { background: #fff; color: #000; border: none; padding: 16px; border-radius: 12px; width: 100%; font-weight: 900; font-size: 14px; cursor: pointer; margin-bottom: 10px; }
         .btn-pdf { background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); padding: 12px; border-radius: 12px; width: 100%; font-weight: 800; cursor: pointer; }
 
-        .item { display: grid; grid-template-columns: 40px 1fr auto 40px; align-items: center; padding: 15px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 10px; }
-        .item.entregue { border-left: 4px solid var(--neon-green); }
+        .item { display: grid; grid-template-columns: 40px 1fr auto 85px; align-items: center; padding: 15px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 10px; }
+        .item.entregue { border-left: 4px solid var(--neon-green); box-shadow: inset 10px 0 20px rgba(0, 255, 136, 0.05); }
         .item-info b { display: block; font-size: 13px; text-transform: uppercase; }
         .item-info span { font-size: 10px; color: #555; }
-        .item-price { font-weight: 900; color: #fff; margin-right: 10px; }
+        .item-price { font-weight: 900; color: #fff; text-align: right; margin-right: 10px; }
 
-        .btn-icon { width: 32px; height: 32px; border-radius: 8px; border: 1px solid #333; background: #111; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .btn-icon.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); }
+        .actions { display: flex; gap: 5px; justify-content: flex-end; }
+        .btn-icon { width: 34px; height: 34px; border-radius: 10px; border: 1px solid #333; background: #111; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s; }
+        .btn-icon.active { background: var(--neon-green); color: #000; border-color: var(--neon-green); box-shadow: 0 0 10px var(--neon-green); }
+        .btn-icon:active { transform: scale(0.9); }
 
         .debug-zone { margin-top: 30px; text-align: center; }
         .btn-rescue { background: none; border: 1px dashed #333; color: #444; padding: 10px; border-radius: 8px; font-size: 10px; text-transform: uppercase; font-weight: 800; cursor: pointer; }
@@ -58,8 +60,8 @@
 
 <div class="container">
     <header>
-        <div><span>VENDEDOR OFICIAL</span><h1>GERSON</h1></div>
-        <div style="text-align:right"><span id="dataAtual"></span></div>
+        <div><span>PAINEL DE GESTÃO</span><h1>CANIL MY BABY</h1></div>
+        <div style="text-align:right; font-size: 10px; color: var(--neon-blue); font-weight: 900;">GERSON</div>
     </header>
 
     <div class="quick-stats">
@@ -77,10 +79,10 @@
         <strong class="big-number" id="totalVendas">R$ 0</strong>
         <div class="progress-container"><div id="barra" class="progress-bar"></div></div>
         <div style="display:flex; justify-content:space-between; font-size:11px; color:#444;">
-            <span>META: R$ <input type="number" id="metaVal" style="width:70px; background:none; border:none; color:#444; margin:0; padding:0; font-weight:bold;" onchange="salvarMeta()"></span>
+            <span>META: R$ <input type="number" id="metaVal" style="width:70px; background:none; border:none; color:#444; font-weight:bold;" onchange="salvarMeta()"></span>
             <span id="faltaMeta">FALTA R$ 0</span>
         </div>
-        <div style="height:100px; margin-top:15px;"><canvas id="graficoVendas"></canvas></div>
+        <div style="height:110px; margin-top:15px;"><canvas id="graficoVendas"></canvas></div>
     </div>
 
     <div class="finance-grid">
@@ -103,15 +105,15 @@
         <input type="number" id="valorTotal" placeholder="Valor Total R$">
         <button class="btn-add" onclick="addVenda()">REGISTRAR VENDA</button>
         <div style="display:flex; gap:10px;">
-            <button class="btn-pdf" onclick="gerarPDF()">📄 EXPORTAR PDF TOP</button>
-            <button class="btn-pdf" style="border-color:var(--neon-red); color:var(--neon-red);" onclick="addVale()">💸 LANÇAR VALE</button>
+            <button class="btn-pdf" onclick="gerarPDF()">📄 PDF PROFISSIONAL</button>
+            <button class="btn-pdf" style="border-color:var(--neon-red); color:var(--neon-red);" onclick="addVale()">💸 VALE</button>
         </div>
     </div>
 
     <div id="listaVendas"></div>
 
     <div class="debug-zone">
-        <button class="btn-rescue" onclick="superResgate()">⚠️ RESGATAR 74K DA MEMÓRIA OCULTA</button>
+        <button class="btn-rescue" onclick="superResgate()">⚠️ RECUPERAR HISTÓRICO (74K)</button>
     </div>
 </div>
 
@@ -120,14 +122,10 @@
     let vendas = [];
     let meta = localStorage.getItem('meta_gerson') || 100000;
     document.getElementById('metaVal').value = meta;
-    document.getElementById('dataAtual').innerText = new Date().toLocaleDateString();
 
-    // --- FUNÇÃO DE RESGATE (O CORAÇÃO DO SISTEMA) ---
     function superResgate() {
-        const chaves = ['vendasV12', 'vendasV5', 'mybaby_v1', 'vendas_final_v1', 'vendas_backup_seguro', 'vendas_gerson'];
-        let melhorLote = [];
-        let maiorVlr = -1;
-
+        const chaves = ['vendasV12', 'vendasV5', 'mybaby_v1', 'vendas_final_v1', 'vendas_backup_seguro'];
+        let melhorLote = []; let maiorVlr = -1;
         chaves.forEach(k => {
             let d = localStorage.getItem(k);
             if(d) {
@@ -138,19 +136,14 @@
                 } catch(e) {}
             }
         });
-
         if(melhorLote.length > 0) {
-            vendas = melhorLote;
+            vendas = melhorLote.map(v => ({ ...v, id: v.id || Date.now() + Math.random() }));
             salvar();
-            alert("Sucesso! Carregado: R$ " + maiorVlr.toLocaleString());
-        } else {
-            alert("Nenhum dado antigo encontrado no navegador.");
         }
     }
 
     function salvar() {
         localStorage.setItem('vendasV12', JSON.stringify(vendas));
-        localStorage.setItem('vendas_backup_seguro', JSON.stringify(vendas));
         renderizar();
     }
 
@@ -163,7 +156,14 @@
     function addVenda() {
         const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valorTotal').value);
         if(c && v) {
-            vendas.push({ id: Date.now(), cliente: c, valor: v, tipo: document.getElementById('tipo').value, sexo: document.getElementById('sexo').value, data: new Date().toLocaleDateString('pt-BR'), entregue: false, ts: Date.now() });
+            vendas.push({ 
+                id: 'id_' + Date.now() + Math.random(), // ID ÚNICO REAL
+                cliente: c, valor: v, 
+                tipo: document.getElementById('tipo').value, 
+                sexo: document.getElementById('sexo').value, 
+                data: new Date().toLocaleDateString('pt-BR'), 
+                entregue: false, ts: Date.now() 
+            });
             document.getElementById('cliente').value = ''; document.getElementById('valorTotal').value = '';
             salvar();
         }
@@ -171,16 +171,26 @@
 
     function addVale() {
         const v = prompt("Valor do Vale:");
-        if(v) { vendas.push({ id: Date.now(), cliente: 'VALE', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true, ts: Date.now() }); salvar(); }
+        if(v) { 
+            vendas.push({ id: 'id_' + Date.now(), cliente: 'VALE', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true, ts: Date.now() }); 
+            salvar(); 
+        }
     }
 
-    function toggleEnt(id) {
-        const i = vendas.findIndex(x => x.id === id);
-        if(i > -1) { vendas[i].entregue = !vendas[i].entregue; salvar(); }
+    // --- CORREÇÃO DO CLIQUE ---
+    function toggleEnt(idUnico) {
+        const i = vendas.findIndex(x => x.id === idUnico);
+        if(i > -1) {
+            vendas[i].entregue = !vendas[i].entregue;
+            salvar();
+        }
     }
 
-    function deletar(id) {
-        if(confirm("Excluir este lançamento?")) { vendas = vendas.filter(x => x.id !== id); salvar(); }
+    function deletar(idUnico) {
+        if(confirm("Excluir este lançamento?")) {
+            vendas = vendas.filter(x => x.id !== idUnico);
+            salvar();
+        }
     }
 
     function renderizar() {
@@ -188,10 +198,19 @@
         lista.innerHTML = '';
         let total = 0, vales = 0, cS=0, cB=0, cM=0, cF=0, h = {};
 
-        [...vendas].sort((a,b) => b.ts - a.ts).forEach(v => {
+        // Ordenar: Recentes primeiro
+        let exibicao = [...vendas].sort((a,b) => b.ts - a.ts);
+
+        exibicao.forEach(v => {
             if(v.isVale) {
                 vales += v.valor;
-                lista.innerHTML += `<div class="item" style="opacity:0.6; border-color:var(--neon-red);"><div class="item-icon">💸</div><div class="item-info"><b>VALE</b><span>${v.data}</span></div><div class="item-price" style="color:var(--neon-red)">- R$ ${v.valor.toLocaleString()}</div><button class="btn-icon" onclick="deletar(${v.id})">🗑</button></div>`;
+                lista.innerHTML += `
+                <div class="item" style="border-color:var(--neon-red); opacity:0.7;">
+                    <div class="item-icon">💸</div>
+                    <div class="item-info"><b>VALE</b><span>${v.data}</span></div>
+                    <div class="item-price" style="color:var(--neon-red)">- R$ ${v.valor.toLocaleString()}</div>
+                    <div class="actions"><button class="btn-icon" onclick="deletar('${v.id}')">🗑</button></div>
+                </div>`;
             } else {
                 total += v.valor;
                 if(v.tipo === 'Spitz') cS++; else cB++;
@@ -203,9 +222,9 @@
                     <div class="item-icon">${v.tipo === 'Spitz'?'🐶':'🐱'}</div>
                     <div class="item-info"><b>${v.cliente}</b><span>${v.sexo} | ${v.data}</span></div>
                     <div class="item-price">R$ ${v.valor.toLocaleString()}</div>
-                    <div style="display:flex; gap:5px;">
-                        <button class="btn-icon ${v.entregue?'active':''}" onclick="toggleEnt(${v.id})">✔</button>
-                        <button class="btn-icon" onclick="deletar(${v.id})">🗑</button>
+                    <div class="actions">
+                        <button class="btn-icon ${v.entregue?'active':''}" onclick="toggleEnt('${v.id}')">✔</button>
+                        <button class="btn-icon" onclick="deletar('${v.id}')">🗑</button>
                     </div>
                 </div>`;
             }
@@ -238,11 +257,10 @@
             return `<tr><td style="padding:10px; border-bottom:1px solid #eee;">${v.data}</td><td style="padding:10px; border-bottom:1px solid #eee;"><b>${v.cliente}</b></td><td style="padding:10px; border-bottom:1px solid #eee; text-align:right;">R$ ${v.valor.toLocaleString()}</td><td style="padding:10px; border-bottom:1px solid #eee; text-align:center;">${v.isVale ? 'VALE' : (v.entregue?'ENTREGUE':'PENDENTE')}</td></tr>`;
         }).join('');
         const win = window.open('','_blank');
-        win.document.write(`<html><body style="font-family:sans-serif; padding:40px;"><h1>CANIL MY BABY - RELATÓRIO GERSON</h1><div style="background:#f4f4f4; padding:20px; border-radius:10px; margin-bottom:20px;"><b>Faturamento: R$ ${t.toLocaleString()}</b><br><b style="color:green">Saldo Líquido: R$ ${((t*0.03)+2000-vls).toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div><table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#000; color:#fff;"><th>DATA</th><th>CLIENTE</th><th>VALOR</th><th>STATUS</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`);
+        win.document.write(`<html><body style="font-family:sans-serif; padding:40px;"><h1>CANIL MY BABY - RELATÓRIO PROFISSIONAL</h1><div style="background:#f4f4f4; padding:20px; border-radius:10px; margin-bottom:20px;"><b>Faturamento Bruto: R$ ${t.toLocaleString()}</b><br><b style="color:green">Saldo Gerson: R$ ${((t*0.03)+2000-vls).toLocaleString('pt-BR',{minimumFractionDigits:2})}</b></div><table style="width:100%; border-collapse:collapse;"><thead><tr style="background:#000; color:#fff;"><th>DATA</th><th>CLIENTE</th><th>VALOR</th><th>STATUS</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=function(){window.print();}<\/script></body></html>`);
     }
 
-    // Inicialização
-    superResgate(); // Tenta carregar os 74k logo de cara
+    superResgate(); // Inicia com os 74k
 </script>
 </body>
 </html>
