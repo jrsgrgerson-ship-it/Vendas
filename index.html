@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MY BABY | SYSTEM V-FINAL</title>
+    <title>MY BABY | SYSTEM V18 (RECUPERAÇÃO TOTAL)</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -124,20 +124,20 @@
 <div class="container">
 
     <div id="print-head">
-        <h2>RELATÓRIO FINANCEIRO</h2>
+        <h2>RELATÓRIO FINANCEIRO - COMISSÕES</h2>
         <p>Vendedor: <b>Gerson</b> | Data: <span id="data-rel"></span></p>
     </div>
 
     <header class="no-print">
         <div class="logo">
             <h1>MY BABY <span>MANAGER</span></h1>
-            <p>Painel de Controle de Comissões | Base V5 Recuperada</p>
+            <p>Painel de Comissões | Sistema V18 (Recovery Ativo)</p>
         </div>
         <div class="toolbar">
             <input type="file" id="importFile" hidden onchange="importarDados(this)">
-            <button class="btn-tool" onclick="document.getElementById('importFile').click()">📂 Restaurar</button>
-            <button class="btn-tool" onclick="exportarDados()">💾 Salvar</button>
-            <button class="btn-tool btn-pdf" onclick="window.print()">🖨️ PDF</button>
+            <button class="btn-tool" onclick="document.getElementById('importFile').click()">📂 Restaurar Backup</button>
+            <button class="btn-tool" onclick="exportarDados()">💾 Salvar Dados</button>
+            <button class="btn-tool btn-pdf" onclick="window.print()">🖨️ Imprimir PDF</button>
         </div>
     </header>
 
@@ -162,7 +162,7 @@
         <div class="card">
             <h3>Comissão Total</h3>
             <span class="value" style="color:#fff" id="v-comissao">R$ 0,00</span>
-            <span class="sub">Salário (2k) + 3%</span>
+            <span class="sub">Salário (2k) + 3% de TUDO</span>
         </div>
         <div class="card c-green">
             <h3>💰 Líquido a Receber</h3>
@@ -211,27 +211,30 @@
 </div>
 
 <script>
-    // CHAVE DEFINITIVA
-    const KEY = 'MYBABY_SYSTEM_FINAL_V17';
+    // CHAVE NOVA PARA FORÇAR O ESCANEAMENTO
+    const KEY = 'MYBABY_SYSTEM_V18_RECOVERED';
     let db = { vendas: [] };
     let chartObj = null;
 
-    // --- RESGATE PROFUNDO (Incluindo V5) ---
+    // --- FUNÇÃO DE RESGATE PROFUNDO ---
     function initSystem() {
-        // 1. Tenta carregar a chave atual
+        // Tenta pegar a chave nova (V18)
         const stored = localStorage.getItem(KEY);
         
         if (stored) {
             db = JSON.parse(stored);
-            console.log("Dados carregados da V17");
+            console.log("Sistema carregado (V18)");
         } else {
-            // 2. Se vazio, varre as antigas, INCLUINDO V5
-            console.log("Iniciando varredura V5...");
+            // SE NÃO TIVER V18, VARRE TUDO O QUE EXISTE NO NAVEGADOR
+            console.log("Iniciando varredura profunda de recuperação...");
+            
+            // Lista completa de chaves usadas anteriormente
             const oldKeys = [
-                'vendasV5',                // <-- SUA BASE V5
+                'vendasV5',                // <-- SUA BASE ANTIGA PRINCIPAL
                 'mybaby_v8', 
                 'my_baby_v6', 
                 'MY_BABY_ULTIMATE_DATA',
+                'MYBABY_SYSTEM_FINAL_V17',
                 'MYBABY_V16_MASTER',
                 'MYBABY_FINAL_SYSTEM_V15',
                 'NEON_PRIME_DATA_V14', 
@@ -239,29 +242,27 @@
             ];
             
             let recoveredData = [];
-            let foundCount = 0;
             
             oldKeys.forEach(k => {
                 const raw = localStorage.getItem(k);
                 if(raw) {
                     try {
                         const parsed = JSON.parse(raw);
-                        // Normaliza pois algumas versões eram Arrays puros, outras Objetos
+                        // Normaliza (se for array ou objeto)
                         const list = Array.isArray(parsed) ? parsed : (parsed.vendas || []);
                         if(list.length > 0) {
                             recoveredData = [...recoveredData, ...list];
-                            foundCount += list.length;
                         }
                     } catch(e){}
                 }
             });
 
-            // Remove duplicados (pelo ID ou Cliente+Valor)
+            // Remove duplicados
             const unique = [];
             const map = new Map();
             recoveredData.forEach(item => {
-                // Cria ID se não existir (compatibilidade V5)
-                if(!item.id) item.id = Date.now() + Math.random(); 
+                // Se não tiver ID (bases muito antigas), cria um
+                if(!item.id) item.id = Date.now() + Math.random();
                 
                 if(!map.has(item.id)){
                     map.set(item.id, true);
@@ -271,8 +272,10 @@
 
             if (unique.length > 0) {
                 db.vendas = unique;
-                alert(`RECUPERAÇÃO V5: Encontramos ${unique.length} registros antigos!`);
-                save(); 
+                alert(`RECUPERAÇÃO BEM SUCEDIDA: ${unique.length} registros antigos (V5+) foram restaurados!`);
+                save(); // Salva na nova chave V18
+            } else {
+                console.log("Nenhum dado antigo encontrado no navegador.");
             }
         }
         
@@ -285,13 +288,14 @@
         render();
     }
 
+    // --- ARQUIVOS ---
     function exportarDados() {
         const dataStr = JSON.stringify(db);
         const blob = new Blob([dataStr], {type: "application/json"});
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `Backup_MyBaby_${new Date().toLocaleDateString().replace(/\//g,'-')}.json`;
+        a.download = `Backup_Comissoes_${new Date().toLocaleDateString().replace(/\//g,'-')}.json`;
         a.click();
     }
 
@@ -305,13 +309,14 @@
                 if(json.vendas || Array.isArray(json)) {
                     db = json.vendas ? json : { vendas: json };
                     save();
-                    alert("Backup restaurado!");
+                    alert("Dados importados!");
                 }
             } catch(e) { alert("Erro ao ler arquivo."); }
         };
         reader.readAsText(file);
     }
 
+    // --- LÓGICA DE NEGÓCIO (3% SOBRE TUDO) ---
     function addVenda() {
         const cli = document.getElementById('inCli').value;
         const val = parseFloat(document.getElementById('inVal').value);
@@ -361,6 +366,7 @@
         }
     }
 
+    // --- RENDERIZAÇÃO ---
     function render() {
         const tbody = document.getElementById('lista-corpo');
         tbody.innerHTML = '';
@@ -369,13 +375,15 @@
         let stats = { spitz: 0, bengal: 0, m: 0, f: 0 };
         let labels = [], dataPoints = [];
 
-        // Ordena para gráfico (antigo -> novo)
+        // Ordena para o gráfico (Antigo -> Novo)
         const sorted = [...db.vendas].sort((a,b) => a.id - b.id);
 
         sorted.forEach(v => {
             if(v.tipo === 'vale') {
                 finance.vales += v.valor;
             } else {
+                // *** AQUI ESTÁ A REGRA ***
+                // Soma no bruto E calcula 3% independente se está cancelada ou não
                 finance.bruto += v.valor;
                 finance.comissaoVar += (v.valor * 0.03);
 
@@ -392,7 +400,7 @@
         const totalComissao = finance.comissaoFixa + finance.comissaoVar;
         const liquido = totalComissao - finance.vales;
 
-        // Atualiza UI
+        // Atualiza Cards
         document.getElementById('c-spitz').innerText = stats.spitz;
         document.getElementById('c-bengal').innerText = stats.bengal;
         document.getElementById('c-m').innerText = stats.m;
@@ -404,7 +412,7 @@
         document.getElementById('v-comissao').innerText = `R$ ${totalComissao.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
         document.getElementById('v-liquido').innerText = `R$ ${liquido.toLocaleString('pt-BR', {minimumFractionDigits:2})}`;
 
-        // Tabela (Invertida: Recentes primeiro)
+        // Tabela (Invertida: Novo -> Antigo)
         [...sorted].reverse().forEach(v => {
             if(v.tipo === 'vale') {
                 tbody.innerHTML += `
@@ -420,14 +428,18 @@
                     </tr>`;
             } else {
                 const isCancel = v.cancelada;
+                // Exibição clara do Status
                 const badge = isCancel 
                     ? `<span class="tag t-cancel">⚠️ SINAL / CANCEL</span>` 
                     : `<span class="tag t-ok">✅ ENTREGUE</span>`;
                 
+                // Visual do valor (riscado se for sinal?) 
+                // A regra é clara: Mostra o valor e indica que é Sinal se cancelado.
                 const valDisplay = isCancel
                     ? `<span style="text-decoration:line-through; opacity:0.5; font-size:11px">R$ ${v.valor.toLocaleString()}</span> <span style="color:var(--warning); font-weight:bold; font-size:12px">SINAL PAGO</span>`
                     : `R$ ${v.valor.toLocaleString()}`;
 
+                // Comissão sempre verde pois está garantida
                 tbody.innerHTML += `
                     <tr style="${isCancel ? 'opacity:0.8' : ''}">
                         <td>${v.data}</td>
@@ -438,8 +450,8 @@
                         <td>${valDisplay}</td>
                         <td style="color:var(--success); font-weight:700">+ R$ ${(v.valor * 0.03).toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
                         <td class="no-print" style="text-align:right">
-                            <button class="btn-icon" onclick="toggleStatus(${v.id})" style="color:var(--accent)">🔄</button>
-                            <button class="btn-icon" onclick="excluir(${v.id})">🗑</button>
+                            <button class="btn-icon" onclick="toggleStatus(${v.id})" title="Alterar Status" style="color:var(--accent)">🔄</button>
+                            <button class="btn-icon" onclick="excluir(${v.id})" title="Excluir">🗑</button>
                         </td>
                     </tr>`;
             }
@@ -456,25 +468,4 @@
         gradient.addColorStop(0, 'rgba(56, 189, 248, 0.4)');
         gradient.addColorStop(1, 'rgba(56, 189, 248, 0)');
 
-        chartObj = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: lbls,
-                datasets: [{
-                    label: 'Vendas',
-                    data: vals,
-                    borderColor: '#38bdf8',
-                    backgroundColor: gradient,
-                    borderWidth: 3,
-                    tension: 0.3,
-                    fill: true,
-                    pointBackgroundColor: '#fff',
-                    pointRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { display: false }, ticks: { c
+  
