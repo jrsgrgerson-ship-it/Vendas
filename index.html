@@ -3,71 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PAINEL DE VENDAS - CANIL MY BABY</title>
+    <title>PAINEL DE VENDAS - GERSON</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --accent: #00d2ff; --danger: #ff4757; --success: #2ecc71; --bg: #000; --card: #0a0a0a; --border: #1a1a1a; }
-        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 15px; -webkit-font-smoothing: antialiased; }
+        body { background: #f4f7f6; color: #333; font-family: 'Inter', sans-serif; margin: 0; padding: 15px; }
         .container { max-width: 450px; margin: auto; }
-        header { border-left: 4px solid var(--accent); padding-left: 15px; margin-bottom: 20px; }
-        header h1 { margin: 0; font-size: 20px; font-weight: 900; text-transform: uppercase; }
-        header span { font-size: 10px; color: var(--accent); font-weight: 800; }
-        .quick-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
-        .q-box { background: var(--card); border: 1px solid var(--border); padding: 10px 5px; border-radius: 12px; text-align: center; }
-        .q-box b { font-size: 14px; font-weight: 900; display: block; }
-        .q-box span { font-size: 8px; color: #555; text-transform: uppercase; }
-        .premium-card { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid var(--border); position: relative; overflow: hidden; }
-        .media-tag { position: absolute; top: 20px; right: 20px; text-align: right; }
-        .media-tag b { display: block; color: var(--accent); font-size: 14px; font-weight: 900; }
-        .progress-bg { background:#111; height:6px; border-radius:10px; margin: 15px 0; overflow:hidden; }
-        .progress-fill { background: linear-gradient(90deg, #00d2ff, #0080ff); height:100%; width:0%; transition: 1s; }
-        .venda-row { display: grid; grid-template-columns: 40px 1fr 90px 45px; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border); }
-        .venda-row.entregue { border-left: 3px solid var(--success); padding-left: 8px; }
-        .venda-row.cancelada { border-left: 3px solid var(--danger); padding-left: 8px; }
-        .btn-main { background: #fff; color: #000; border: none; padding: 16px; border-radius: 14px; font-weight: 900; width: 100%; font-size: 14px; cursor: pointer; }
-        input, select { background: #000; border: 1px solid #222; color: #fff; padding: 12px; border-radius: 12px; width: 100%; box-sizing: border-box; margin-bottom: 8px; font-family: 'Inter'; }
-        .btn-action { background: #111; border: 1px solid #222; color: #fff; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .active-entregue { background: var(--success) !important; }
-        .active-cancel { background: var(--danger) !important; }
+        header { background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 15px; border-left: 5px solid #007bff; }
+        header h1 { margin: 0; font-size: 18px; color: #007bff; text-transform: uppercase; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px; }
+        .q-box { background: #fff; padding: 12px 5px; border-radius: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .q-box b { font-size: 16px; display: block; color: #007bff; }
+        .q-box span { font-size: 9px; color: #888; text-transform: uppercase; font-weight: 700; }
+        .main-card { background: #fff; border-radius: 20px; padding: 25px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; }
+        .main-card span { font-size: 11px; color: #888; font-weight: 800; }
+        .main-card strong { font-size: 36px; display: block; color: #222; margin: 5px 0; }
+        .saldo-box { background: #e7f3ff; padding: 15px; border-radius: 15px; margin-top: 10px; border: 1px solid #cce5ff; }
+        .saldo-box b { font-size: 22px; color: #0056b3; }
+        .venda-item { background: #fff; padding: 15px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.02); border-bottom: 2px solid #eee; }
+        .venda-info b { display: block; font-size: 14px; text-transform: uppercase; }
+        .venda-info small { color: #999; font-size: 11px; }
+        .venda-price { font-weight: 900; color: #333; }
+        input, select { width: 100%; padding: 14px; margin-bottom: 10px; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; font-size: 14px; }
+        .btn { background: #007bff; color: #fff; border: none; padding: 16px; border-radius: 12px; width: 100%; font-weight: 900; cursor: pointer; }
+        .chart-box { height: 120px; margin-top: 15px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header><span>VENDEDOR: GERSON</span><h1>CANIL MY BABY</h1></header>
+    <header>
+        <span>VENDEDOR: GERSON</span>
+        <h1>CANIL MY BABY</h1>
+    </header>
 
-    <div class="quick-stats">
-        <div class="q-box"><div>🐶</div><b id="cS">0</b><span>Spitz</span></div>
-        <div class="q-box"><div>🐱</div><b id="cB">0</b><span>Bengal</span></div>
-        <div class="q-box"><div>♂</div><b id="cM">0</b><span>Macho</span></div>
-        <div class="q-box"><div>♀</div><b id="cF">0</b><span>Fêmea</span></div>
+    <div class="stats-grid">
+        <div class="q-box"><b><span id="cS">0</span></b><span>🐶 Spitz</span></div>
+        <div class="q-box"><b><span id="cB">0</span></b><span>🐱 Bengal</span></div>
+        <div class="q-box"><b><span id="cM">0</span></b><span>♂ Macho</span></div>
+        <div class="q-box"><b><span id="cF">0</span></b><span>♀ Fêmea</span></div>
     </div>
 
-    <div class="premium-card">
-        <div class="media-tag"><span>Média/Venda</span><b id="mediaVendas">R$ 0</b></div>
-        <span style="font-size:10px; font-weight:800; color:#555;">FATURAMENTO BRUTO</span>
-        <strong id="totalVendas" style="font-size: 32px; font-weight: 900; display: block;">R$ 0</strong>
-        <div class="progress-bg"><div id="barra" class="progress-fill"></div></div>
-        <div style="display:flex; justify-content:space-between; align-items: center;">
-            <span id="pctTxt" style="color:var(--accent); font-size: 12px; font-weight: 900;">0%</span>
-            <input type="number" id="metaVal" style="width:80px; background:none; border:none; color:#333; text-align:right;" onchange="atualizarMeta()">
+    <div class="main-card">
+        <span>FATURAMENTO ACUMULADO</span>
+        <strong id="totalVendas">R$ 0</strong>
+        <div class="saldo-box">
+            <span>SEU SALDO (3% + R$ 2.000)</span><br>
+            <b id="saldoGerson">R$ 2.000,00</b>
         </div>
-        <div class="chart-container" style="height:100px;"><canvas id="graficoVendas"></canvas></div>
+        <div class="chart-box"><canvas id="graficoVendas"></canvas></div>
     </div>
 
-    <div class="stats-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom:15px;">
-        <div class="stat-item" style="background:var(--card); padding:15px; border-radius:16px; border:1px solid var(--success); grid-column: span 2;">
-            <span style="font-size:9px; color:#555;">SALDO (3% + 2000)</span>
-            <b id="saldoGerson" style="color:var(--success); font-size:24px;">R$ 0,00</b>
-        </div>
-    </div>
-
-    <div class="premium-card">
-        <input type="text" id="cliente" placeholder="NOME DO CLIENTE">
-        <input type="number" id="valorTotal" placeholder="Valor Venda R$">
-        <button class="btn-main" onclick="addVenda()">REGISTRAR VENDA</button>
-        <button class="btn-main" style="margin-top:10px; background:var(--accent);" onclick="gerarPDF()">GERAR PDF ORGANIZADO</button>
+    <div class="main-card" style="text-align: left;">
+        <select id="tipo"><option value="Spitz">Spitz 🐶</option><option value="Bengal">Bengal 🐱</option></select>
+        <select id="sexo"><option value="Macho">Macho ♂</option><option value="Fêmea">Fêmea ♀</option></select>
+        <input type="text" id="cliente" placeholder="Nome do Cliente">
+        <input type="number" id="valor" placeholder="Valor da Venda R$">
+        <button class="btn" onclick="addVenda()">REGISTRAR AGORA</button>
     </div>
 
     <div id="listaVendas"></div>
@@ -76,75 +68,82 @@
 <script>
     let chartInstance = null;
 
-    // --- PONTE DE RECUPERAÇÃO DE DADOS ---
-    function resgatarDados() {
-        const bancos = ['vendasV5', 'vendasV12', 'vendas_final_v1'];
-        for (let banco of bancos) {
-            let dados = localStorage.getItem(banco);
-            if (dados && dados !== "[]") return JSON.parse(dados);
+    // Tenta resgatar de qualquer "cofre" antigo
+    function resgatar() {
+        const nomes = ['vendas_final_v1', 'vendasV12', 'vendasV5', 'mybaby_v1'];
+        for (let n of nomes) {
+            let d = localStorage.getItem(n);
+            if (d && d !== "[]") return JSON.parse(d);
         }
         return [];
     }
 
-    let vendas = resgatarDados();
-    let meta = localStorage.getItem('metaV12') || 100000;
+    let vendas = resgatar();
 
     function salvar() {
-        localStorage.setItem('vendasV5', JSON.stringify(vendas));
+        // Salva em todos os nomes para garantir que não suma mais
+        const nomes = ['vendas_final_v1', 'vendasV12', 'vendasV5', 'mybaby_v1'];
+        nomes.forEach(n => localStorage.setItem(n, JSON.stringify(vendas)));
         renderizar();
     }
 
     function addVenda() {
-        const c = document.getElementById('cliente').value, vt = parseFloat(document.getElementById('valorTotal').value);
-        if(c && vt) {
-            vendas.push({ id: Date.now(), cliente: c, valor: vt, data: new Date().toLocaleDateString('pt-BR'), entregue: false, cancelada: false });
-            document.getElementById('cliente').value = ''; document.getElementById('valorTotal').value = '';
+        const c = document.getElementById('cliente').value;
+        const v = parseFloat(document.getElementById('valor').value);
+        if(c && v) {
+            vendas.push({
+                id: Date.now(),
+                cliente: c,
+                valor: v,
+                tipo: document.getElementById('tipo').value,
+                sexo: document.getElementById('sexo').value,
+                data: new Date().toLocaleDateString('pt-BR')
+            });
+            document.getElementById('cliente').value = '';
+            document.getElementById('valor').value = '';
             salvar();
         }
     }
 
-    function alternar(id, campo) {
-        const i = vendas.findIndex(x => x.id == id);
-        vendas[i][campo] = !vendas[i][campo];
-        salvar();
-    }
-
     function renderizar() {
         const lista = document.getElementById('listaVendas');
-        let fat = 0, cS=0, cB=0, cM=0, cF=0;
-        let histGrafico = {};
+        let total = 0, cS=0, cB=0, cM=0, cF=0;
+        let hist = {};
         lista.innerHTML = '';
 
-        vendas.forEach((v) => {
-            fat += v.valor;
-            let dia = v.data.substring(0,5);
-            histGrafico[dia] = (histGrafico[dia] || 0) + v.valor;
+        vendas.forEach(v => {
+            if(!v.isVale) {
+                total += v.valor;
+                if(v.tipo === 'Spitz') cS++; else cB++;
+                if(v.sexo === 'Macho') cM++; else cF++;
+                let dia = v.data.substring(0,5);
+                hist[dia] = (hist[dia] || 0) + v.valor;
 
-            lista.innerHTML = `
-            <div class="venda-row ${v.entregue?'entregue':''} ${v.cancelada?'cancelada':''}">
-                <div class="icon">🐶</div>
-                <div class="info"><b>${v.cliente}</b><small>${v.data}</small></div>
-                <div class="price">R$ ${v.valor.toLocaleString()}</div>
-                <div style="display:flex; gap:4px;">
-                    <button class="btn-action ${v.entregue?'active-entregue':''}" onclick="alternar(${v.id},'entregue')">🏠</button>
-                    <button class="btn-action ${v.cancelada?'active-cancel':''}" onclick="alternar(${v.id},'cancelada')">🚫</button>
-                </div>
-            </div>` + lista.innerHTML;
+                lista.innerHTML = `
+                    <div class="venda-item">
+                        <div class="venda-info">
+                            <b>${v.cliente}</b>
+                            <small>${v.data} | ${v.tipo} ${v.sexo}</small>
+                        </div>
+                        <div class="venda-price">R$ ${v.valor.toLocaleString()}</div>
+                    </div>
+                ` + lista.innerHTML;
+            }
         });
 
-        document.getElementById('totalVendas').innerText = "R$ " + fat.toLocaleString();
-        document.getElementById('saldoGerson').innerText = "R$ " + ((fat * 0.03) + 2000).toLocaleString('pt-BR', {minimumFractionDigits:2});
-        
+        document.getElementById('totalVendas').innerText = "R$ " + total.toLocaleString();
+        document.getElementById('saldoGerson').innerText = "R$ " + ((total * 0.03) + 2000).toLocaleString('pt-BR', {minimumFractionDigits:2});
+        document.getElementById('cS').innerText = cS; document.getElementById('cB').innerText = cB;
+        document.getElementById('cM').innerText = cM; document.getElementById('cF').innerText = cF;
+
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if(chartInstance) chartInstance.destroy();
         chartInstance = new Chart(ctx, {
             type: 'line',
-            data: { labels: Object.keys(histGrafico), datasets: [{ data: Object.values(histGrafico), borderColor: '#00d2ff', borderWidth: 2, fill: true, backgroundColor: 'rgba(0, 210, 255, 0.05)', tension: 0.4 }] },
+            data: { labels: Object.keys(hist), datasets: [{ data: Object.values(hist), borderColor: '#007bff', borderWidth: 3, fill: true, backgroundColor: 'rgba(0, 123, 255, 0.05)', tension: 0.4, pointRadius: 2 }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } }
         });
     }
-
-    function gerarPDF() { window.print(); }
 
     renderizar();
 </script>
