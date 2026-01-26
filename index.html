@@ -17,7 +17,7 @@
         .meta-container { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 15px; }
         .meta-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
         .meta-label { font-size: 10px; color: #666; font-weight: 800; text-transform: uppercase; }
-        .meta-target { font-size: 18px; color: var(--blue); font-weight: 800; text-shadow: 0 0 10px rgba(0,242,255,0.3); }
+        .meta-target { font-size: 18px; color: var(--blue); font-weight: 800; }
         
         .progress-bg { background: #000; height: 14px; border-radius: 20px; width: 100%; border: 1px solid #222; overflow: hidden; }
         .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #0088ff, var(--blue)); box-shadow: 0 0 15px var(--blue); border-radius: 20px; transition: 1s; position: relative; }
@@ -27,9 +27,9 @@
         .fin-box { background: var(--card); padding: 12px; border-radius: 14px; border: 1px solid var(--border); }
         .fin-box span { font-size: 8px; color: #666; font-weight: 700; display: block; margin-bottom: 3px; text-transform: uppercase; }
         .fin-box b { font-size: 16px; display: block; }
-        .full-box { grid-column: span 2; border-color: #333; }
+        .full-box { grid-column: span 2; border-color: #333; background: rgba(255,255,255,0.02); }
 
-        .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 250px; padding: 15px; box-sizing: border-box; }
+        .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 230px; padding: 15px; box-sizing: border-box; }
 
         .inputs { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
         input, select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; box-sizing: border-box; font-size: 13px; font-family: inherit; }
@@ -42,8 +42,10 @@
         .item.entregue { border-left: 4px solid var(--green); }
         .item.pendente { border-left: 4px solid var(--red); }
         .val-venda { font-weight: 800; font-size: 15px; }
-        .btn-status { width: 38px; height: 38px; border-radius: 10px; border: none; background: #222; color: #fff; margin-left: 10px; }
-        .btn-status.on { background: var(--green); color: #000; box-shadow: 0 0 10px var(--green); }
+        .actions { display: flex; align-items: center; gap: 8px; }
+        .btn-status { width: 38px; height: 38px; border-radius: 10px; border: none; background: #222; color: #fff; cursor: pointer; }
+        .btn-status.on { background: var(--green); color: #000; }
+        .btn-del { background: none; border: none; color: #444; font-size: 16px; cursor: pointer; padding: 5px; }
     </style>
 </head>
 <body>
@@ -73,9 +75,7 @@
         <div class="fin-box full-box"><span>Faturamento Bruto</span><b id="totBruto" style="color:var(--blue)">R$ 0</b></div>
     </div>
 
-    <div class="chart-wrapper">
-        <canvas id="graficoVendas"></canvas>
-    </div>
+    <div class="chart-wrapper"><canvas id="graficoVendas"></canvas></div>
 
     <div class="inputs">
         <div style="display:flex; gap:6px;">
@@ -98,17 +98,7 @@
     const CHAVE = 'vendas_gerson_oficial';
     const META_FIXA = 100000;
     
-    // Função para recuperar de qualquer lugar que tenha dados
-    function carregarDados() {
-        const nomesPossiveis = [CHAVE, 'vendas_v10_final', 'vendas_v9_glow', 'vendas_v8_final'];
-        for (let nome of nomesPossiveis) {
-            let d = localStorage.getItem(nome);
-            if (d && JSON.parse(d).length > 0) return JSON.parse(d);
-        }
-        return [];
-    }
-
-    let vendas = carregarDados();
+    let vendas = JSON.parse(localStorage.getItem(CHAVE)) || [];
     let chart = null;
 
     function salvar() { localStorage.setItem(CHAVE, JSON.stringify(vendas)); render(); }
@@ -127,27 +117,26 @@
     }
 
     function toggleStatus(id) { const v = vendas.find(x => x.id === id); v.entregue = !v.entregue; salvar(); }
-    function del(id) { if(confirm("Excluir?")) { vendas = vendas.filter(x => x.id !== id); salvar(); } }
+    function del(id) { if(confirm("Excluir definitivamente?")) { vendas = vendas.filter(x => x.id !== id); salvar(); } }
 
     function render() {
         const div = document.getElementById('lista'); div.innerHTML = '';
         let bruto = 0, vales = 0, com = 0, hist = {};
 
         [...vendas].sort((a,b) => b.ts - a.ts).forEach(v => {
-            const dtCurta = v.data.substring(0, 5);
+            const dt = v.data.substring(0, 5);
             if (v.isVale) {
                 vales += v.valor;
-                div.innerHTML += `<div class="item" style="opacity:0.5"><div class="item-info"><b>VALE</b><small>${dtCurta}</small></div><div class="val-venda" style="color:var(--red)">- R$ ${v.valor.toLocaleString()}</div><button onclick="del(${v.id})" style="background:none;border:none;color:#444;margin-left:10px">🗑</button></div>`;
+                div.innerHTML += `<div class="item" style="opacity:0.6"><div><b>VALE</b><small>${dt}</small></div><div class="actions"><div class="val-venda" style="color:var(--red)">- R$ ${v.valor.toLocaleString()}</div><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
             } else {
                 bruto += v.valor; com += (v.valor * 0.03);
-                div.innerHTML += `<div class="item ${v.entregue ? 'entregue' : 'pendente'}"><div class="item-info"><b>${v.cliente}</b><small>${dtCurta} • ${v.tipo}</small></div><div style="display:flex;align-items:center"><div class="val-venda">R$ ${v.valor.toLocaleString()}</div><button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button></div></div>`;
-                hist[dtCurta] = (hist[dtCurta] || 0) + v.valor;
+                div.innerHTML += `<div class="item ${v.entregue ? 'entregue' : 'pendente'}"><div><b>${v.cliente}</b><small>${dt} • ${v.tipo}</small></div><div class="actions"><div class="val-venda">R$ ${v.valor.toLocaleString()}</div><button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
+                hist[dt] = (hist[dt] || 0) + v.valor;
             }
         });
 
-        const perc = Math.min((bruto / META_FIXA) * 100, 100).toFixed(1);
-        document.getElementById('barraProg').style.width = perc + '%';
-        document.getElementById('txtPerc').innerText = perc + '%';
+        document.getElementById('barraProg').style.width = Math.min((bruto / META_FIXA) * 100, 100) + '%';
+        document.getElementById('txtPerc').innerText = ((bruto / META_FIXA) * 100).toFixed(1) + '%';
         document.getElementById('totBruto').innerText = "R$ " + bruto.toLocaleString();
         document.getElementById('totComissao').innerText = "R$ " + com.toLocaleString();
         document.getElementById('totDescontos').innerText = "R$ " + vales.toLocaleString();
@@ -158,7 +147,7 @@
         chart = new Chart(ctx, {
             type: 'line',
             data: { labels: Object.keys(hist).reverse(), datasets: [{ data: Object.values(hist).reverse(), borderColor: '#00f2ff', borderWidth: 3, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.05)', tension: 0.4, pointRadius: 0 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#222' }, ticks: { color: '#666', font: { size: 9 }, callback: v => v >= 1000 ? (v/1000)+'k' : v } }, x: { grid: { display: false }, ticks: { color: '#fff', font: { size: 10, weight: 'bold' } } } } }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#222' }, ticks: { color: '#666', font: { size: 9 } } }, x: { grid: { display: false }, ticks: { color: '#fff', font: { size: 10, weight: 'bold' } } } } }
         });
     }
 
@@ -167,9 +156,10 @@
         const vls = vendas.filter(v=>v.isVale).reduce((a,b)=>a+b.valor,0);
         const comTotal = bruto * 0.03;
         const vOrdenadas = [...vendas].filter(v=>!v.isVale).sort((a,b) => a.ts - b.ts);
+        const valesOrdenados = [...vendas].filter(v=>v.isVale);
 
         const win = window.open('','_blank');
-        win.document.write(`<html><head><style>body{background:#000;color:#fff;font-family:sans-serif;padding:30px}.card{background:#111;padding:20px;border-radius:10px;border:1px solid #333}table{width:100%;border-collapse:collapse;margin-top:20px}th{text-align:left;color:#00f2ff;border-bottom:1px solid #333;padding:10px}td{padding:10px;border-bottom:1px solid #222}.green{color:#00ff88}</style></head><body><h1>Canil My Baby - Gerson</h1><div class="card"><h3>Bruto: R$ ${bruto.toLocaleString()}</h3><h3>Comissão Total: R$ ${comTotal.toLocaleString()}</h3><hr><h2>Líquido: R$ ${(2000+comTotal-vls).toLocaleString()}</h2></div><table><thead><tr><th>DATA</th><th>CLIENTE</th><th>VALOR</th><th>COMISSÃO (3%)</th></tr></thead><tbody>${vOrdenadas.map(v=>`<tr><td>${v.data}</td><td>${v.cliente}</td><td>R$ ${v.valor.toLocaleString()}</td><td class="green">R$ ${(v.valor*0.03).toLocaleString()}</td></tr>`).join('')}</tbody></table><script>window.print();<\/script></body></html>`);
+        win.document.write(`<html><head><style>body{background:#000;color:#fff;font-family:sans-serif;padding:30px}.card{background:#111;padding:20px;border-radius:10px;border:1px solid #333}table{width:100%;border-collapse:collapse;margin-top:20px}th{text-align:left;color:#00f2ff;border-bottom:1px solid #333;padding:10px}td{padding:10px;border-bottom:1px solid #222}.red{color:#ff0055}.green{color:#00ff88}</style></head><body><h1>Relatório Canil My Baby</h1><div class="card"><h3>Faturamento Bruto: R$ ${bruto.toLocaleString()}</h3><h3>Comissão Total: R$ ${comTotal.toLocaleString()}</h3><h3 class="red">Total Descontos (Vales): R$ ${vls.toLocaleString()}</h3><hr><h2>LÍQUIDO A RECEBER: R$ ${(2000+comTotal-vls).toLocaleString()}</h2></div><table><thead><tr><th>DATA</th><th>TIPO</th><th>DESCRIÇÃO</th><th>VALOR</th></tr></thead><tbody>${vOrdenadas.map(v=>`<tr><td>${v.data}</td><td>VENDA</td><td>${v.cliente}</td><td class="green">R$ ${v.valor.toLocaleString()}</td></tr>`).join('')}${valesOrdenados.map(v=>`<tr><td>${v.data}</td><td>VALE</td><td>Adiantamento</td><td class="red">- R$ ${v.valor.toLocaleString()}</td></tr>`).join('')}</tbody></table><script>window.print();<\/script></body></html>`);
     }
 
     function exportarDados() {
