@@ -27,26 +27,27 @@
         .fin-box { background: var(--card); padding: 12px; border-radius: 14px; border: 1px solid var(--border); }
         .fin-box span { font-size: 8px; color: #666; font-weight: 700; display: block; margin-bottom: 3px; text-transform: uppercase; }
         .fin-box b { font-size: 16px; display: block; }
-        .full-box { grid-column: span 2; border-color: #333; }
+        .full-box { grid-column: span 2; border-color: #333; background: rgba(0,242,255,0.02); }
 
-        .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 230px; padding: 15px; box-sizing: border-box; }
+        .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 250px; padding: 15px; box-sizing: border-box; }
 
         .inputs { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
-        input, select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; box-sizing: border-box; font-size: 13px; font-family: inherit; }
+        input, select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; box-sizing: border-box; font-size: 13px; }
         
         .btn-main { background: #fff; color: #000; width: 100%; padding: 14px; border-radius: 10px; font-weight: 800; border: none; margin-bottom: 8px; cursor: pointer; }
         .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-        .btn-sec { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 10px; border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
+        .btn-sec { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 10px; border-radius: 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; cursor: pointer; }
 
         .item { background: var(--card); padding: 14px; border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .item.entregue { border-left: 4px solid var(--green); }
         .item.pendente { border-left: 4px solid var(--red); }
-        .item-date { color: var(--blue); text-decoration: underline; cursor: pointer; margin-right: 5px; }
+        .item-date { color: var(--blue); text-decoration: underline; cursor: pointer; font-size: 10px; font-weight: 800; }
         
+        .val-venda { font-weight: 800; font-size: 15px; }
         .actions { display: flex; align-items: center; gap: 8px; }
         .btn-status { width: 38px; height: 38px; border-radius: 10px; border: none; background: #222; color: #fff; cursor: pointer; }
         .btn-status.on { background: var(--green); color: #000; }
-        .btn-del { background: none; border: none; color: #444; font-size: 16px; cursor: pointer; padding: 5px; }
+        .btn-del { background: none; border: none; color: #444; font-size: 18px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -119,12 +120,12 @@
 
     function editarData(id) {
         const v = vendas.find(x => x.id === id);
-        const novaData = prompt("Editar data (formato DD/MM/AAAA):", v.data);
-        if (novaData && novaData.includes('/')) {
+        const novaData = prompt("Editar data (DD/MM/AAAA):", v.data);
+        if (novaData && novaData.length >= 5) {
             v.data = novaData;
-            // Atualiza o timestamp aproximado para ordenação
             const p = novaData.split('/');
-            v.ts = new Date(p[2], p[1]-1, p[0]).getTime();
+            const ano = p[2] || new Date().getFullYear();
+            v.ts = new Date(ano, p[1]-1, p[0]).getTime();
             salvar();
         }
     }
@@ -134,12 +135,11 @@
 
     function render() {
         const div = document.getElementById('lista'); div.innerHTML = '';
-        let bruto = 0, vales = 0, com = 0, histArr = [];
+        let bruto = 0, vales = 0, com = 0, histMap = new Map();
 
-        // Ordenar vendas por data para a lista e gráfico
-        const vendasOrdenadas = [...vendas].sort((a,b) => a.ts - b.ts);
+        vendas.sort((a,b) => a.ts - b.ts);
 
-        [...vendas].sort((a,b) => b.ts - a.ts).forEach(v => {
+        [...vendas].reverse().forEach(v => {
             const dtMostra = v.data.substring(0, 5);
             if (v.isVale) {
                 vales += v.valor;
@@ -147,14 +147,8 @@
             } else {
                 bruto += v.valor; com += (v.valor * 0.03);
                 div.innerHTML += `<div class="item ${v.entregue ? 'entregue' : 'pendente'}"><div><b>${v.cliente}</b><small class="item-date" onclick="editarData(${v.id})">${dtMostra}</small><small>• ${v.tipo}</small></div><div class="actions"><div class="val-venda">R$ ${v.valor.toLocaleString()}</div><button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
+                histMap.set(dtMostra, (histMap.get(dtMostra) || 0) + v.valor);
             }
-        });
-
-        // Agrupar para o gráfico (Garantindo ordem cronológica)
-        let dadosAgrupados = {};
-        vendasOrdenadas.filter(v => !v.isVale).forEach(v => {
-            const d = v.data.substring(0, 5);
-            dadosAgrupados[d] = (dadosAgrupados[d] || 0) + v.valor;
         });
 
         document.getElementById('barraProg').style.width = Math.min((bruto / META_FIXA) * 100, 100) + '%';
@@ -168,8 +162,21 @@
         if (chart) chart.destroy();
         chart = new Chart(ctx, {
             type: 'line',
-            data: { labels: Object.keys(dadosAgrupados), datasets: [{ data: Object.values(dadosAgrupados), borderColor: '#00f2ff', borderWidth: 3, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.05)', tension: 0.4, pointRadius: 2 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#222' }, ticks: { color: '#666', font: { size: 9 } } }, x: { grid: { display: false }, ticks: { color: '#fff', font: { size: 10, weight: 'bold' } } } } }
+            data: { 
+                labels: Array.from(histMap.keys()), 
+                datasets: [{ 
+                    data: Array.from(histMap.values()), 
+                    borderColor: '#00f2ff', borderWidth: 3, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.08)', tension: 0.4, pointRadius: 4, pointBackgroundColor: '#00f2ff'
+                }] 
+            },
+            options: { 
+                responsive: true, maintainAspectRatio: false, 
+                plugins: { legend: { display: false } }, 
+                scales: { 
+                    y: { grid: { color: '#222' }, ticks: { color: '#666', font: { size: 9 } } }, 
+                    x: { grid: { display: false }, ticks: { color: '#fff', font: { size: 10, weight: 'bold' } } } 
+                } 
+            }
         });
     }
 
@@ -177,11 +184,11 @@
         const bruto = vendas.filter(v=>!v.isVale).reduce((a,b)=>a+b.valor,0);
         const vls = vendas.filter(v=>v.isVale).reduce((a,b)=>a+b.valor,0);
         const comTotal = bruto * 0.03;
-        const vOrdenadas = [...vendas].filter(v=>!v.isVale).sort((a,b) => a.ts - b.ts);
-        const valesOrdenados = [...vendas].filter(v=>v.isVale).sort((a,b) => a.ts - b.ts);
+        const vOrdenadas = [...vendas].filter(v=>!v.isVale);
+        const valesOrdenados = [...vendas].filter(v=>v.isVale);
 
         const win = window.open('','_blank');
-        win.document.write(`<html><head><style>body{background:#000;color:#fff;font-family:sans-serif;padding:30px}.card{background:#111;padding:20px;border-radius:10px;border:1px solid #333}table{width:100%;border-collapse:collapse;margin-top:20px}th{text-align:left;color:#00f2ff;border-bottom:1px solid #333;padding:10px}td{padding:10px;border-bottom:1px solid #222}.red{color:#ff0055}.green{color:#00ff88}</style></head><body><h1>Relatório Canil My Baby</h1><div class="card"><h3>Faturamento Bruto: R$ ${bruto.toLocaleString()}</h3><h3>Comissão Total: R$ ${comTotal.toLocaleString()}</h3><h3 class="red">Total Vales: R$ ${vls.toLocaleString()}</h3><hr><h2>LÍQUIDO: R$ ${(2000+comTotal-vls).toLocaleString()}</h2></div><table><thead><tr><th>DATA</th><th>CLIENTE</th><th>VALOR</th><th>COMISSÃO</th></tr></thead><tbody>${vOrdenadas.map(v=>`<tr><td>${v.data}</td><td>${v.cliente}</td><td>R$ ${v.valor.toLocaleString()}</td><td class="green">R$ ${(v.valor*0.03).toLocaleString()}</td></tr>`).join('')}</tbody></table><h3>Vales/Descontos</h3><table>${valesOrdenados.map(v=>`<tr><td>${v.data}</td><td>Vale Adiantamento</td><td class="red">- R$ ${v.valor.toLocaleString()}</td></tr>`).join('')}</table><script>window.print();<\/script></body></html>`);
+        win.document.write(`<html><head><style>body{background:#000;color:#fff;font-family:sans-serif;padding:30px}.card{background:#111;padding:20px;border-radius:10px;border:1px solid #333}table{width:100%;border-collapse:collapse;margin-top:20px}th{text-align:left;color:#00f2ff;border-bottom:1px solid #333;padding:10px}td{padding:10px;border-bottom:1px solid #222}.red{color:#ff0055}.green{color:#00ff88}</style></head><body><h1>Relatório Canil My Baby</h1><div class="card"><h3>Faturamento Bruto: R$ ${bruto.toLocaleString()}</h3><h3>Comissão Total: R$ ${comTotal.toLocaleString()}</h3><h3 class="red">Total Vales: R$ ${vls.toLocaleString()}</h3><hr><h2>LÍQUIDO REAL: R$ ${(2000+comTotal-vls).toLocaleString()}</h2></div><table><thead><tr><th>DATA</th><th>CLIENTE</th><th>VALOR</th><th>COMISSÃO</th></tr></thead><tbody>${vOrdenadas.map(v=>`<tr><td>${v.data}</td><td>${v.cliente}</td><td>R$ ${v.valor.toLocaleString()}</td><td class="green">R$ ${(v.valor*0.03).toLocaleString()}</td></tr>`).join('')}</tbody></table><h3>Histórico de Vales</h3><table>${valesOrdenados.map(v=>`<tr><td>${v.data}</td><td>Vale/Adiantamento</td><td class="red">- R$ ${v.valor.toLocaleString()}</td></tr>`).join('')}</table><script>window.print();<\/script></body></html>`);
     }
 
     function exportarDados() {
