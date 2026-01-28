@@ -29,6 +29,12 @@
         .fin-box b { font-size: 16px; display: block; }
         .full-box { grid-column: span 2; border-color: #333; background: rgba(0,242,255,0.02); }
 
+        /* NOVO: Estilo para os contadores de raça/sexo */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px; margin-bottom: 15px; }
+        .stat-tag { background: #1a1a1a; padding: 8px 4px; border-radius: 8px; text-align: center; border: 1px solid #333; }
+        .stat-tag label { display: block; font-size: 7px; color: #888; text-transform: uppercase; font-weight: 800; margin-bottom: 2px; }
+        .stat-tag value { font-size: 11px; font-weight: 800; color: var(--blue); }
+
         .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 250px; padding: 15px; box-sizing: border-box; }
 
         .inputs { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
@@ -73,8 +79,15 @@
         <div class="fin-box"><span>Total Vales</span><b id="totDescontos" style="color:var(--red)">R$ 0</b></div>
         <div class="fin-box" style="border-color: var(--green);"><span>Líquido Real</span><b id="salLiq" style="color:var(--green)">R$ 0</b></div>
     </div>
-    <div class="fin-grid" style="margin-bottom: 15px;">
+    <div class="fin-grid">
         <div class="fin-box full-box"><span>Faturamento Bruto</span><b id="totBruto" style="color:var(--blue)">R$ 0</b></div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-tag"><label>Spitz</label><value id="countSpitz">0</value></div>
+        <div class="stat-tag"><label>Bengal</label><value id="countBengal">0</value></div>
+        <div class="stat-tag"><label>Machos</label><value id="countMachos">0</value></div>
+        <div class="stat-tag"><label>Fêmeas</label><value id="countFemeas">0</value></div>
     </div>
 
     <div class="chart-wrapper"><canvas id="graficoVendas"></canvas></div>
@@ -136,20 +149,33 @@
     function render() {
         const div = document.getElementById('lista'); div.innerHTML = '';
         let bruto = 0, vales = 0, com = 0;
+        let cSpitz = 0, cBengal = 0, cMacho = 0, cFemea = 0;
         let histMap = new Map();
 
-        // 1. Ordenar por data cronológica para o cálculo do acumulado
         vendas.sort((a,b) => a.ts - b.ts);
 
-        // 2. Agrupar vendas por dia para o gráfico
         vendas.forEach(v => {
             if (!v.isVale) {
+                bruto += v.valor; 
+                com += (v.valor * 0.03);
+                
+                // Contagem de Raça e Sexo
+                if(v.tipo === 'Spitz') cSpitz++; else cBengal++;
+                if(v.sexo === 'Macho') cMacho++; else cFemea++;
+
                 const dt = v.data.substring(0, 5);
                 histMap.set(dt, (histMap.get(dt) || 0) + v.valor);
+            } else {
+                vales += v.valor;
             }
         });
 
-        // 3. Gerar Dados do Gráfico (Acumulado em %)
+        // Atualiza contadores na tela
+        document.getElementById('countSpitz').innerText = cSpitz;
+        document.getElementById('countBengal').innerText = cBengal;
+        document.getElementById('countMachos').innerText = cMacho;
+        document.getElementById('countFemeas').innerText = cFemea;
+
         let labels = Array.from(histMap.keys());
         let totalAcumulado = 0;
         let dataPorcentagem = labels.map(label => {
@@ -157,28 +183,22 @@
             return ((totalAcumulado / META_FIXA) * 100).toFixed(1);
         });
 
-        // 4. Renderizar Lista (Invertida para o novo aparecer no topo)
         [...vendas].reverse().forEach(v => {
             const dtMostra = v.data.substring(0, 5);
             if (v.isVale) {
-                vales += v.valor;
                 div.innerHTML += `<div class="item" style="opacity:0.6"><div><b>VALE</b><small class="item-date" onclick="editarData(${v.id})">${dtMostra}</small></div><div class="actions"><div class="val-venda" style="color:var(--red)">- R$ ${v.valor.toLocaleString()}</div><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
             } else {
-                bruto += v.valor; com += (v.valor * 0.03);
-                div.innerHTML += `<div class="item ${v.entregue ? 'entregue' : 'pendente'}"><div><b>${v.cliente}</b><small class="item-date" onclick="editarData(${v.id})">${dtMostra}</small><small>• ${v.tipo}</small></div><div class="actions"><div class="val-venda">R$ ${v.valor.toLocaleString()}</div><button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
+                div.innerHTML += `<div class="item ${v.entregue ? 'entregue' : 'pendente'}"><div><b>${v.cliente}</b><small class="item-date" onclick="editarData(${v.id})">${dtMostra}</small><small>• ${v.tipo} ${v.sexo}</small></div><div class="actions"><div class="val-venda">R$ ${v.valor.toLocaleString()}</div><button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
             }
         });
 
-        // 5. Atualizar Widgets Financeiros
-        const percAtual = ((bruto / META_FIXA) * 100);
-        document.getElementById('barraProg').style.width = Math.min(percAtual, 100) + '%';
-        document.getElementById('txtPerc').innerText = percAtual.toFixed(1) + '%';
+        document.getElementById('barraProg').style.width = Math.min((bruto / META_FIXA) * 100, 100) + '%';
+        document.getElementById('txtPerc').innerText = ((bruto / META_FIXA) * 100).toFixed(1) + '%';
         document.getElementById('totBruto').innerText = "R$ " + bruto.toLocaleString();
         document.getElementById('totComissao').innerText = "R$ " + com.toLocaleString();
         document.getElementById('totDescontos').innerText = "R$ " + vales.toLocaleString();
         document.getElementById('salLiq').innerText = "R$ " + (2000 + com - vales).toLocaleString('pt-BR', {minimumFractionDigits:2});
 
-        // 6. Gráfico de Porcentagem (Sempre subindo)
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
         chart = new Chart(ctx, {
@@ -186,14 +206,13 @@
             data: { 
                 labels: labels, 
                 datasets: [{ 
-                    label: 'Progresso %',
                     data: dataPorcentagem, 
                     borderColor: '#00f2ff', borderWidth: 3, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3, pointRadius: 4, pointBackgroundColor: '#00f2ff'
                 }] 
             },
             options: { 
                 responsive: true, maintainAspectRatio: false, 
-                plugins: { legend: { display: false }, tooltip: { callbacks: { label: (c) => c.raw + '%' } } }, 
+                plugins: { legend: { display: false } }, 
                 scales: { 
                     y: { min: 0, max: 100, grid: { color: '#222' }, ticks: { color: '#666', font: { size: 9 }, callback: v => v + '%' } }, 
                     x: { grid: { display: false }, ticks: { color: '#fff', font: { size: 10, weight: 'bold' } } } 
@@ -210,7 +229,7 @@
         const valesOrdenados = [...vendas].filter(v=>v.isVale);
 
         const win = window.open('','_blank');
-        win.document.write(`<html><head><style>body{background:#000;color:#fff;font-family:sans-serif;padding:30px}.card{background:#111;padding:20px;border-radius:10px;border:1px solid #333}table{width:100%;border-collapse:collapse;margin-top:20px}th{text-align:left;color:#00f2ff;border-bottom:1px solid #333;padding:10px}td{padding:10px;border-bottom:1px solid #222}.red{color:#ff0055}.green{color:#00ff88}</style></head><body><h1>Relatório Canil My Baby</h1><div class="card"><h3>Faturamento Bruto: R$ ${bruto.toLocaleString()}</h3><h3>Comissão Total: R$ ${comTotal.toLocaleString()}</h3><h3 class="red">Total Vales: R$ ${vls.toLocaleString()}</h3><hr><h2>LÍQUIDO REAL: R$ ${(2000+comTotal-vls).toLocaleString()}</h2></div><table><thead><tr><th>DATA</th><th>CLIENTE</th><th>VALOR</th><th>COMISSÃO (3%)</th></tr></thead><tbody>${vOrdenadas.map(v=>`<tr><td>${v.data}</td><td>${v.cliente}</td><td>R$ ${v.valor.toLocaleString()}</td><td class="green">R$ ${(v.valor*0.03).toLocaleString()}</td></tr>`).join('')}</tbody></table><h3>Histórico de Vales</h3><table>${valesOrdenados.map(v=>`<tr><td>${v.data}</td><td>Vale/Adiantamento</td><td class="red">- R$ ${v.valor.toLocaleString()}</td></tr>`).join('')}</table><script>window.print();<\/script></body></html>`);
+        win.document.write(`<html><head><style>body{background:#000;color:#fff;font-family:sans-serif;padding:30px}.card{background:#111;padding:20px;border-radius:10px;border:1px solid #333}table{width:100%;border-collapse:collapse;margin-top:20px}th{text-align:left;color:#00f2ff;border-bottom:1px solid #333;padding:10px}td{padding:10px;border-bottom:1px solid #222}.red{color:#ff0055}.green{color:#00ff88}</style></head><body><h1>Relatório Canil My Baby</h1><div class="card"><h3>Faturamento Bruto: R$ ${bruto.toLocaleString()}</h3><h3>Comissão Total: R$ ${comTotal.toLocaleString()}</h3><h3 class="red">Total Vales: R$ ${vls.toLocaleString()}</h3><hr><h2>LÍQUIDO REAL: R$ ${(2000+comTotal-vls).toLocaleString()}</h2></div><table><thead><tr><th>DATA</th><th>TIPO/SEXO</th><th>CLIENTE</th><th>VALOR</th></tr></thead><tbody>${vOrdenadas.map(v=>`<tr><td>${v.data}</td><td>${v.tipo} ${v.sexo}</td><td>${v.cliente}</td><td>R$ ${v.valor.toLocaleString()}</td></tr>`).join('')}</tbody></table><script>window.print();<\/script></body></html>`);
     }
 
     function exportarDados() {
