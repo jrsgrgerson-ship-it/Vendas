@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Painel My Baby 2026 🐾</title>
+    <title>Painel Canil My Baby | Gerson 🐾</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --blue: #00f2ff; --green: #00ff88; --red: #ff0055; --bg: #050505; --card: #111; --border: #222; --yellow: #ffcc00; }
         body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 10px; }
-        #relogio { position: absolute; top: 15px; right: 15px; text-align: right; font-size: 10px; color: var(--blue); font-weight: 800; text-shadow: 0 0 5px var(--blue); line-height: 1.2; }
+        #relogio { position: absolute; top: 15px; right: 15px; text-align: right; font-size: 10px; color: var(--blue); font-weight: 800; line-height: 1.2; }
         header { padding: 10px 5px 15px 5px; border-bottom: 1px solid var(--border); margin-bottom: 15px; position: relative; }
-        header h1 { margin: 0; font-size: 18px; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px var(--blue); width: 65%; }
-        .mes-selector { background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 8px; border-radius: 8px; font-size: 13px; margin-top: 10px; font-weight: 800; width: 100%; outline: none; }
+        header h1 { margin: 0; font-size: 16px; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px var(--blue); width: 70%; line-height: 1.1; }
+        header p { margin: 5px 0 0 0; font-size: 11px; color: #888; font-weight: 600; }
         
+        .mes-selector { background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 8px; border-radius: 8px; font-size: 13px; margin-top: 12px; font-weight: 800; width: 100%; outline: none; }
         .meta-container { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 15px; }
         .meta-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
         .meta-label { font-size: 10px; color: #666; font-weight: 800; text-transform: uppercase; }
         .meta-target { font-size: 18px; color: var(--blue); font-weight: 800; cursor: pointer; text-decoration: underline; }
-        
         .progress-bg { background: #000; height: 14px; border-radius: 20px; width: 100%; border: 1px solid #222; overflow: hidden; }
         .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #0088ff, var(--blue)); box-shadow: 0 0 15px var(--blue); border-radius: 20px; transition: 1s; position: relative; }
         .rocket { position: absolute; right: -8px; top: -5px; font-size: 16px; }
@@ -54,12 +54,12 @@
     <div id="relogio"></div>
 
     <header>
-        <h1>Painel My Baby 🐾</h1>
+        <h1>Painel de Vendas<br>Canil My Baby 🐾</h1>
+        <p>Especialista Spitz e Bengal: <b>Gerson</b></p>
         <select class="mes-selector" id="selecaoMes" onchange="mudarMes()">
             <option value="01/2026">Janeiro 2026</option>
             <option value="02/2026">Fevereiro 2026</option>
             <option value="03/2026">Março 2026</option>
-            <option value="12/2026">Dezembro 2026</option>
         </select>
     </header>
 
@@ -93,7 +93,7 @@
         <div class="fin-box"><span>💸 Vales</span><b id="totDescontos" style="color:var(--red)">R$ 0</b></div>
     </div>
     <div class="fin-grid">
-        <div class="fin-box full-box" style="border-color: var(--green);"><span>✅ Líquido (Fixo R$ 2000 + Com - Vales)</span><b id="salLiq" style="color:var(--green)">R$ 0</b></div>
+        <div class="fin-box full-box" style="border-color: var(--green);"><span>✅ Líquido Real</span><b id="salLiq" style="color:var(--green)">R$ 0</b></div>
     </div>
 
     <div class="chart-wrapper"><canvas id="graficoVendas"></canvas></div>
@@ -127,6 +127,12 @@
         if (n) { appData.metas[appData.mesAtivo] = parseFloat(n); salvar(); }
     }
 
+    function editarData(id) {
+        const v = appData.vendas.find(x => x.id === id);
+        const novaData = prompt("Editar Data (ex: 01/02):", v.data.substring(0,5));
+        if (novaData) { v.data = novaData + "/2026"; salvar(); }
+    }
+
     function addVenda() {
         const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valor').value);
         if (c && v) {
@@ -157,7 +163,8 @@
                 bruto += v.valor;
                 if(v.sexo === 'Macho') { mM++; v.tipo === 'Spitz' ? mS++ : mB++; } 
                 else { mF++; v.tipo === 'Spitz' ? fS++ : fB++; }
-                histMap.set(v.data.substring(0,5), (histMap.get(v.data.substring(0,5)) || 0) + v.valor);
+                let dia = v.data.substring(0,5);
+                histMap.set(dia, (histMap.get(dia) || 0) + v.valor);
             } else { vales += v.valor; }
         });
 
@@ -178,16 +185,19 @@
 
         const div = document.getElementById('lista'); div.innerHTML = '';
         [...vMes].reverse().forEach(v => {
-            div.innerHTML += `<div class="item"><div><b>${v.isVale ? '📉 VALE' : v.cliente}</b><small>${v.data.substring(0,5)} ${v.isVale ? '' : '• '+v.tipo+' '+v.sexo}</small></div><div class="actions"><div style="font-weight:800; color:${v.isVale ? 'var(--red)' : '#fff'}">${v.isVale ? '-' : ''} R$ ${v.valor.toLocaleString()}</div><button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
+            div.innerHTML += `<div class="item"><div><b onclick="editarData(${v.id})" style="text-decoration:underline; cursor:pointer">${v.isVale ? '📉 VALE' : v.cliente}</b><small>${v.data.substring(0,5)} ${v.isVale ? '' : '• '+v.tipo+' '+v.sexo}</small></div><div class="actions"><div style="font-weight:800; color:${v.isVale ? 'var(--red)' : '#fff'}">${v.isVale ? '-' : ''} R$ ${v.valor.toLocaleString()}</div><button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
         });
 
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
         let acc = 0;
+        const labels = Array.from(histMap.keys());
+        const dataMeta = Array.from(histMap.values()).map(v=>{acc+=v; return ((acc/metaM)*100).toFixed(1)});
+        
         chart = new Chart(ctx, {
             type: 'line',
-            data: { labels: Array.from(histMap.keys()), datasets: [{ data: Array.from(histMap.values()).map(v=>{acc+=v; return ((acc/metaM)*100).toFixed(1)}), borderColor: '#00f2ff', borderWidth: 3, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3 }] },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min:0, max:100, ticks: { color: '#666', callback: v => v + '%' } }, x: { ticks: { color: '#fff' } } } }
+            data: { labels: labels, datasets: [{ data: dataMeta, borderColor: '#00f2ff', borderWidth: 3, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min:0, max: Math.max(100, Math.ceil(Math.max(...dataMeta)/10)*10), ticks: { color: '#666', callback: v => v + '%' } }, x: { ticks: { color: '#fff' } } } }
         });
     }
 
@@ -198,40 +208,29 @@
         const com = bruto * 0.03;
         
         let win = window.open('', '', 'height=700,width=900');
-        win.document.write(`<html><head><title>Relatório Canil</title><style>
+        win.document.write(`<html><head><title>Relatório Gerson - My Baby</title><style>
             body{font-family:sans-serif; padding:40px; color:#333}
             table{width:100%; border-collapse:collapse; margin-top:20px}
             th,td{border:1px solid #eee; padding:12px; text-align:left}
-            th{background:#f8f9fa; color:#666; font-size:12px; text-transform:uppercase}
+            th{background:#f8f9fa; color:#666; font-size:11px; text-transform:uppercase}
             .vale{color:#ff0055; font-weight:bold}
-            .header{border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:20px}
-            .resumo{margin-top:30px; background:#f8f9fa; padding:20px; border-radius:10px}
-            .resumo p{margin:5px 0; font-size:14px}
-            .total-final{font-size:20px; font-weight:bold; color:green; margin-top:10px; border-top:1px solid #ccc; padding-top:10px}
+            .resumo-topo{display:grid; grid-template-columns: 1fr 1fr; gap:20px; background:#f8f9fa; padding:20px; border-radius:10px; margin: 20px 0}
+            .resumo-topo p{margin:5px 0; font-size:14px}
+            .total-final{font-size:18px; font-weight:bold; color:green; grid-column: span 2; border-top:1px solid #ccc; padding-top:10px}
         </style></head><body>`);
         
-        win.document.write(`<div class="header"><h1>Relatório de Vendas My Baby</h1><p>Mês de Referência: <b>${appData.mesAtivo}</b></p></div>`);
-        win.document.write('<table><thead><tr><th>Data</th><th>Descrição/Cliente</th><th>Raça/Sexo</th><th>Valor</th></tr></thead><tbody>');
+        win.document.write(`<h1>Relatório Canil My Baby - ${appData.mesAtivo}</h1><p>Vendedor: Gerson</p>`);
+        win.document.write(`<div class="resumo-topo">
+            <div><p>Faturamento Bruto: <b>R$ ${bruto.toLocaleString()}</b></p><p>Comissão (3%): <b>R$ ${com.toLocaleString()}</b></p></div>
+            <div><p>Salário Fixo: <b>R$ 2.000,00</b></p><p class="vale">Total Vales: <b>- R$ ${vales.toLocaleString()}</b></p></div>
+            <p class="total-final">💰 Líquido a Receber: R$ ${(2000 + com - vales).toLocaleString()}</p>
+        </div>`);
         
+        win.document.write('<table><thead><tr><th>Data</th><th>Cliente/Descrição</th><th>Raça/Sexo</th><th>Valor</th></tr></thead><tbody>');
         vMes.forEach(v => {
-            win.document.write(`<tr>
-                <td>${v.data}</td>
-                <td>${v.cliente}</td>
-                <td>${v.isVale ? 'VALE' : v.tipo + ' ' + v.sexo}</td>
-                <td class="${v.isVale ? 'vale' : ''}">${v.isVale ? '-' : ''} R$ ${v.valor.toLocaleString()}</td>
-            </tr>`);
+            win.document.write(`<tr><td>${v.data.substring(0,5)}</td><td>${v.cliente}</td><td>${v.isVale ? 'VALE' : v.tipo + ' ' + v.sexo}</td><td class="${v.isVale ? 'vale' : ''}">${v.isVale ? '-' : ''} R$ ${v.valor.toLocaleString()}</td></tr>`);
         });
-
-        win.document.write(`</tbody></table>
-            <div class="resumo">
-                <p>Faturamento Bruto: <b>R$ ${bruto.toLocaleString()}</b></p>
-                <p>Comissão (3%): <b>R$ ${com.toLocaleString()}</b></p>
-                <p>Salário Fixo: <b>R$ 2.000,00</b></p>
-                <p class="vale">Total Vales: <b>- R$ ${vales.toLocaleString()}</b></p>
-                <p class="total-final">Saldo Líquido a Receber: R$ ${(2000 + com - vales).toLocaleString()}</p>
-            </div>
-        </body></html>`);
-        
+        win.document.write('</tbody></table></body></html>');
         win.document.close();
         setTimeout(() => { win.print(); }, 500);
     }
