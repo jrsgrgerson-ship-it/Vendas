@@ -39,7 +39,7 @@
         .actions { display: flex; align-items: center; gap: 8px; }
         .btn-status { width: 38px; height: 38px; border-radius: 10px; border: none; background: #222; color: #fff; }
         .btn-status.on { background: var(--green); color: #000; }
-        .btn-del { background: none; border: none; color: #444; font-size: 16px; }
+        .btn-del { background: none; border: none; color: #444; font-size: 16px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -51,8 +51,17 @@
         <select class="mes-selector" id="selecaoMes" onchange="mudarMes()">
             <option value="01/2026">Janeiro 2026</option>
             <option value="02/2026">Fevereiro 2026</option>
-            <option value="03/2026" disabled>Março 2026 (Bloqueado)</option>
-            </select>
+            <option value="03/2026">Março 2026</option>
+            <option value="04/2026">Abril 2026</option>
+            <option value="05/2026">Maio 2026</option>
+            <option value="06/2026">Junho 2026</option>
+            <option value="07/2026">Julho 2026</option>
+            <option value="08/2026">Agosto 2026</option>
+            <option value="09/2026">Setembro 2026</option>
+            <option value="10/2026">Outubro 2026</option>
+            <option value="11/2026">Novembro 2026</option>
+            <option value="12/2026">Dezembro 2026</option>
+        </select>
     </header>
 
     <div class="meta-container">
@@ -102,46 +111,34 @@
     <div id="lista"></div>
 
 <script>
-    // MOTOR DE RESGATE AUTOMÁTICO
-    function autoResgate() {
-        let bancoNovo = JSON.parse(localStorage.getItem('canil_2026_db')) || { mesAtivo: "02/2026", metas: {}, vendas: [] };
+    function inicializarBanco() {
+        let bancoExistente = localStorage.getItem('canil_2026_db');
         
-        // Chaves de memória para varrer
-        const chavesAntigas = ['vendas_gerson_oficial', 'canil_mybaby_jan25', 'canil_mybaby_v3', 'vendasV12'];
+        // Se já existe um banco de 2026, usamos ele e paramos por aqui.
+        if (bancoExistente) return JSON.parse(bancoExistente);
+
+        // Se NÃO EXISTE, fazemos o resgate ÚNICO
+        let novoBanco = { mesAtivo: "02/2026", metas: {"01/2026":100000, "02/2026":100000}, vendas: [] };
+        const chavesAntigas = ['vendas_gerson_oficial', 'canil_mybaby_jan25', 'canil_mybaby_v3'];
         
         chavesAntigas.forEach(chave => {
-            let dadosEncontrados = JSON.parse(localStorage.getItem(chave));
-            if (dadosEncontrados) {
-                // Se for um array de vendas antigo
-                if (Array.isArray(dadosEncontrados)) {
-                    dadosEncontrados.forEach(v => {
-                        // Verifica se a venda já não existe no banco novo pelo ID
-                        if (!bancoNovo.vendas.some(novoV => novoV.id === v.id)) {
-                            v.mesRef = v.mesRef || "01/2026"; // Resgata como Janeiro se não tiver etiqueta
-                            bancoNovo.vendas.push(v);
-                        }
-                    });
-                } 
-                // Se for o formato de objeto v3
-                else if (dadosEncontrados.vendas) {
-                    dadosEncontrados.vendas.forEach(v => {
-                        if (!bancoNovo.vendas.some(novoV => novoV.id === v.id)) {
-                            v.mesRef = v.mesRef || "01/2026";
-                            bancoNovo.vendas.push(v);
-                        }
-                    });
-                }
+            let antigas = JSON.parse(localStorage.getItem(chave));
+            if (antigas) {
+                let lista = Array.isArray(antigas) ? antigas : (antigas.vendas || []);
+                lista.forEach(v => {
+                    v.mesRef = v.mesRef || "01/2026";
+                    novoBanco.vendas.push(v);
+                });
+                // LIMPA a memória antiga para não resgatar de novo no futuro
+                localStorage.removeItem(chave);
             }
         });
 
-        // Garante meta de Janeiro se sumiu
-        if (!bancoNovo.metas["01/2026"]) bancoNovo.metas["01/2026"] = 100000;
-        if (!bancoNovo.metas["02/2026"]) bancoNovo.metas["02/2026"] = 100000;
-
-        return bancoNovo;
+        localStorage.setItem('canil_2026_db', JSON.stringify(novoBanco));
+        return novoBanco;
     }
 
-    let appData = autoResgate();
+    let appData = inicializarBanco();
     let chart = null;
 
     function atualizarRelogio() {
@@ -173,7 +170,7 @@
     }
 
     function toggleStatus(id) { const v = appData.vendas.find(x => x.id === id); v.entregue = !v.entregue; salvar(); }
-    function del(id) { if(confirm("Excluir?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); salvar(); } }
+    function del(id) { if(confirm("Excluir definitivamente?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); salvar(); } }
 
     function render() {
         const div = document.getElementById('lista'); div.innerHTML = '';
@@ -227,10 +224,8 @@
         });
     }
 
-    function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup_canil_2026.json'; a.click(); }
-    
     atualizarRelogio();
-    salvar(); // Salva o resgate feito na abertura
+    render();
 </script>
 </body>
 </html>
