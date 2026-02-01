@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Painel Canil My Baby</title>
+    <title>Painel Canil My Baby - JANEIRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --blue: #00f2ff; --green: #00ff88; --red: #ff0055; --bg: #050505; --card: #111; --border: #222; --yellow: #ffcc00; }
         body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 10px; }
         
-        /* RELÓGIO SUPERIOR */
         #relogio { position: absolute; top: 15px; right: 15px; text-align: right; font-size: 10px; color: var(--blue); font-weight: 800; text-shadow: 0 0 5px var(--blue); line-height: 1.2; }
 
         header { padding: 10px 5px 15px 5px; border-bottom: 1px solid var(--border); margin-bottom: 15px; position: relative; }
-        header h1 { margin: 0; font-size: 18px; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px var(--blue); width: 70%; }
-        
-        .mes-selector { background: #000; color: #fff; border: 1px solid var(--blue); padding: 5px 10px; border-radius: 8px; font-size: 12px; margin-top: 10px; font-weight: 800; }
+        header h1 { margin: 0; font-size: 18px; font-weight: 800; text-transform: uppercase; text-shadow: 0 0-15px var(--blue); width: 60%; }
+        header p { margin: 5px 0 0 0; font-size: 11px; color: var(--blue); font-weight: 600; }
 
         .meta-container { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 15px; }
         .meta-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
@@ -48,14 +46,12 @@
         .btn-sec { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 10px; border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
 
         .item { background: var(--card); padding: 14px; border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .item.entregue { border-left: 4px solid var(--green); }
-        .item.pendente { border-left: 4px solid var(--red); }
-        .item-date { color: var(--blue); text-decoration: underline; cursor: pointer; font-size: 10px; font-weight: 800; }
-        
+        .item b { font-size: 14px; text-transform: uppercase; }
+        .item small { color: #666; font-size: 10px; display: block; }
         .actions { display: flex; align-items: center; gap: 8px; }
-        .btn-status { width: 38px; height: 38px; border-radius: 10px; border: none; background: #222; color: #fff; cursor: pointer; }
+        .btn-status { width: 38px; height: 38px; border-radius: 10px; border: none; background: #222; color: #fff; }
         .btn-status.on { background: var(--green); color: #000; }
-        .btn-del { background: none; border: none; color: #444; font-size: 16px; cursor: pointer; }
+        .btn-del { background: none; border: none; color: #444; font-size: 16px; }
     </style>
 </head>
 <body>
@@ -63,17 +59,13 @@
     <div id="relogio"></div>
 
     <header>
-        <h1>Painel Canil My Baby</h1>
-        <select class="mes-selector" id="selecaoMes" onchange="mudarMes()">
-            <option value="12/2024">Dezembro 2024</option>
-            <option value="01/2025">Janeiro 2025</option>
-            <option value="02/2025">Fevereiro 2025</option>
-        </select>
+        <h1>Painel My Baby</h1>
+        <p>Janeiro 2025</p>
     </header>
 
     <div class="meta-container">
         <div class="meta-header">
-            <div><span class="meta-label">Meta do Mês (Toque p/ editar)</span><div class="meta-target" id="txtMeta" onclick="editarMeta()">R$ 100.000,00</div></div>
+            <div><span class="meta-label">Meta de Janeiro (Toque p/ editar)</span><div class="meta-target" id="txtMeta" onclick="editarMeta()">R$ 100.000,00</div></div>
             <div id="txtPerc" style="color:var(--green); font-weight: 800; font-size: 14px;">0%</div>
         </div>
         <div class="progress-bg"><div class="progress-fill" id="barraProg"><span class="rocket">🚀</span></div></div>
@@ -118,10 +110,25 @@
     <div id="lista"></div>
 
 <script>
-    let dadosApp = JSON.parse(localStorage.getItem('canil_mybaby_v3')) || {
-        mesAtivo: "01/2025",
-        metas: {"12/2024": 100000, "01/2025": 100000, "02/2025": 100000},
-        vendas: [] // Cada venda terá uma propriedade 'mesReferencia'
+    // Recuperação de dados com varredura para não perder o histórico
+    function recuperarVendas() {
+        let antigas = JSON.parse(localStorage.getItem('vendas_gerson_oficial')) || 
+                      JSON.parse(localStorage.getItem('vendasV12')) || 
+                      JSON.parse(localStorage.getItem('vendasV5')) || [];
+        
+        let novas = JSON.parse(localStorage.getItem('canil_mybaby_jan25')) || [];
+        
+        // Se houver vendas antigas que não estão no novo formato, trazemos para Janeiro
+        if (antigas.length > 0 && novas.length === 0) {
+            antigas.forEach(v => { v.mesReferencia = "01/2025"; });
+            return antigas;
+        }
+        return novas;
+    }
+
+    let dadosApp = {
+        meta: parseFloat(localStorage.getItem('meta_jan25')) || 100000,
+        vendas: recuperarVendas()
     };
 
     let chart = null;
@@ -136,21 +143,14 @@
     setInterval(atualizarRelogio, 1000);
 
     function salvar() {
-        localStorage.setItem('canil_mybaby_v3', JSON.stringify(dadosApp));
+        localStorage.setItem('canil_mybaby_jan25', JSON.stringify(dadosApp.vendas));
+        localStorage.setItem('meta_jan25', dadosApp.meta.toString());
         render();
     }
 
-    function mudarMes() {
-        dadosApp.mesAtivo = document.getElementById('selecaoMes').value;
-        salvar();
-    }
-
     function editarMeta() {
-        const nova = prompt("Defina a meta para " + dadosApp.mesAtivo + ":", dadosApp.metas[dadosApp.mesAtivo]);
-        if (nova) {
-            dadosApp.metas[dadosApp.mesAtivo] = parseFloat(nova);
-            salvar();
-        }
+        const nova = prompt("Defina a meta de Janeiro:", dadosApp.meta);
+        if (nova) { dadosApp.meta = parseFloat(nova); salvar(); }
     }
 
     function addVenda() {
@@ -158,7 +158,6 @@
         if (c && v) {
             dadosApp.vendas.push({
                 id: Date.now(),
-                mesReferencia: dadosApp.mesAtivo,
                 cliente: c, valor: v,
                 tipo: document.getElementById('tipo').value,
                 sexo: document.getElementById('sexo').value,
@@ -173,71 +172,58 @@
     function addVale() {
         const val = prompt("Valor do Vale:");
         if (val) {
-            dadosApp.vendas.push({
-                id: Date.now(),
-                mesReferencia: dadosApp.mesAtivo,
-                cliente: 'VALE', valor: parseFloat(val),
-                data: new Date().toLocaleDateString('pt-BR'),
-                isVale: true, ts: Date.now()
-            });
+            dadosApp.vendas.push({ id: Date.now(), cliente: 'VALE', valor: parseFloat(val), data: new Date().toLocaleDateString('pt-BR'), isVale: true, ts: Date.now() });
             salvar();
         }
     }
 
-    function del(id) { if(confirm("Excluir?")) { dadosApp.vendas = dadosApp.vendas.filter(x => x.id !== id); salvar(); } }
     function toggleStatus(id) { const v = dadosApp.vendas.find(x => x.id === id); v.entregue = !v.entregue; salvar(); }
+    function del(id) { if(confirm("Excluir?")) { dadosApp.vendas = dadosApp.vendas.filter(x => x.id !== id); salvar(); } }
 
     function render() {
         const div = document.getElementById('lista'); div.innerHTML = '';
-        const metaAtual = dadosApp.metas[dadosApp.mesAtivo] || 100000;
-        document.getElementById('txtMeta').innerText = "R$ " + metaAtual.toLocaleString();
-        document.getElementById('selecaoMes').value = dadosApp.mesAtivo;
-
         let bruto = 0, vales = 0, com = 0;
         let cSpitz = 0, cBengal = 0, cMacho = 0, cFemea = 0;
         let histMap = new Map();
 
-        // Filtrar apenas vendas do mês ativo
-        const vendasMes = dadosApp.vendas.filter(v => v.mesReferencia === dadosApp.mesAtivo).sort((a,b) => a.ts - b.ts);
+        document.getElementById('txtMeta').innerText = "R$ " + dadosApp.meta.toLocaleString();
+        
+        dadosApp.vendas.sort((a,b) => a.ts - b.ts);
 
-        vendasMes.forEach(v => {
+        dadosApp.vendas.forEach(v => {
             if (!v.isVale) {
                 bruto += v.valor; com += (v.valor * 0.03);
                 if(v.tipo === 'Spitz') cSpitz++; else cBengal++;
                 if(v.sexo === 'Macho') cMacho++; else cFemea++;
                 const dt = v.data.substring(0, 5);
                 histMap.set(dt, (histMap.get(dt) || 0) + v.valor);
-            } else {
-                vales += v.valor;
-            }
+            } else { vales += v.valor; }
         });
 
-        // Gráfico acumulado em %
         let labels = Array.from(histMap.keys());
         let acumulado = 0;
         let dataPerc = labels.map(l => {
             acumulado += histMap.get(l);
-            return ((acumulado / metaAtual) * 100).toFixed(1);
+            return ((acumulado / dadosApp.meta) * 100).toFixed(1);
         });
 
-        // Lista
-        [...vendasMes].reverse().forEach(v => {
+        [...dadosApp.vendas].reverse().forEach(v => {
             const dt = v.data.substring(0, 5);
             if (v.isVale) {
-                div.innerHTML += `<div class="item" style="opacity:0.6"><div><b>VALE</b><small>${dt}</small></div><div class="actions"><div class="val-venda" style="color:var(--red)">- R$ ${v.valor.toLocaleString()}</div><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
+                div.innerHTML += `<div class="item" style="opacity:0.6"><div><b>VALE</b><small>${dt}</small></div><div class="actions"><div style="color:var(--red); font-weight:800;">- R$ ${v.valor.toLocaleString()}</div><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
             } else {
-                div.innerHTML += `<div class="item ${v.entregue ? 'entregue' : 'pendente'}"><div><b>${v.cliente}</b><small>${dt} • ${v.tipo} ${v.sexo}</small></div><div class="actions"><div class="val-venda">R$ ${v.valor.toLocaleString()}</div><button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
+                div.innerHTML += `<div class="item"><div><b>${v.cliente}</b><small>${dt} • ${v.tipo} ${v.sexo}</small></div><div class="actions"><div style="font-weight:800;">R$ ${v.valor.toLocaleString()}</div><button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
             }
         });
 
-        // Widgets
         document.getElementById('countSpitz').innerText = cSpitz; document.getElementById('countBengal').innerText = cBengal;
         document.getElementById('countMachos').innerText = cMacho; document.getElementById('countFemeas').innerText = cFemea;
         document.getElementById('totBruto').innerText = "R$ " + bruto.toLocaleString();
         document.getElementById('totComissao').innerText = "R$ " + com.toLocaleString();
         document.getElementById('totDescontos').innerText = "R$ " + vales.toLocaleString();
-        document.getElementById('salLiq').innerText = "R$ " + (2000 + com - vales).toLocaleString();
-        const pTotal = ((bruto / metaAtual) * 100);
+        document.getElementById('salLiq').innerText = "R$ " + (2000 + com - vales).toLocaleString('pt-BR', {minimumFractionDigits:2});
+        
+        const pTotal = ((bruto / dadosApp.meta) * 100);
         document.getElementById('barraProg').style.width = Math.min(pTotal, 100) + '%';
         document.getElementById('txtPerc').innerText = pTotal.toFixed(1) + '%';
 
@@ -250,9 +236,8 @@
         });
     }
 
-    function gerarPDF() { /* Mantém a lógica anterior filtrando por dadosApp.mesAtivo */ window.print(); }
-    function exportarDados() { const blob = new Blob([JSON.stringify(dadosApp)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup_canil.json'; a.click(); }
-
+    function exportarDados() { const blob = new Blob([JSON.stringify(dadosApp.vendas)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup_canil_janeiro.json'; a.click(); }
+    
     atualizarRelogio();
     render();
 </script>
