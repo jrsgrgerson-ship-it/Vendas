@@ -13,7 +13,6 @@
         header { padding: 10px 5px 15px 5px; border-bottom: 1px solid var(--border); margin-bottom: 15px; position: relative; }
         header h1 { margin: 0; font-size: 16px; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px var(--blue); width: 70%; line-height: 1.1; }
         header p { margin: 5px 0 0 0; font-size: 11px; color: #888; font-weight: 600; }
-        
         .mes-selector { background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 8px; border-radius: 8px; font-size: 13px; margin-top: 12px; font-weight: 800; width: 100%; outline: none; }
         .meta-container { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 15px; }
         .meta-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
@@ -22,26 +21,24 @@
         .progress-bg { background: #000; height: 14px; border-radius: 20px; width: 100%; border: 1px solid #222; overflow: hidden; }
         .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #0088ff, var(--blue)); box-shadow: 0 0 15px var(--blue); border-radius: 20px; transition: 1s; position: relative; }
         .rocket { position: absolute; right: -8px; top: -5px; font-size: 16px; }
-
         .fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
         .fin-box { background: var(--card); padding: 12px; border-radius: 14px; border: 1px solid var(--border); }
         .fin-box span { font-size: 8px; color: #666; font-weight: 700; display: block; margin-bottom: 3px; text-transform: uppercase; }
         .fin-box b { font-size: 16px; display: block; }
         .full-box { grid-column: span 2; border-color: #333; background: rgba(0,242,255,0.02); }
-
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
         .stat-tag { background: #1a1a1a; padding: 12px; border-radius: 12px; border: 1px solid #333; }
+        .stat-tag.delivery-tag { border-color: var(--green); background: rgba(0, 255, 136, 0.03); }
         .stat-tag label { display: block; font-size: 9px; color: var(--blue); text-transform: uppercase; font-weight: 800; margin-bottom: 4px; }
+        .stat-tag.delivery-tag label { color: var(--green); }
         .stat-tag value { font-size: 13px; font-weight: 800; color: #fff; display: block; }
-        .stat-tag small { font-size: 10px; color: #888; font-weight: 600; }
-
+        .stat-tag small { font-size: 10px; color: #888; font-weight: 600; display: block; }
         .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 230px; padding: 15px; box-sizing: border-box; }
         .inputs { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
         input, select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; box-sizing: border-box; font-size: 13px; font-family: inherit; }
         .btn-main { background: #fff; color: #000; width: 100%; padding: 14px; border-radius: 10px; font-weight: 800; border: none; margin-bottom: 8px; cursor: pointer; }
         .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
         .btn-sec { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 10px; border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
-        
         .item { background: var(--card); padding: 14px; border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         .actions { display: flex; align-items: center; gap: 8px; }
         .btn-status { width: 38px; height: 38px; border-radius: 10px; border: none; background: #222; color: #fff; font-size: 16px; }
@@ -85,6 +82,19 @@
             <label>♀ Total Fêmeas</label>
             <value id="countFemeas">0</value>
             <small id="subFemeas">0 Spitz | 0 Bengal</small>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-tag delivery-tag">
+            <label>🚚 Já Entregues (Raças)</label>
+            <value id="entreguesRaca">0</value>
+            <small id="subEntreguesRaca">0 Spitz | 0 Bengal</small>
+        </div>
+        <div class="stat-tag delivery-tag">
+            <label>🚚 Já Entregues (Sexo)</label>
+            <value id="entreguesSexo">0</value>
+            <small id="subEntreguesSexo">0 Machos | 0 Fêmeas</small>
         </div>
     </div>
 
@@ -154,25 +164,45 @@
         document.getElementById('txtMeta').innerText = "R$ " + metaM.toLocaleString();
         document.getElementById('selecaoMes').value = appData.mesAtivo;
 
+        // Variáveis de Vendas
         let bruto = 0, vales = 0, mM = 0, mF = 0, mS = 0, mB = 0, fS = 0, fB = 0;
+        // Variáveis de Entregas
+        let entTotal = 0, entS = 0, entB = 0, entM = 0, entF = 0;
+        
         let histMap = new Map();
         const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo).sort((a,b)=>a.ts-b.ts);
 
         vMes.forEach(v => {
             if (!v.isVale) {
                 bruto += v.valor;
+                // Lógica de Vendas Totais
                 if(v.sexo === 'Macho') { mM++; v.tipo === 'Spitz' ? mS++ : mB++; } 
                 else { mF++; v.tipo === 'Spitz' ? fS++ : fB++; }
+                
+                // Lógica de Entregues
+                if(v.entregue) {
+                    entTotal++;
+                    v.tipo === 'Spitz' ? entS++ : entB++;
+                    v.sexo === 'Macho' ? entM++ : entF++;
+                }
+
                 let dia = v.data.substring(0,5);
                 histMap.set(dia, (histMap.get(dia) || 0) + v.valor);
             } else { vales += v.valor; }
         });
 
+        // Atualiza UI Vendas Totais
         document.getElementById('totBruto').innerText = "R$ " + bruto.toLocaleString();
         document.getElementById('countMachos').innerText = mM;
         document.getElementById('subMachos').innerText = `${mS} Spitz | ${mB} Bengal`;
         document.getElementById('countFemeas').innerText = mF;
         document.getElementById('subFemeas').innerText = `${fS} Spitz | ${fB} Bengal`;
+
+        // Atualiza UI Entregas
+        document.getElementById('entreguesRaca').innerText = entTotal;
+        document.getElementById('subEntreguesRaca').innerText = `${entS} Spitz | ${entB} Bengal`;
+        document.getElementById('entreguesSexo').innerText = entTotal;
+        document.getElementById('subEntreguesSexo').innerText = `${entM} Machos | ${entF} Fêmeas`;
         
         let com = bruto * 0.03;
         document.getElementById('totComissao').innerText = "R$ " + com.toLocaleString();
@@ -226,9 +256,15 @@
             <p class="total-final">💰 Líquido a Receber: R$ ${(2000 + com - vales).toLocaleString()}</p>
         </div>`);
         
-        win.document.write('<table><thead><tr><th>Data</th><th>Cliente/Descrição</th><th>Raça/Sexo</th><th>Valor</th></tr></thead><tbody>');
+        win.document.write('<table><thead><tr><th>Data</th><th>Cliente/Descrição</th><th>Raça/Sexo</th><th>Status</th><th>Valor</th></tr></thead><tbody>');
         vMes.forEach(v => {
-            win.document.write(`<tr><td>${v.data.substring(0,5)}</td><td>${v.cliente}</td><td>${v.isVale ? 'VALE' : v.tipo + ' ' + v.sexo}</td><td class="${v.isVale ? 'vale' : ''}">${v.isVale ? '-' : ''} R$ ${v.valor.toLocaleString()}</td></tr>`);
+            win.document.write(`<tr>
+                <td>${v.data.substring(0,5)}</td>
+                <td>${v.cliente}</td>
+                <td>${v.isVale ? 'VALE' : v.tipo + ' ' + v.sexo}</td>
+                <td>${v.isVale ? '-' : (v.entregue ? 'Entregue' : 'Pendente')}</td>
+                <td class="${v.isVale ? 'vale' : ''}">${v.isVale ? '-' : ''} R$ ${v.valor.toLocaleString()}</td>
+            </tr>`);
         });
         win.document.write('</tbody></table></body></html>');
         win.document.close();
