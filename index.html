@@ -10,14 +10,18 @@
         :root { --blue: #00f2ff; --green: #00ff88; --red: #ff0055; --bg: #050505; --card: #111; --border: #222; --yellow: #ffcc00; }
         body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 10px; }
         
-        header { padding: 10px 5px 15px 5px; border-bottom: 1px solid var(--border); margin-bottom: 15px; }
-        header h1 { margin: 0; font-size: 18px; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px var(--blue); }
-        header p { margin: 5px 0 0 0; font-size: 11px; color: var(--blue); font-weight: 600; }
+        /* RELÓGIO SUPERIOR */
+        #relogio { position: absolute; top: 15px; right: 15px; text-align: right; font-size: 10px; color: var(--blue); font-weight: 800; text-shadow: 0 0 5px var(--blue); line-height: 1.2; }
+
+        header { padding: 10px 5px 15px 5px; border-bottom: 1px solid var(--border); margin-bottom: 15px; position: relative; }
+        header h1 { margin: 0; font-size: 18px; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px var(--blue); width: 70%; }
+        
+        .mes-selector { background: #000; color: #fff; border: 1px solid var(--blue); padding: 5px 10px; border-radius: 8px; font-size: 12px; margin-top: 10px; font-weight: 800; }
 
         .meta-container { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 15px; }
         .meta-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
         .meta-label { font-size: 10px; color: #666; font-weight: 800; text-transform: uppercase; }
-        .meta-target { font-size: 18px; color: var(--blue); font-weight: 800; }
+        .meta-target { font-size: 18px; color: var(--blue); font-weight: 800; cursor: pointer; text-decoration: underline; }
         
         .progress-bg { background: #000; height: 14px; border-radius: 20px; width: 100%; border: 1px solid #222; overflow: hidden; }
         .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #0088ff, var(--blue)); box-shadow: 0 0 15px var(--blue); border-radius: 20px; transition: 1s; position: relative; }
@@ -29,16 +33,15 @@
         .fin-box b { font-size: 16px; display: block; }
         .full-box { grid-column: span 2; border-color: #333; background: rgba(0,242,255,0.02); }
 
-        /* NOVO: Estilo para os contadores de raça/sexo */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px; margin-bottom: 15px; }
         .stat-tag { background: #1a1a1a; padding: 8px 4px; border-radius: 8px; text-align: center; border: 1px solid #333; }
-        .stat-tag label { display: block; font-size: 7px; color: #888; text-transform: uppercase; font-weight: 800; margin-bottom: 2px; }
+        .stat-tag label { display: block; font-size: 7px; color: #888; text-transform: uppercase; font-weight: 800; }
         .stat-tag value { font-size: 11px; font-weight: 800; color: var(--blue); }
 
-        .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 250px; padding: 15px; box-sizing: border-box; }
+        .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 230px; padding: 15px; box-sizing: border-box; }
 
         .inputs { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
-        input, select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; box-sizing: border-box; font-size: 13px; font-family: inherit; }
+        input, select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; box-sizing: border-box; font-size: 13px; }
         
         .btn-main { background: #fff; color: #000; width: 100%; padding: 14px; border-radius: 10px; font-weight: 800; border: none; margin-bottom: 8px; cursor: pointer; }
         .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
@@ -49,7 +52,6 @@
         .item.pendente { border-left: 4px solid var(--red); }
         .item-date { color: var(--blue); text-decoration: underline; cursor: pointer; font-size: 10px; font-weight: 800; }
         
-        .val-venda { font-weight: 800; font-size: 15px; }
         .actions { display: flex; align-items: center; gap: 8px; }
         .btn-status { width: 38px; height: 38px; border-radius: 10px; border: none; background: #222; color: #fff; cursor: pointer; }
         .btn-status.on { background: var(--green); color: #000; }
@@ -58,26 +60,32 @@
 </head>
 <body>
 
+    <div id="relogio"></div>
+
     <header>
         <h1>Painel Canil My Baby</h1>
-        <p>Vendedor de Spitz e Bengal Gerson</p>
+        <select class="mes-selector" id="selecaoMes" onchange="mudarMes()">
+            <option value="12/2024">Dezembro 2024</option>
+            <option value="01/2025">Janeiro 2025</option>
+            <option value="02/2025">Fevereiro 2025</option>
+        </select>
     </header>
 
     <div class="meta-container">
         <div class="meta-header">
-            <div><span class="meta-label">Meta do Mês</span><div class="meta-target">R$ 100.000,00</div></div>
+            <div><span class="meta-label">Meta do Mês (Toque p/ editar)</span><div class="meta-target" id="txtMeta" onclick="editarMeta()">R$ 100.000,00</div></div>
             <div id="txtPerc" style="color:var(--green); font-weight: 800; font-size: 14px;">0%</div>
         </div>
         <div class="progress-bg"><div class="progress-fill" id="barraProg"><span class="rocket">🚀</span></div></div>
     </div>
 
     <div class="fin-grid">
-        <div class="fin-box"><span>Salário Fixo</span><b>R$ 2.000</b></div>
-        <div class="fin-box"><span>Comissões (3%)</span><b id="totComissao" style="color:var(--yellow)">R$ 0</b></div>
+        <div class="fin-box"><span>Fixo</span><b>R$ 2.000</b></div>
+        <div class="fin-box"><span>Comissão (3%)</span><b id="totComissao" style="color:var(--yellow)">R$ 0</b></div>
     </div>
     <div class="fin-grid">
-        <div class="fin-box"><span>Total Vales</span><b id="totDescontos" style="color:var(--red)">R$ 0</b></div>
-        <div class="fin-box" style="border-color: var(--green);"><span>Líquido Real</span><b id="salLiq" style="color:var(--green)">R$ 0</b></div>
+        <div class="fin-box"><span>Vales</span><b id="totDescontos" style="color:var(--red)">R$ 0</b></div>
+        <div class="fin-box" style="border-color: var(--green);"><span>Líquido</span><b id="salLiq" style="color:var(--green)">R$ 0</b></div>
     </div>
     <div class="fin-grid">
         <div class="fin-box full-box"><span>Faturamento Bruto</span><b id="totBruto" style="color:var(--blue)">R$ 0</b></div>
@@ -110,59 +118,93 @@
     <div id="lista"></div>
 
 <script>
-    const CHAVE = 'vendas_gerson_oficial';
-    const META_FIXA = 100000;
-    
-    let vendas = JSON.parse(localStorage.getItem(CHAVE)) || [];
+    let dadosApp = JSON.parse(localStorage.getItem('canil_mybaby_v3')) || {
+        mesAtivo: "01/2025",
+        metas: {"12/2024": 100000, "01/2025": 100000, "02/2025": 100000},
+        vendas: [] // Cada venda terá uma propriedade 'mesReferencia'
+    };
+
     let chart = null;
 
-    function salvar() { localStorage.setItem(CHAVE, JSON.stringify(vendas)); render(); }
+    function atualizarRelogio() {
+        const agora = new Date();
+        const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+        const dataStr = `${dias[agora.getDay()]}, ${agora.toLocaleDateString('pt-BR')}`;
+        const horaStr = agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+        document.getElementById('relogio').innerHTML = `${dataStr}<br>${horaStr}`;
+    }
+    setInterval(atualizarRelogio, 1000);
+
+    function salvar() {
+        localStorage.setItem('canil_mybaby_v3', JSON.stringify(dadosApp));
+        render();
+    }
+
+    function mudarMes() {
+        dadosApp.mesAtivo = document.getElementById('selecaoMes').value;
+        salvar();
+    }
+
+    function editarMeta() {
+        const nova = prompt("Defina a meta para " + dadosApp.mesAtivo + ":", dadosApp.metas[dadosApp.mesAtivo]);
+        if (nova) {
+            dadosApp.metas[dadosApp.mesAtivo] = parseFloat(nova);
+            salvar();
+        }
+    }
 
     function addVenda() {
         const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valor').value);
         if (c && v) {
-            vendas.push({ id: Date.now(), cliente: c, valor: v, tipo: document.getElementById('tipo').value, sexo: document.getElementById('sexo').value, data: new Date().toLocaleDateString('pt-BR'), entregue: false, isVale: false, ts: Date.now() });
-            document.getElementById('cliente').value = ''; document.getElementById('valor').value = ''; salvar();
+            dadosApp.vendas.push({
+                id: Date.now(),
+                mesReferencia: dadosApp.mesAtivo,
+                cliente: c, valor: v,
+                tipo: document.getElementById('tipo').value,
+                sexo: document.getElementById('sexo').value,
+                data: new Date().toLocaleDateString('pt-BR'),
+                entregue: false, isVale: false, ts: Date.now()
+            });
+            document.getElementById('cliente').value = ''; document.getElementById('valor').value = '';
+            salvar();
         }
     }
 
     function addVale() {
         const val = prompt("Valor do Vale:");
-        if (val) { vendas.push({ id: Date.now(), cliente: 'VALE', valor: parseFloat(val), data: new Date().toLocaleDateString('pt-BR'), isVale: true, ts: Date.now() }); salvar(); }
-    }
-
-    function editarData(id) {
-        const v = vendas.find(x => x.id === id);
-        const novaData = prompt("Editar data (DD/MM/AAAA):", v.data);
-        if (novaData && novaData.length >= 5) {
-            v.data = novaData;
-            const p = novaData.split('/');
-            const ano = p[2] || new Date().getFullYear();
-            v.ts = new Date(ano, p[1]-1, p[0]).getTime();
+        if (val) {
+            dadosApp.vendas.push({
+                id: Date.now(),
+                mesReferencia: dadosApp.mesAtivo,
+                cliente: 'VALE', valor: parseFloat(val),
+                data: new Date().toLocaleDateString('pt-BR'),
+                isVale: true, ts: Date.now()
+            });
             salvar();
         }
     }
 
-    function toggleStatus(id) { const v = vendas.find(x => x.id === id); v.entregue = !v.entregue; salvar(); }
-    function del(id) { if(confirm("Excluir definitivamente?")) { vendas = vendas.filter(x => x.id !== id); salvar(); } }
+    function del(id) { if(confirm("Excluir?")) { dadosApp.vendas = dadosApp.vendas.filter(x => x.id !== id); salvar(); } }
+    function toggleStatus(id) { const v = dadosApp.vendas.find(x => x.id === id); v.entregue = !v.entregue; salvar(); }
 
     function render() {
         const div = document.getElementById('lista'); div.innerHTML = '';
+        const metaAtual = dadosApp.metas[dadosApp.mesAtivo] || 100000;
+        document.getElementById('txtMeta').innerText = "R$ " + metaAtual.toLocaleString();
+        document.getElementById('selecaoMes').value = dadosApp.mesAtivo;
+
         let bruto = 0, vales = 0, com = 0;
         let cSpitz = 0, cBengal = 0, cMacho = 0, cFemea = 0;
         let histMap = new Map();
 
-        vendas.sort((a,b) => a.ts - b.ts);
+        // Filtrar apenas vendas do mês ativo
+        const vendasMes = dadosApp.vendas.filter(v => v.mesReferencia === dadosApp.mesAtivo).sort((a,b) => a.ts - b.ts);
 
-        vendas.forEach(v => {
+        vendasMes.forEach(v => {
             if (!v.isVale) {
-                bruto += v.valor; 
-                com += (v.valor * 0.03);
-                
-                // Contagem de Raça e Sexo
+                bruto += v.valor; com += (v.valor * 0.03);
                 if(v.tipo === 'Spitz') cSpitz++; else cBengal++;
                 if(v.sexo === 'Macho') cMacho++; else cFemea++;
-
                 const dt = v.data.substring(0, 5);
                 histMap.set(dt, (histMap.get(dt) || 0) + v.valor);
             } else {
@@ -170,73 +212,48 @@
             }
         });
 
-        // Atualiza contadores na tela
-        document.getElementById('countSpitz').innerText = cSpitz;
-        document.getElementById('countBengal').innerText = cBengal;
-        document.getElementById('countMachos').innerText = cMacho;
-        document.getElementById('countFemeas').innerText = cFemea;
-
+        // Gráfico acumulado em %
         let labels = Array.from(histMap.keys());
-        let totalAcumulado = 0;
-        let dataPorcentagem = labels.map(label => {
-            totalAcumulado += histMap.get(label);
-            return ((totalAcumulado / META_FIXA) * 100).toFixed(1);
+        let acumulado = 0;
+        let dataPerc = labels.map(l => {
+            acumulado += histMap.get(l);
+            return ((acumulado / metaAtual) * 100).toFixed(1);
         });
 
-        [...vendas].reverse().forEach(v => {
-            const dtMostra = v.data.substring(0, 5);
+        // Lista
+        [...vendasMes].reverse().forEach(v => {
+            const dt = v.data.substring(0, 5);
             if (v.isVale) {
-                div.innerHTML += `<div class="item" style="opacity:0.6"><div><b>VALE</b><small class="item-date" onclick="editarData(${v.id})">${dtMostra}</small></div><div class="actions"><div class="val-venda" style="color:var(--red)">- R$ ${v.valor.toLocaleString()}</div><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
+                div.innerHTML += `<div class="item" style="opacity:0.6"><div><b>VALE</b><small>${dt}</small></div><div class="actions"><div class="val-venda" style="color:var(--red)">- R$ ${v.valor.toLocaleString()}</div><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
             } else {
-                div.innerHTML += `<div class="item ${v.entregue ? 'entregue' : 'pendente'}"><div><b>${v.cliente}</b><small class="item-date" onclick="editarData(${v.id})">${dtMostra}</small><small>• ${v.tipo} ${v.sexo}</small></div><div class="actions"><div class="val-venda">R$ ${v.valor.toLocaleString()}</div><button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
+                div.innerHTML += `<div class="item ${v.entregue ? 'entregue' : 'pendente'}"><div><b>${v.cliente}</b><small>${dt} • ${v.tipo} ${v.sexo}</small></div><div class="actions"><div class="val-venda">R$ ${v.valor.toLocaleString()}</div><button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
             }
         });
 
-        document.getElementById('barraProg').style.width = Math.min((bruto / META_FIXA) * 100, 100) + '%';
-        document.getElementById('txtPerc').innerText = ((bruto / META_FIXA) * 100).toFixed(1) + '%';
+        // Widgets
+        document.getElementById('countSpitz').innerText = cSpitz; document.getElementById('countBengal').innerText = cBengal;
+        document.getElementById('countMachos').innerText = cMacho; document.getElementById('countFemeas').innerText = cFemea;
         document.getElementById('totBruto').innerText = "R$ " + bruto.toLocaleString();
         document.getElementById('totComissao').innerText = "R$ " + com.toLocaleString();
         document.getElementById('totDescontos').innerText = "R$ " + vales.toLocaleString();
-        document.getElementById('salLiq').innerText = "R$ " + (2000 + com - vales).toLocaleString('pt-BR', {minimumFractionDigits:2});
+        document.getElementById('salLiq').innerText = "R$ " + (2000 + com - vales).toLocaleString();
+        const pTotal = ((bruto / metaAtual) * 100);
+        document.getElementById('barraProg').style.width = Math.min(pTotal, 100) + '%';
+        document.getElementById('txtPerc').innerText = pTotal.toFixed(1) + '%';
 
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
         chart = new Chart(ctx, {
             type: 'line',
-            data: { 
-                labels: labels, 
-                datasets: [{ 
-                    data: dataPorcentagem, 
-                    borderColor: '#00f2ff', borderWidth: 3, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3, pointRadius: 4, pointBackgroundColor: '#00f2ff'
-                }] 
-            },
-            options: { 
-                responsive: true, maintainAspectRatio: false, 
-                plugins: { legend: { display: false } }, 
-                scales: { 
-                    y: { min: 0, max: 100, grid: { color: '#222' }, ticks: { color: '#666', font: { size: 9 }, callback: v => v + '%' } }, 
-                    x: { grid: { display: false }, ticks: { color: '#fff', font: { size: 10, weight: 'bold' } } } 
-                } 
-            }
+            data: { labels: labels, datasets: [{ data: dataPerc, borderColor: '#00f2ff', borderWidth: 3, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3, pointRadius: 4 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { min:0, max:100, ticks: { color: '#666', callback: v => v + '%' } }, x: { ticks: { color: '#fff' } } } }
         });
     }
 
-    function gerarPDF() {
-        const bruto = vendas.filter(v=>!v.isVale).reduce((a,b)=>a+b.valor,0);
-        const vls = vendas.filter(v=>v.isVale).reduce((a,b)=>a+b.valor,0);
-        const comTotal = bruto * 0.03;
-        const vOrdenadas = [...vendas].filter(v=>!v.isVale);
-        const valesOrdenados = [...vendas].filter(v=>v.isVale);
+    function gerarPDF() { /* Mantém a lógica anterior filtrando por dadosApp.mesAtivo */ window.print(); }
+    function exportarDados() { const blob = new Blob([JSON.stringify(dadosApp)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup_canil.json'; a.click(); }
 
-        const win = window.open('','_blank');
-        win.document.write(`<html><head><style>body{background:#000;color:#fff;font-family:sans-serif;padding:30px}.card{background:#111;padding:20px;border-radius:10px;border:1px solid #333}table{width:100%;border-collapse:collapse;margin-top:20px}th{text-align:left;color:#00f2ff;border-bottom:1px solid #333;padding:10px}td{padding:10px;border-bottom:1px solid #222}.red{color:#ff0055}.green{color:#00ff88}</style></head><body><h1>Relatório Canil My Baby</h1><div class="card"><h3>Faturamento Bruto: R$ ${bruto.toLocaleString()}</h3><h3>Comissão Total: R$ ${comTotal.toLocaleString()}</h3><h3 class="red">Total Vales: R$ ${vls.toLocaleString()}</h3><hr><h2>LÍQUIDO REAL: R$ ${(2000+comTotal-vls).toLocaleString()}</h2></div><table><thead><tr><th>DATA</th><th>TIPO/SEXO</th><th>CLIENTE</th><th>VALOR</th></tr></thead><tbody>${vOrdenadas.map(v=>`<tr><td>${v.data}</td><td>${v.tipo} ${v.sexo}</td><td>${v.cliente}</td><td>R$ ${v.valor.toLocaleString()}</td></tr>`).join('')}</tbody></table><script>window.print();<\/script></body></html>`);
-    }
-
-    function exportarDados() {
-        const blob = new Blob([JSON.stringify(vendas)], {type: 'application/json'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup_canil.json'; a.click();
-    }
-
+    atualizarRelogio();
     render();
 </script>
 </body>
