@@ -16,7 +16,6 @@
         .mes-selector { background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 8px; border-radius: 8px; font-size: 13px; margin-top: 12px; font-weight: 800; width: 100%; outline: none; }
         .meta-container { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 15px; }
         .meta-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
-        .meta-label { font-size: 10px; color: #666; font-weight: 800; text-transform: uppercase; }
         .meta-target { font-size: 18px; color: var(--blue); font-weight: 800; cursor: pointer; text-decoration: underline; }
         .progress-bg { background: #000; height: 14px; border-radius: 20px; width: 100%; border: 1px solid #222; overflow: hidden; }
         .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #0088ff, var(--blue)); box-shadow: 0 0 15px var(--blue); border-radius: 20px; transition: 1s; position: relative; }
@@ -26,13 +25,13 @@
         .fin-box span { font-size: 8px; color: #666; font-weight: 700; display: block; margin-bottom: 3px; text-transform: uppercase; }
         .fin-box b { font-size: 16px; display: block; }
         .full-box { grid-column: span 2; border-color: #333; background: rgba(0,242,255,0.02); }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
         .stat-tag { background: #1a1a1a; padding: 12px; border-radius: 12px; border: 1px solid #333; }
-        .stat-tag.delivery-tag { border-color: var(--green); background: rgba(0, 255, 136, 0.03); }
+        .stat-tag.delivery-box { border-color: var(--green); background: rgba(0, 255, 136, 0.05); }
         .stat-tag label { display: block; font-size: 9px; color: var(--blue); text-transform: uppercase; font-weight: 800; margin-bottom: 4px; }
-        .stat-tag.delivery-tag label { color: var(--green); }
-        .stat-tag value { font-size: 13px; font-weight: 800; color: #fff; display: block; }
-        .stat-tag small { font-size: 10px; color: #888; font-weight: 600; display: block; }
+        .stat-tag.delivery-box label { color: var(--green); }
+        .stat-tag value { font-size: 14px; font-weight: 800; color: #fff; display: block; }
+        .stat-tag small { font-size: 10px; color: #888; font-weight: 600; display: block; line-height: 1.3; }
         .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 230px; padding: 15px; box-sizing: border-box; }
         .inputs { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
         input, select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; box-sizing: border-box; font-size: 13px; font-family: inherit; }
@@ -40,7 +39,6 @@
         .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
         .btn-sec { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 10px; border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
         .item { background: var(--card); padding: 14px; border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .actions { display: flex; align-items: center; gap: 8px; }
         .btn-status { width: 38px; height: 38px; border-radius: 10px; border: none; background: #222; color: #fff; font-size: 16px; }
         .btn-status.on { background: var(--green); color: #000; }
         .btn-del { background: none; border: none; color: #444; font-size: 16px; cursor: pointer; }
@@ -62,44 +60,44 @@
 
     <div class="meta-container">
         <div class="meta-header">
-            <div><span class="meta-label">🎯 Meta do Mês</span><div class="meta-target" id="txtMeta" onclick="editarMeta()">R$ 100.000,00</div></div>
+            <div><span style="font-size:10px; color:#666; font-weight:800">🎯 META</span><div class="meta-target" id="txtMeta" onclick="editarMeta()">R$ 100.000,00</div></div>
             <div id="txtPerc" style="color:var(--green); font-weight: 800; font-size: 14px;">0%</div>
         </div>
         <div class="progress-bg"><div class="progress-fill" id="barraProg"><span class="rocket">🚀</span></div></div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-tag">
+            <label>🐕 Total Spitz</label>
+            <value id="vTotSpitz">0</value>
+            <small id="vSubSpitz">0 Machos | 0 Fêmeas</small>
+        </div>
+        <div class="stat-tag">
+            <label>🐈 Total Bengal</label>
+            <value id="vTotBengal">0</value>
+            <small id="vSubBengal">0 Machos | 0 Fêmeas</small>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-tag delivery-box">
+            <label>🚚 Spitz Entregues</label>
+            <value id="eTotSpitz">0</value>
+            <small id="eSubSpitz">0 Machos | 0 Fêmeas</small>
+        </div>
+        <div class="stat-tag delivery-box">
+            <label>🚚 Bengal Entregues</label>
+            <value id="eTotBengal">0</value>
+            <small id="eSubBengal">0 Machos | 0 Fêmeas</small>
+        </div>
     </div>
 
     <div class="fin-grid">
         <div class="fin-box full-box"><span>💵 Faturamento Bruto</span><b id="totBruto" style="color:var(--blue)">R$ 0</b></div>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-tag">
-            <label>♂ Total Machos</label>
-            <value id="countMachos">0</value>
-            <small id="subMachos">0 Spitz | 0 Bengal</small>
-        </div>
-        <div class="stat-tag">
-            <label>♀ Total Fêmeas</label>
-            <value id="countFemeas">0</value>
-            <small id="subFemeas">0 Spitz | 0 Bengal</small>
-        </div>
-    </div>
-
-    <div class="stats-grid">
-        <div class="stat-tag delivery-tag">
-            <label>🚚 Já Entregues (Raças)</label>
-            <value id="entreguesRaca">0</value>
-            <small id="subEntreguesRaca">0 Spitz | 0 Bengal</small>
-        </div>
-        <div class="stat-tag delivery-tag">
-            <label>🚚 Já Entregues (Sexo)</label>
-            <value id="entreguesSexo">0</value>
-            <small id="subEntreguesSexo">0 Machos | 0 Fêmeas</small>
-        </div>
-    </div>
-
     <div class="fin-grid">
-        <div class="fin-box"><span>💰 Comissão (3%)</span><b id="totComissao" style="color:var(--yellow)">R$ 0</b></div>
+        <div class="fin-box"><span>💰 Comis. (3%)</span><b id="totComissao" style="color:var(--yellow)">R$ 0</b></div>
         <div class="fin-box"><span>💸 Vales</span><b id="totDescontos" style="color:var(--red)">R$ 0</b></div>
     </div>
     <div class="fin-grid">
@@ -164,26 +162,25 @@
         document.getElementById('txtMeta').innerText = "R$ " + metaM.toLocaleString();
         document.getElementById('selecaoMes').value = appData.mesAtivo;
 
-        // Variáveis de Vendas
-        let bruto = 0, vales = 0, mM = 0, mF = 0, mS = 0, mB = 0, fS = 0, fB = 0;
-        // Variáveis de Entregas
-        let entTotal = 0, entS = 0, entB = 0, entM = 0, entF = 0;
-        
+        // Contadores Detalhados
+        let bruto = 0, vales = 0;
+        let vS_M = 0, vS_F = 0, vB_M = 0, vB_F = 0; // Vendas totais
+        let eS_M = 0, eS_F = 0, eB_M = 0, eB_F = 0; // Entregues
+
         let histMap = new Map();
         const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo).sort((a,b)=>a.ts-b.ts);
 
         vMes.forEach(v => {
             if (!v.isVale) {
                 bruto += v.valor;
-                // Lógica de Vendas Totais
-                if(v.sexo === 'Macho') { mM++; v.tipo === 'Spitz' ? mS++ : mB++; } 
-                else { mF++; v.tipo === 'Spitz' ? fS++ : fB++; }
-                
-                // Lógica de Entregues
+                // Contagem Vendas Totais
+                if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? vS_M++ : vS_F++; }
+                else { v.sexo === 'Macho' ? vB_M++ : vB_F++; }
+
+                // Contagem Entregues
                 if(v.entregue) {
-                    entTotal++;
-                    v.tipo === 'Spitz' ? entS++ : entB++;
-                    v.sexo === 'Macho' ? entM++ : entF++;
+                    if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? eS_M++ : eS_F++; }
+                    else { v.sexo === 'Macho' ? eB_M++ : eB_F++; }
                 }
 
                 let dia = v.data.substring(0,5);
@@ -191,19 +188,19 @@
             } else { vales += v.valor; }
         });
 
-        // Atualiza UI Vendas Totais
-        document.getElementById('totBruto').innerText = "R$ " + bruto.toLocaleString();
-        document.getElementById('countMachos').innerText = mM;
-        document.getElementById('subMachos').innerText = `${mS} Spitz | ${mB} Bengal`;
-        document.getElementById('countFemeas').innerText = mF;
-        document.getElementById('subFemeas').innerText = `${fS} Spitz | ${fB} Bengal`;
+        // Atualiza UI Vendas
+        document.getElementById('vTotSpitz').innerText = vS_M + vS_F;
+        document.getElementById('vSubSpitz').innerText = `${vS_M} Machos | ${vS_F} Fêmeas`;
+        document.getElementById('vTotBengal').innerText = vB_M + vB_F;
+        document.getElementById('vSubBengal').innerText = `${vB_M} Machos | ${vB_F} Fêmeas`;
 
-        // Atualiza UI Entregas
-        document.getElementById('entreguesRaca').innerText = entTotal;
-        document.getElementById('subEntreguesRaca').innerText = `${entS} Spitz | ${entB} Bengal`;
-        document.getElementById('entreguesSexo').innerText = entTotal;
-        document.getElementById('subEntreguesSexo').innerText = `${entM} Machos | ${entF} Fêmeas`;
+        // Atualiza UI Entregues
+        document.getElementById('eTotSpitz').innerText = eS_M + eS_F;
+        document.getElementById('eSubSpitz').innerText = `${eS_M} Machos | ${eS_F} Fêmeas`;
+        document.getElementById('eTotBengal').innerText = eB_M + eB_F;
+        document.getElementById('eSubBengal').innerText = `${eB_M} Machos | ${eB_F} Fêmeas`;
         
+        document.getElementById('totBruto').innerText = "R$ " + bruto.toLocaleString();
         let com = bruto * 0.03;
         document.getElementById('totComissao').innerText = "R$ " + com.toLocaleString();
         document.getElementById('totDescontos').innerText = "R$ " + vales.toLocaleString();
@@ -223,7 +220,6 @@
         let acc = 0;
         const labels = Array.from(histMap.keys());
         const dataMeta = Array.from(histMap.values()).map(v=>{acc+=v; return ((acc/metaM)*100).toFixed(1)});
-        
         chart = new Chart(ctx, {
             type: 'line',
             data: { labels: labels, datasets: [{ data: dataMeta, borderColor: '#00f2ff', borderWidth: 3, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3 }] },
@@ -236,52 +232,17 @@
         const bruto = vMes.filter(v=>!v.isVale).reduce((a,b)=>a+b.valor,0);
         const vales = vMes.filter(v=>v.isVale).reduce((a,b)=>a+b.valor,0);
         const com = bruto * 0.03;
-        
         let win = window.open('', '', 'height=700,width=900');
-        win.document.write(`<html><head><title>Relatório Gerson - My Baby</title><style>
-            body{font-family:sans-serif; padding:40px; color:#333}
-            table{width:100%; border-collapse:collapse; margin-top:20px}
-            th,td{border:1px solid #eee; padding:12px; text-align:left}
-            th{background:#f8f9fa; color:#666; font-size:11px; text-transform:uppercase}
-            .vale{color:#ff0055; font-weight:bold}
-            .resumo-topo{display:grid; grid-template-columns: 1fr 1fr; gap:20px; background:#f8f9fa; padding:20px; border-radius:10px; margin: 20px 0}
-            .resumo-topo p{margin:5px 0; font-size:14px}
-            .total-final{font-size:18px; font-weight:bold; color:green; grid-column: span 2; border-top:1px solid #ccc; padding-top:10px}
-        </style></head><body>`);
-        
-        win.document.write(`<h1>Relatório Canil My Baby - ${appData.mesAtivo}</h1><p>Vendedor: Gerson</p>`);
-        win.document.write(`<div class="resumo-topo">
-            <div><p>Faturamento Bruto: <b>R$ ${bruto.toLocaleString()}</b></p><p>Comissão (3%): <b>R$ ${com.toLocaleString()}</b></p></div>
-            <div><p>Salário Fixo: <b>R$ 2.000,00</b></p><p class="vale">Total Vales: <b>- R$ ${vales.toLocaleString()}</b></p></div>
-            <p class="total-final">💰 Líquido a Receber: R$ ${(2000 + com - vales).toLocaleString()}</p>
-        </div>`);
-        
-        win.document.write('<table><thead><tr><th>Data</th><th>Cliente/Descrição</th><th>Raça/Sexo</th><th>Status</th><th>Valor</th></tr></thead><tbody>');
-        vMes.forEach(v => {
-            win.document.write(`<tr>
-                <td>${v.data.substring(0,5)}</td>
-                <td>${v.cliente}</td>
-                <td>${v.isVale ? 'VALE' : v.tipo + ' ' + v.sexo}</td>
-                <td>${v.isVale ? '-' : (v.entregue ? 'Entregue' : 'Pendente')}</td>
-                <td class="${v.isVale ? 'vale' : ''}">${v.isVale ? '-' : ''} R$ ${v.valor.toLocaleString()}</td>
-            </tr>`);
-        });
+        win.document.write(`<html><head><title>Relatório Gerson</title><style>body{font-family:sans-serif;padding:40px;color:#333}table{width:100%;border-collapse:collapse;margin-top:20px}th,td{border:1px solid #eee;padding:12px;text-align:left}th{background:#f8f9fa;font-size:11px;text-transform:uppercase}.vale{color:#ff0055;font-weight:bold}.resumo-topo{display:grid;grid-template-columns:1fr 1fr;gap:20px;background:#f8f9fa;padding:20px;border-radius:10px;margin:20px 0}.total-final{font-size:18px;font-weight:bold;color:green;grid-column:span 2;border-top:1px solid #ccc;padding-top:10px}</style></head><body>`);
+        win.document.write(`<h1>Relatório My Baby - ${appData.mesAtivo}</h1><p>Vendedor: Gerson</p><div class="resumo-topo"><div><p>Faturamento Bruto: <b>R$ ${bruto.toLocaleString()}</b></p><p>Comissão (3%): <b>R$ ${com.toLocaleString()}</b></p></div><div><p>Salário Fixo: <b>R$ 2.000,00</b></p><p class="vale">Total Vales: <b>- R$ ${vales.toLocaleString()}</b></p></div><p class="total-final">💰 Líquido a Receber: R$ ${(2000 + com - vales).toLocaleString()}</p></div><table><thead><tr><th>Data</th><th>Cliente</th><th>Raça/Sexo</th><th>Status</th><th>Valor</th></tr></thead><tbody>`);
+        vMes.forEach(v => { win.document.write(`<tr><td>${v.data.substring(0,5)}</td><td>${v.cliente}</td><td>${v.isVale ? 'VALE' : v.tipo + ' ' + v.sexo}</td><td>${v.isVale ? '-' : (v.entregue ? 'Entregue' : 'Pendente')}</td><td class="${v.isVale ? 'vale' : ''}">${v.isVale ? '-' : ''} R$ ${v.valor.toLocaleString()}</td></tr>`); });
         win.document.write('</tbody></table></body></html>');
-        win.document.close();
-        setTimeout(() => { win.print(); }, 500);
+        win.document.close(); setTimeout(() => { win.print(); }, 500);
     }
 
-    function exportarDados() { 
-        const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'});
-        const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup_canil_2026.json'; a.click(); 
-    }
-
+    function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup_canil_2026.json'; a.click(); }
     render();
-    setInterval(() => {
-        const agora = new Date();
-        const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-        document.getElementById('relogio').innerHTML = `${dias[agora.getDay()]}, ${agora.toLocaleDateString('pt-BR')}<br>${agora.toLocaleTimeString('pt-BR')}`;
-    }, 1000);
+    setInterval(() => { const agora = new Date(); const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']; document.getElementById('relogio').innerHTML = `${dias[agora.getDay()]}, ${agora.toLocaleDateString('pt-BR')}<br>${agora.toLocaleTimeString('pt-BR')}`; }, 1000);
 </script>
 </body>
 </html>
