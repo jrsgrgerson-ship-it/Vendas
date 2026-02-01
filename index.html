@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Painel Canil My Baby 2026 - RECUPERADO</title>
+    <title>Painel Canil My Baby 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -12,7 +12,7 @@
         #relogio { position: absolute; top: 15px; right: 15px; text-align: right; font-size: 10px; color: var(--blue); font-weight: 800; text-shadow: 0 0 5px var(--blue); line-height: 1.2; }
         header { padding: 10px 5px 15px 5px; border-bottom: 1px solid var(--border); margin-bottom: 15px; position: relative; }
         header h1 { margin: 0; font-size: 18px; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px var(--blue); width: 65%; }
-        .mes-selector { background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 8px; border-radius: 8px; font-size: 13px; margin-top: 10px; font-weight: 800; width: 100%; }
+        .mes-selector { background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 8px; border-radius: 8px; font-size: 13px; margin-top: 10px; font-weight: 800; width: 100%; outline: none; }
         .meta-container { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 15px; }
         .meta-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
         .meta-label { font-size: 10px; color: #666; font-weight: 800; text-transform: uppercase; }
@@ -51,17 +51,8 @@
         <select class="mes-selector" id="selecaoMes" onchange="mudarMes()">
             <option value="01/2026">Janeiro 2026</option>
             <option value="02/2026">Fevereiro 2026</option>
-            <option value="03/2026">Março 2026</option>
-            <option value="04/2026">Abril 2026</option>
-            <option value="05/2026">Maio 2026</option>
-            <option value="06/2026">Junho 2026</option>
-            <option value="07/2026">Julho 2026</option>
-            <option value="08/2026">Agosto 2026</option>
-            <option value="09/2026">Setembro 2026</option>
-            <option value="10/2026">Outubro 2026</option>
-            <option value="11/2026">Novembro 2026</option>
-            <option value="12/2026">Dezembro 2026</option>
-        </select>
+            <option value="03/2026" disabled>Março 2026 (Bloqueado)</option>
+            </select>
     </header>
 
     <div class="meta-container">
@@ -111,23 +102,46 @@
     <div id="lista"></div>
 
 <script>
-    // FUNÇÃO DE RECUPERAÇÃO FORÇADA
-    function getHistoricoCompleto() {
-        let v_antigas = JSON.parse(localStorage.getItem('vendas_gerson_oficial')) || 
-                       JSON.parse(localStorage.getItem('canil_mybaby_jan25')) || [];
+    // MOTOR DE RESGATE AUTOMÁTICO
+    function autoResgate() {
+        let bancoNovo = JSON.parse(localStorage.getItem('canil_2026_db')) || { mesAtivo: "02/2026", metas: {}, vendas: [] };
         
-        let db_novo = JSON.parse(localStorage.getItem('canil_2026_db'));
+        // Chaves de memória para varrer
+        const chavesAntigas = ['vendas_gerson_oficial', 'canil_mybaby_jan25', 'canil_mybaby_v3', 'vendasV12'];
+        
+        chavesAntigas.forEach(chave => {
+            let dadosEncontrados = JSON.parse(localStorage.getItem(chave));
+            if (dadosEncontrados) {
+                // Se for um array de vendas antigo
+                if (Array.isArray(dadosEncontrados)) {
+                    dadosEncontrados.forEach(v => {
+                        // Verifica se a venda já não existe no banco novo pelo ID
+                        if (!bancoNovo.vendas.some(novoV => novoV.id === v.id)) {
+                            v.mesRef = v.mesRef || "01/2026"; // Resgata como Janeiro se não tiver etiqueta
+                            bancoNovo.vendas.push(v);
+                        }
+                    });
+                } 
+                // Se for o formato de objeto v3
+                else if (dadosEncontrados.vendas) {
+                    dadosEncontrados.vendas.forEach(v => {
+                        if (!bancoNovo.vendas.some(novoV => novoV.id === v.id)) {
+                            v.mesRef = v.mesRef || "01/2026";
+                            bancoNovo.vendas.push(v);
+                        }
+                    });
+                }
+            }
+        });
 
-        // Se for a primeira vez no sistema 2026, importa tudo para Janeiro
-        if (!db_novo && v_antigas.length > 0) {
-            v_antigas.forEach(v => { if(!v.mesRef) v.mesRef = "01/2026"; });
-            return { mesAtivo: "01/2026", metas: {"01/2026": 100000}, vendas: v_antigas };
-        }
-        
-        return db_novo || { mesAtivo: "02/2026", metas: {}, vendas: [] };
+        // Garante meta de Janeiro se sumiu
+        if (!bancoNovo.metas["01/2026"]) bancoNovo.metas["01/2026"] = 100000;
+        if (!bancoNovo.metas["02/2026"]) bancoNovo.metas["02/2026"] = 100000;
+
+        return bancoNovo;
     }
 
-    let appData = getHistoricoCompleto();
+    let appData = autoResgate();
     let chart = null;
 
     function atualizarRelogio() {
@@ -138,9 +152,7 @@
     setInterval(atualizarRelogio, 1000);
 
     function salvar() { localStorage.setItem('canil_2026_db', JSON.stringify(appData)); render(); }
-
     function mudarMes() { appData.mesAtivo = document.getElementById('selecaoMes').value; salvar(); }
-
     function editarMeta() {
         let m = appData.metas[appData.mesAtivo] || 100000;
         const n = prompt("Meta para " + appData.mesAtivo + ":", m);
@@ -215,10 +227,10 @@
         });
     }
 
-    function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup_canil_final.json'; a.click(); }
+    function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup_canil_2026.json'; a.click(); }
     
     atualizarRelogio();
-    render();
+    salvar(); // Salva o resgate feito na abertura
 </script>
 </body>
 </html>
