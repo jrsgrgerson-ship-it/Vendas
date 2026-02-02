@@ -33,7 +33,7 @@
         .fin-box span { font-size: 8px; color: #666; font-weight: 700; display: block; margin-bottom: 3px; text-transform: uppercase; }
         .fin-box b { font-size: 16px; display: block; }
         .full-box { grid-column: span 2; border-color: #333; background: rgba(0,242,255,0.02); }
-        .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 250px; padding: 15px; box-sizing: border-box; }
+        .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 260px; padding: 15px; box-sizing: border-box; }
         .inputs { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
         input, select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; box-sizing: border-box; font-size: 13px; font-family: inherit; }
         .btn-main { background: #fff; color: #000; width: 100%; padding: 14px; border-radius: 10px; font-weight: 800; border: none; margin-bottom: 8px; cursor: pointer; }
@@ -110,7 +110,7 @@
     <div id="lista"></div>
 
 <script>
-    Chart.register(ChartDataLabels); // Ativa os números dentro do gráfico
+    Chart.register(ChartDataLabels);
 
     let appData = JSON.parse(localStorage.getItem('canil_2026_db')) || { mesAtivo: "02/2026", metas: {"02/2026":150000}, vendas: [] };
     let chart = null;
@@ -195,17 +195,15 @@
             div.innerHTML += `<div class="item"><div><b onclick="editarData(${v.id})" style="text-decoration:underline; cursor:pointer">${v.isVale ? '📉 VALE' : v.cliente}</b><small>${v.data.substring(0,5)} ${v.isVale ? '' : '• '+v.tipo+' '+v.sexo}</small></div><div class="actions"><div style="font-weight:800; color:${v.isVale ? 'var(--red)' : '#fff'}">${v.isVale ? '-' : ''} R$ ${v.valor.toLocaleString()}</div><button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
         });
 
-        // --- CONFIGURAÇÃO DO GRÁFICO MELHORADO ---
+        // --- GRÁFICO OTIMIZADO ---
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
         
         let acc = 0;
         const labels = Array.from(histMap.keys());
-        if(labels.length === 0) labels.push(new Date().toLocaleDateString('pt-BR').substring(0,5)); // Garante que mostre o dia atual mesmo sem venda
+        if(labels.length === 0) labels.push(new Date().toLocaleDateString('pt-BR').substring(0,5));
 
         const dataVendas = Array.from(histMap.values()).map(v=>{acc+=v; return ((acc/metaM)*100)});
-        
-        // Criar linha de projeção ideal (meta diária)
         const totalDias = 30;
         const dataProjecao = labels.map((_, index) => (100 / totalDias) * (index + 1));
 
@@ -215,22 +213,27 @@
                 labels: labels, 
                 datasets: [
                     { 
-                        label: 'Seu Progresso',
                         data: dataVendas, 
                         borderColor: '#00f2ff', 
-                        borderWidth: 4, 
+                        borderWidth: 3, 
                         fill: true, 
-                        backgroundColor: 'rgba(0, 242, 255, 0.15)', 
+                        backgroundColor: 'rgba(0, 242, 255, 0.1)', 
                         tension: 0.4,
-                        pointRadius: 6,
+                        pointRadius: 4,
                         pointBackgroundColor: '#00f2ff',
-                        datalabels: { align: 'top', color: '#00f2ff', font: { weight: 'bold', size: 12 }, formatter: (v) => v.toFixed(1) + '%' }
+                        datalabels: { 
+                            align: 'top', 
+                            offset: 5,
+                            color: '#00f2ff', 
+                            font: { weight: '800', size: 10 },
+                            formatter: (v) => Math.round(v) + '%',
+                            display: function(context) { return context.dataIndex % (labels.length > 10 ? 2 : 1) === 0; }
+                        }
                     },
                     {
-                        label: 'Meta Ideal',
                         data: dataProjecao,
-                        borderColor: 'rgba(255,255,255,0.2)',
-                        borderWidth: 2,
+                        borderColor: 'rgba(255,255,255,0.15)',
+                        borderWidth: 1,
                         borderDash: [5, 5],
                         fill: false,
                         pointRadius: 0,
@@ -241,15 +244,16 @@
             options: { 
                 responsive: true, 
                 maintainAspectRatio: false, 
+                layout: { padding: { top: 25 } },
                 plugins: { legend: { display: false } }, 
                 scales: { 
                     y: { 
-                        min:0, 
-                        max: Math.max(100, Math.ceil(Math.max(...dataVendas)/10)*10 + 10), 
-                        ticks: { color: '#666', callback: v => v + '%' },
-                        grid: { color: '#222' }
+                        min: 0, 
+                        max: Math.max(100, Math.ceil(Math.max(...dataVendas)/10)*10 + 15),
+                        ticks: { display: false },
+                        grid: { color: '#1a1a1a' }
                     }, 
-                    x: { ticks: { color: '#fff' }, grid: { display: false } } 
+                    x: { ticks: { color: '#666', font: { size: 9 } }, grid: { display: false } } 
                 } 
             }
         });
@@ -262,7 +266,7 @@
         const com = bruto * 0.03;
         let win = window.open('', '', 'height=700,width=900');
         win.document.write(`<html><head><title>Relatório Gerson</title><style>body{font-family:sans-serif;padding:40px;color:#333}table{width:100%;border-collapse:collapse;margin-top:20px}th,td{border:1px solid #eee;padding:12px;text-align:left}th{background:#f8f9fa;font-size:11px;text-transform:uppercase}.vale{color:#ff0055;font-weight:bold}.resumo-topo{display:grid;grid-template-columns:1fr 1fr;gap:20px;background:#f8f9fa;padding:20px;border-radius:10px;margin:20px 0}.total-final{font-size:18px;font-weight:bold;color:green;grid-column:span 2;border-top:1px solid #ccc;padding-top:10px}</style></head><body>`);
-        win.document.write(`<h1>Relatório Canil My Baby - ${appData.mesAtivo}</h1><p>Vendedor: Gerson</p><div class="resumo-topo"><div><p>Faturamento Bruto: <b>R$ ${bruto.toLocaleString()}</b></p><p>Comissão (3%): <b>R$ ${com.toLocaleString()}</b></p></div><div><p>Salário Fixo: <b>R$ 2.000,00</b></p><p class="vale">Total Vales: <b>- R$ ${vales.toLocaleString()}</b></p></div><p class="total-final">💰 Líquido a Receber: R$ ${(2000 + com - vales).toLocaleString()}</p></div><table><thead><tr><th>Data</th><th>Cliente</th><th>Raça/Sexo</th><th>Status</th><th>Valor</th></tr></thead><tbody>`);
+        win.document.write(`<h1>Relatório My Baby - ${appData.mesAtivo}</h1><p>Vendedor: Gerson</p><div class="resumo-topo"><div><p>Faturamento Bruto: <b>R$ ${bruto.toLocaleString()}</b></p><p>Comissão (3%): <b>R$ ${com.toLocaleString()}</b></p></div><div><p>Salário Fixo: <b>R$ 2.000,00</b></p><p class="vale">Total Vales: <b>- R$ ${vales.toLocaleString()}</b></p></div><p class="total-final">💰 Líquido a Receber: R$ ${(2000 + com - vales).toLocaleString()}</p></div><table><thead><tr><th>Data</th><th>Cliente</th><th>Raça/Sexo</th><th>Status</th><th>Valor</th></tr></thead><tbody>`);
         vMes.forEach(v => { win.document.write(`<tr><td>${v.data.substring(0,5)}</td><td>${v.cliente}</td><td>${v.isVale ? 'VALE' : v.tipo + ' ' + v.sexo}</td><td>${v.isVale ? '-' : (v.entregue ? 'Entregue' : 'Pendente')}</td><td class="${v.isVale ? 'vale' : ''}">${v.isVale ? '-' : ''} R$ ${v.valor.toLocaleString()}</td></tr>`); });
         win.document.write('</tbody></table></body></html>');
         win.document.close(); setTimeout(() => { win.print(); }, 500);
