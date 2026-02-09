@@ -10,10 +10,10 @@
     <style>
         :root { --blue: #00f2ff; --green: #00ff88; --red: #ff0055; --bg: #050505; --card: #111; --border: #222; --yellow: #ffcc00; }
         body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 10px; padding-bottom: 30px; }
-        #relogio { position: absolute; top: 15px; right: 15px; text-align: right; font-size: 10px; color: var(--blue); font-weight: 800; line-height: 1.2; }
+        #relogio { position: absolute; top: 15px; right: 15px; text-align: right; font-size: 10px; color: var(--blue); font-weight: 800; }
         header { padding: 10px 5px 15px 5px; border-bottom: 1px solid var(--border); margin-bottom: 15px; position: relative; }
-        header h1 { margin: 0; font-size: 16px; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px var(--blue); width: 70%; line-height: 1.1; }
-        .mes-selector { background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 8px; border-radius: 8px; font-size: 13px; margin-top: 12px; font-weight: 800; width: 100%; outline: none; }
+        header h1 { margin: 0; font-size: 16px; font-weight: 800; text-transform: uppercase; color: #fff; width: 70%; }
+        .mes-selector { background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 8px; border-radius: 8px; font-size: 13px; margin-top: 12px; font-weight: 800; width: 100%; }
         .meta-container { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 15px; }
         .meta-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
         .meta-target { font-size: 18px; color: var(--blue); font-weight: 800; cursor: pointer; text-decoration: underline; }
@@ -23,26 +23,25 @@
         .stat-tag { background: #1a1a1a; padding: 12px; border-radius: 12px; border: 1px solid #333; }
         .stat-tag.delivery-box { border-color: var(--green); background: rgba(0, 255, 136, 0.05); }
         .stat-tag label { display: block; font-size: 9px; color: var(--blue); text-transform: uppercase; font-weight: 800; margin-bottom: 4px; }
-        .stat-tag.delivery-box label { color: var(--green); }
         .stat-tag value { font-size: 14px; font-weight: 800; color: #fff; display: block; }
-        .stat-tag small { font-size: 10px; color: #888; font-weight: 600; display: block; line-height: 1.3; }
+        .stat-tag small { font-size: 10px; color: #888; font-weight: 600; display: block; }
         .fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
         .fin-box { background: var(--card); padding: 12px; border-radius: 14px; border: 1px solid var(--border); }
-        .fin-box span { font-size: 8px; color: #666; font-weight: 700; display: block; margin-bottom: 3px; text-transform: uppercase; }
+        .fin-box span { font-size: 8px; color: #666; font-weight: 700; display: block; text-transform: uppercase; }
         .fin-box b { font-size: 16px; display: block; }
-        .full-box { grid-column: span 2; border-color: #333; background: rgba(0,242,255,0.02); }
+        .full-box { grid-column: span 2; }
         .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 260px; padding: 15px; box-sizing: border-box; }
         .inputs { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
         .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
-        input, select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; box-sizing: border-box; font-size: 13px; font-family: inherit; }
-        .btn-main { background: #fff; color: #000; width: 100%; padding: 14px; border-radius: 10px; font-weight: 800; border: none; margin-bottom: 10px; cursor: pointer; }
+        input, select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; box-sizing: border-box; font-size: 13px; }
+        .btn-main { background: #fff; color: #000; width: 100%; padding: 14px; border-radius: 10px; font-weight: 800; border: none; cursor: pointer; margin-bottom: 10px; }
         .item { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--border); }
         .actions { display: flex; gap: 8px; margin-top: 10px; border-top: 1px solid #222; padding-top: 10px; }
-        .btn-status { flex: 2; padding: 8px; border-radius: 8px; border: none; background: #222; color: #fff; font-weight: 800; font-size: 11px; cursor: pointer; }
+        .btn-status { flex: 2; padding: 8px; border-radius: 8px; border: none; background: #222; color: #fff; font-weight: 800; font-size: 11px; }
         .btn-status.on { background: var(--green); color: #000; }
-        .btn-edit { flex: 1; background: #333; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
-        .btn-del { flex: 1; background: rgba(255,0,0,0.1); color: var(--red); border: none; border-radius: 8px; cursor: pointer; }
-        .pgto-tag { font-size: 9px; background: var(--blue); color: #000; padding: 2px 6px; border-radius: 4px; font-weight: 800; margin-left: 5px; }
+        .btn-edit { flex: 1; background: #333; color: #fff; border: none; border-radius: 8px; padding: 8px; }
+        .btn-del { flex: 1; background: rgba(255,0,0,0.1); color: var(--red); border: none; border-radius: 8px; }
+        .pgto-tag { font-size: 9px; background: var(--blue); color: #000; padding: 2px 5px; border-radius: 4px; font-weight: 800; margin-left: 5px; }
     </style>
 </head>
 <body>
@@ -50,7 +49,7 @@
     <div id="relogio"></div>
 
     <header>
-        <h1>Painel Canil My Baby 🐾</h1>
+        <h1>Painel My Baby 🐾</h1>
         <select class="mes-selector" id="selecaoMes" onchange="mudarMes()">
             <option value="01/2026">Janeiro 2026</option>
             <option value="02/2026">Fevereiro 2026</option>
@@ -60,27 +59,27 @@
 
     <div class="meta-container">
         <div class="meta-header">
-            <div><span style="font-size:10px; color:#666; font-weight:800">🎯 META</span><div class="meta-target" id="txtMeta" onclick="editarMeta()">R$ 150.000,00</div></div>
-            <div id="txtPerc" style="color:var(--green); font-weight: 800; font-size: 14px;">0%</div>
+            <div><span style="font-size:10px; color:#666; font-weight:800">🎯 META</span><div class="meta-target" id="txtMeta" onclick="editarMeta()">R$ 0</div></div>
+            <div id="txtPerc" style="color:var(--green); font-weight: 800;">0%</div>
         </div>
         <div class="progress-bg"><div class="progress-fill" id="barraProg"></div></div>
     </div>
 
     <div class="stats-grid">
-        <div class="stat-tag"><label>🐕 Total Spitz</label><value id="vTotSpitz">0</value><small id="vSubSpitz">0 M | 0 F</small></div>
-        <div class="stat-tag"><label>🐈 Total Bengal</label><value id="vTotBengal">0</value><small id="vSubBengal">0 M | 0 F</small></div>
+        <div class="stat-tag"><label>🐕 Spitz</label><value id="vTotSpitz">0</value><small id="vSubSpitz">0M | 0F</small></div>
+        <div class="stat-tag"><label>🐈 Bengal</label><value id="vTotBengal">0</value><small id="vSubBengal">0M | 0F</small></div>
     </div>
 
     <div class="stats-grid">
-        <div class="stat-tag delivery-box"><label>🚚 Spitz Entregues</label><value id="eTotSpitz">0</value><small id="eSubSpitz">0 M | 0 F</small></div>
-        <div class="stat-tag delivery-box"><label>🚚 Bengal Entregues</label><value id="eTotBengal">0</value><small id="eSubBengal">0 M | 0 F</small></div>
+        <div class="stat-tag delivery-box"><label>🚚 Entregues S.</label><value id="eTotSpitz">0</value><small id="eSubSpitz">0M | 0F</small></div>
+        <div class="stat-tag delivery-box"><label>🚚 Entregues B.</label><value id="eTotBengal">0</value><small id="eSubBengal">0M | 0F</small></div>
     </div>
 
     <div class="fin-grid">
-        <div class="fin-box full-box"><span>💵 Faturamento Filhotes</span><b id="totBruto" style="color:var(--blue)">R$ 0</b></div>
+        <div class="fin-box full-box"><span>💵 Faturamento</span><b id="totBruto" style="color:var(--blue)">R$ 0</b></div>
     </div>
     <div class="fin-grid">
-        <div class="fin-box"><span>💰 Comis. (3%)</span><b id="totComissao" style="color:var(--yellow)">R$ 0</b></div>
+        <div class="fin-box"><span>💰 Comissão</span><b id="totComissao" style="color:var(--yellow)">R$ 0</b></div>
         <div class="fin-box"><span>💸 Vales</span><b id="totDescontos" style="color:var(--red)">R$ 0</b></div>
     </div>
 
@@ -91,20 +90,20 @@
             <select id="tipo"><option value="Spitz">🐕 Spitz</option><option value="Bengal">🐈 Bengal</option></select>
             <select id="sexo"><option value="Macho">♂ Macho</option><option value="Fêmea">♀ Fêmea</option></select>
         </div>
-        <input type="text" id="cliente" placeholder="👤 Nome do Cliente">
+        <input type="text" id="cliente" placeholder="👤 Nome do Cliente" style="margin-bottom:8px">
         <div class="input-row">
             <input type="number" id="valor" placeholder="💰 Valor Filhote">
             <input type="number" id="frete" placeholder="🚚 Frete">
         </div>
         <div class="input-row">
-            <input type="text" id="previsao" placeholder="📅 Entrega (ex: 25/02)">
+            <input type="text" id="previsao" placeholder="📅 Previsão Entrega">
             <select id="pgto"><option value="PIX">💎 PIX</option><option value="Cartão">💳 Cartão</option></select>
         </div>
         <button class="btn-main" onclick="addVenda()">✅ SALVAR VENDA</button>
         <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px;">
-            <button class="btn-sec" onclick="addVale()">➖ Vale</button>
-            <button class="btn-sec" onclick="gerarPDF()">📄 PDF</button>
-            <button class="btn-sec" onclick="exportarDados()">💾 Backup</button>
+            <button class="btn-sec" style="background:#1a1a1a;color:#fff;border:1px solid #333;padding:10px;border-radius:8px;font-size:10px;" onclick="addVale()">➖ Vale</button>
+            <button class="btn-sec" style="background:#1a1a1a;color:#fff;border:1px solid #333;padding:10px;border-radius:8px;font-size:10px;" onclick="window.print()">📄 PDF</button>
+            <button class="btn-sec" style="background:#1a1a1a;color:#fff;border:1px solid #333;padding:10px;border-radius:8px;font-size:10px;" onclick="exportarDados()">💾 Backup</button>
         </div>
     </div>
 
@@ -128,53 +127,58 @@
             appData.vendas.push({
                 id: Date.now(), mesRef: appData.mesAtivo, cliente: c, valor: v,
                 frete: parseFloat(document.getElementById('frete').value) || 0,
-                previsao: document.getElementById('previsao').value,
+                previsao: document.getElementById('previsao').value || '',
                 pgto: document.getElementById('pgto').value,
                 tipo: document.getElementById('tipo').value,
                 sexo: document.getElementById('sexo').value,
                 data: new Date().toLocaleDateString('pt-BR'),
                 entregue: false, isVale: false, ts: Date.now()
             });
-            document.getElementById('cliente').value = ''; document.getElementById('valor').value = ''; salvar();
+            document.getElementById('cliente').value = ''; document.getElementById('valor').value = ''; 
+            document.getElementById('frete').value = ''; document.getElementById('previsao').value = '';
+            salvar();
         }
     }
 
     function editarVenda(id) {
         const v = appData.vendas.find(x => x.id === id);
-        if(!v.isVale) {
+        if(v && !v.isVale) {
             v.cliente = prompt("Cliente:", v.cliente) || v.cliente;
             v.valor = parseFloat(prompt("Valor Filhote:", v.valor)) || v.valor;
             v.frete = parseFloat(prompt("Frete:", v.frete)) || 0;
             v.previsao = prompt("Previsão Entrega:", v.previsao) || v.previsao;
-            v.tipo = prompt("Raça (Spitz/Bengal):", v.tipo) || v.tipo;
-            v.sexo = prompt("Sexo (Macho/Fêmea):", v.sexo) || v.sexo;
-            v.pgto = prompt("Pgto (PIX/Cartão):", v.pgto) || v.pgto;
+            v.tipo = prompt("Raça:", v.tipo) || v.tipo;
+            v.sexo = prompt("Sexo:", v.sexo) || v.sexo;
+            v.pgto = prompt("Pgto:", v.pgto) || v.pgto;
             salvar();
         }
     }
 
     function render() {
         const metaM = appData.metas[appData.mesAtivo] || 150000;
-        let bruto = 0, vales = 0, comissaoTotal = 0;
+        document.getElementById('txtMeta').innerText = "R$ " + metaM.toLocaleString();
+        document.getElementById('selecaoMes').value = appData.mesAtivo;
+        
+        let bruto = 0, vales = 0, comissao = 0;
         let vS_M = 0, vS_F = 0, vB_M = 0, vB_F = 0;
         let eS_M = 0, eS_F = 0, eB_M = 0, eB_F = 0;
-        
-        let histMap = new Map();
-        const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo).sort((a,b)=>a.ts-b.ts);
+        let histMap = {};
+
+        const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo);
 
         vMes.forEach(v => {
             if (!v.isVale) {
-                bruto += v.valor;
-                comissaoTotal += (v.valor * 0.03);
+                bruto += (v.valor || 0);
+                comissao += ((v.valor || 0) * 0.03);
                 if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? vS_M++ : vS_F++; }
                 else { v.sexo === 'Macho' ? vB_M++ : vB_F++; }
                 if(v.entregue) {
                     if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? eS_M++ : eS_F++; }
                     else { v.sexo === 'Macho' ? eB_M++ : eB_F++; }
                 }
-                let dia = parseInt(v.data.substring(0,2));
-                histMap.set(dia, (histMap.get(dia) || 0) + v.valor);
-            } else { vales += v.valor; }
+                let dia = parseInt(v.data.split('/')[0]) || 1;
+                histMap[dia] = (histMap[dia] || 0) + v.valor;
+            } else { vales += (v.valor || 0); }
         });
 
         document.getElementById('vTotSpitz').innerText = vS_M + vS_F;
@@ -183,26 +187,27 @@
         document.getElementById('vSubBengal').innerText = `${vB_M}M | ${vB_F}F`;
         document.getElementById('eTotSpitz').innerText = eS_M + eS_F;
         document.getElementById('eSubSpitz').innerText = `${eS_M}M | ${eS_F}F`;
+        document.getElementById('eTotBengal').innerText = eB_M + eB_F;
+        document.getElementById('eSubBengal').innerText = `${eB_M}M | ${eB_F}F`;
         
         document.getElementById('totBruto').innerText = "R$ " + bruto.toLocaleString();
-        document.getElementById('totComissao').innerText = "R$ " + comissaoTotal.toLocaleString();
+        document.getElementById('totComissao').innerText = "R$ " + comissao.toLocaleString();
         document.getElementById('totDescontos').innerText = "R$ " + vales.toLocaleString();
-        document.getElementById('salLiq').innerText = "R$ " + (2000 + comissaoTotal - vales).toLocaleString();
         
         const perc = (bruto / metaM) * 100;
         document.getElementById('barraProg').style.width = Math.min(perc, 100) + '%';
         document.getElementById('txtPerc').innerText = perc.toFixed(1) + '%';
 
         const div = document.getElementById('lista'); div.innerHTML = '';
-        [...vMes].reverse().forEach(v => {
+        [...vMes].sort((a,b) => b.ts - a.ts).forEach(v => {
             div.innerHTML += `
                 <div class="item">
                     <div style="display:flex; justify-content:space-between">
-                        <div><b>${v.cliente} <span class="pgto-tag">${v.pgto||''}</span></b><br>
-                        <small>${v.data.substring(0,5)} • ${v.tipo} ${v.sexo}</small><br>
-                        <small style="color:var(--yellow)">Entrega: ${v.previsao || '---'}</small></div>
-                        <div style="text-align:right"><div style="font-weight:800">R$ ${(v.valor + (v.frete||0)).toLocaleString()}</div>
-                        ${v.frete > 0 ? '<small style="color:#888">Frete: R$ '+v.frete+'</small>' : ''}</div>
+                        <div><b>${v.isVale ? '📉 VALE' : v.cliente} <span class="pgto-tag">${v.pgto||''}</span></b><br>
+                        <small>${v.data.substring(0,5)} • ${v.tipo||''} ${v.sexo||''}</small><br>
+                        ${v.previsao ? '<small style="color:var(--yellow)">Entrega: '+v.previsao+'</small>' : ''}</div>
+                        <div style="text-align:right"><b>R$ ${( (v.valor||0) + (v.frete||0) ).toLocaleString()}</b>
+                        ${v.frete > 0 ? '<br><small style="color:#666">Frete: R$ '+v.frete+'</small>' : ''}</div>
                     </div>
                     <div class="actions">
                         <button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? 'ENTREGUE ✔' : 'PENDENTE 🚚'}</button>
@@ -211,7 +216,6 @@
                     </div>
                 </div>`;
         });
-
         desenharGrafico(histMap, metaM);
     }
 
@@ -219,23 +223,21 @@
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
         
-        const diasNoMes = 30;
-        let labels = [], dataProgresso = [], dataMetaDiaria = [];
+        let labels = [], dataProg = [], dataMeta = [];
         let acumulado = 0;
+        let hoje = new Date().getDate();
+        let maxDia = Math.max(...Object.keys(histMap).map(Number), hoje, 1);
+        if(maxDia < 5) maxDia = 5;
 
-        for (let i = 1; i <= diasNoMes; i++) {
+        for (let i = 1; i <= 30; i++) {
             labels.push(i);
-            if (histMap.has(i)) acumulado += histMap.get(i);
-            
-            // Só desenha a linha azul até o dia de hoje (ou último dia com venda)
-            const hoje = new Date().getDate();
-            const ultimoDiaVenda = Math.max(...histMap.keys(), 0);
-            if (i <= Math.max(hoje, ultimoDiaVenda)) {
-                dataProgresso.push((acumulado / metaM) * 100);
+            acumulado += (histMap[i] || 0);
+            if (i <= maxDia) {
+                dataProg.push((acumulado / metaM) * 100);
             } else {
-                dataProgresso.push(null);
+                dataProg.push(null);
             }
-            dataMetaDiaria.push((100 / diasNoMes) * i);
+            dataMeta.push((100 / 30) * i);
         }
 
         chart = new Chart(ctx, {
@@ -243,28 +245,11 @@
             data: { 
                 labels: labels, 
                 datasets: [
-                    { 
-                        label: 'Seu Progresso', data: dataProgresso, borderColor: '#00f2ff', borderWidth: 3, 
-                        fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3, pointRadius: 2,
-                        datalabels: { 
-                            display: (ctx) => ctx.dataIndex === dataProgresso.filter(x => x !== null).length - 1,
-                            align: 'top', color: '#00f2ff', font: { weight: '800' }, formatter: (v) => Math.round(v) + '%' 
-                        }
-                    },
-                    { 
-                        label: 'Meta Ideal', data: dataMetaDiaria, borderColor: 'rgba(255,255,255,0.1)', 
-                        borderWidth: 1, borderDash: [5, 5], fill: false, pointRadius: 0, datalabels: { display: false } 
-                    }
+                    { data: dataProg, borderColor: '#00f2ff', borderWidth: 3, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3, pointRadius: 2, datalabels: { display: (c) => c.dataIndex === maxDia-1, align: 'top', color: '#00f2ff', font: {weight:'800'}, formatter: (v)=>Math.round(v)+'%' } },
+                    { data: dataMeta, borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, borderDash: [5, 5], fill: false, pointRadius: 0, datalabels: {display: false} }
                 ] 
             },
-            options: { 
-                responsive: true, maintainAspectRatio: false,
-                scales: { 
-                    y: { min: 0, max: 110, display: false },
-                    x: { grid: { display: false }, ticks: { color: '#444', font: { size: 8 } } }
-                },
-                plugins: { legend: { display: false } }
-            }
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 110, display: false }, x: { ticks: { color: '#444', font: { size: 8 } }, grid: { display: false } } }, plugins: { legend: { display: false } } }
         });
     }
 
@@ -272,7 +257,6 @@
     function toggleStatus(id) { const v = appData.vendas.find(x => x.id === id); v.entregue = !v.entregue; salvar(); }
     function del(id) { if(confirm("Excluir?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); salvar(); } }
     function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup.json'; a.click(); }
-    function gerarPDF() { window.print(); }
 
     render();
     setInterval(() => { document.getElementById('relogio').innerHTML = new Date().toLocaleDateString('pt-BR') + '<br>' + new Date().toLocaleTimeString('pt-BR'); }, 1000);
