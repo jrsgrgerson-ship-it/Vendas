@@ -15,9 +15,6 @@
         header h1 { margin: 0; font-size: 16px; font-weight: 800; text-transform: uppercase; color: #fff; width: 75%; }
         .mes-selector { background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 10px; border-radius: 8px; font-size: 13px; margin-top: 12px; font-weight: 800; width: 100%; }
         
-        /* GRÁFICO MAIOR */
-        .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 380px; padding: 15px; box-sizing: border-box; }
-        
         .meta-container { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 15px; }
         .meta-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
         .meta-target { font-size: 18px; color: var(--blue); font-weight: 800; cursor: pointer; }
@@ -48,6 +45,9 @@
         .btn-edit { flex: 1; background: #333; color: #fff; border: none; border-radius: 8px; }
         .btn-del { flex: 1; background: rgba(255,0,0,0.1); color: var(--red); border: none; border-radius: 8px; }
         .pgto-tag { font-size: 9px; background: var(--blue); color: #000; padding: 2px 5px; border-radius: 4px; font-weight: 800; margin-left: 5px; }
+
+        /* GRÁFICO NO FINAL E AJUSTADO */
+        .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-top: 15px; height: 320px; padding: 10px; box-sizing: border-box; }
         
         @media print { .inputs, .chart-wrapper, .meta-container, header, .actions, .btn-sec, .mes-selector, #relogio { display: none !important; } 
                        body { background: white; color: black; } .item { border: 1px solid #ccc; page-break-inside: avoid; } }
@@ -66,8 +66,6 @@
         </select>
     </header>
 
-    <div class="chart-wrapper"><canvas id="graficoVendas"></canvas></div>
-
     <div class="meta-container">
         <div class="meta-header">
             <div><span style="font-size:10px; color:#666; font-weight:800">🎯 META MENSAL</span><div class="meta-target" id="txtMeta" onclick="editarMeta()">R$ 0</div></div>
@@ -77,16 +75,16 @@
     </div>
 
     <div class="fin-grid">
-        <div class="fin-box full-box"><span>💰 SALÁRIO TOTAL (FIXO + COMISSÃO - VALES)</span><b id="salLiq" style="color:var(--green); font-size: 22px;">R$ 0</b></div>
+        <div class="fin-box full-box"><span>💰 TOTAL A RECEBER (FIXO + COMISSÃO - VALES)</span><b id="salLiq" style="color:var(--green); font-size: 22px;">R$ 0</b></div>
     </div>
     <div class="fin-grid">
-        <div class="fin-box"><span>💵 Faturamento Filhotes</span><b id="totBruto" style="color:var(--blue)">R$ 0</b></div>
-        <div class="fin-box"><span>💸 Total Vales</span><b id="totDescontos" style="color:var(--red)">R$ 0</b></div>
+        <div class="fin-box"><span>💵 Bruto Filhotes</span><b id="totBruto" style="color:var(--blue)">R$ 0</b></div>
+        <div class="fin-box"><span>💸 Vales</span><b id="totDescontos" style="color:var(--red)">R$ 0</b></div>
     </div>
 
     <div class="stats-grid">
-        <div class="stat-tag"><label>🐕 Spitz</label><value id="vTotSpitz">0</value> <small id="vSubSpitz">0M | 0F</small></div>
-        <div class="stat-tag"><label>🐈 Bengal</label><value id="vTotBengal">0</value> <small id="vSubBengal">0M | 0F</small></div>
+        <div class="stat-tag"><label>🐕 Spitz</label><value id="vTotSpitz">0</value> <small id="vSubSpitz" style="color:#888; font-size:10px">0M | 0F</small></div>
+        <div class="stat-tag"><label>🐈 Bengal</label><value id="vTotBengal">0</value> <small id="vSubBengal" style="color:#888; font-size:10px">0M | 0F</small></div>
     </div>
 
     <div class="stats-grid">
@@ -110,13 +108,15 @@
         </div>
         <button class="btn-main" onclick="addVenda()">✅ SALVAR FILHOTE</button>
         <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px;">
-            <button class="btn-sec" style="background:#1a1a1a;color:#fff;border:1px solid #333;padding:12px;border-radius:8px;font-size:10px;font-weight:800;" onclick="addVale()">➖ VALE</button>
-            <button class="btn-sec" style="background:#1a1a1a;color:#fff;border:1px solid #333;padding:12px;border-radius:8px;font-size:10px;font-weight:800;" onclick="gerarPDF()">📄 PDF</button>
-            <button class="btn-sec" style="background:#1a1a1a;color:#fff;border:1px solid #333;padding:12px;border-radius:8px;font-size:10px;font-weight:800;" onclick="exportarDados()">💾 BACKUP</button>
+            <button onclick="addVale()" style="background:#1a1a1a;color:#fff;border:1px solid #333;padding:12px;border-radius:8px;font-size:10px;font-weight:800;">VALE</button>
+            <button onclick="gerarPDF()" style="background:#1a1a1a;color:#fff;border:1px solid #333;padding:12px;border-radius:8px;font-size:10px;font-weight:800;">PDF</button>
+            <button onclick="exportarDados()" style="background:#1a1a1a;color:#fff;border:1px solid #333;padding:12px;border-radius:8px;font-size:10px;font-weight:800;">BACKUP</button>
         </div>
     </div>
 
     <div id="lista"></div>
+
+    <div class="chart-wrapper"><canvas id="graficoVendas"></canvas></div>
 
 <script>
     Chart.register(ChartDataLabels);
@@ -143,30 +143,25 @@
                 data: new Date().toLocaleDateString('pt-BR'),
                 entregue: false, isVale: false, ts: Date.now()
             });
-            document.getElementById('cliente').value = ''; document.getElementById('valor').value = ''; 
-            document.getElementById('frete').value = ''; document.getElementById('previsao').value = '';
-            salvar();
+            limpar(); salvar();
         }
     }
+    function limpar() { document.getElementById('cliente').value=''; document.getElementById('valor').value=''; document.getElementById('frete').value=''; document.getElementById('previsao').value=''; }
 
     function render() {
         const metaM = appData.metas[appData.mesAtivo] || 150000;
         document.getElementById('txtMeta').innerText = "R$ " + metaM.toLocaleString();
         
         let bruto = 0, vales = 0, comissao = 0;
-        let vS_M = 0, vS_F = 0, vB_M = 0, vB_F = 0;
-        let eS = 0, eB = 0;
+        let vS_M = 0, vS_F = 0, vB_M = 0, vB_F = 0, eS = 0, eB = 0;
         let histMap = {};
 
         const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo);
-
         vMes.forEach(v => {
             if (!v.isVale) {
-                bruto += v.valor;
-                comissao += (v.valor * 0.03);
-                if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? vS_M++ : vS_F++; if(v.entregue) eS++; }
-                else { v.sexo === 'Macho' ? vB_M++ : vB_F++; if(v.entregue) eB++; }
-                
+                bruto += v.valor; comissao += (v.valor * 0.03);
+                if(v.tipo === 'Spitz') { v.sexo==='Macho'?vS_M++:vS_F++; if(v.entregue) eS++; }
+                else { v.sexo==='Macho'?vB_M++:vB_F++; if(v.entregue) eB++; }
                 let dia = parseInt(v.data.split('/')[0]) || 1;
                 histMap[dia] = (histMap[dia] || 0) + v.valor;
             } else { vales += v.valor; }
@@ -178,7 +173,6 @@
         document.getElementById('vSubBengal').innerText = `${vB_M}M | ${vB_F}F`;
         document.getElementById('eTotSpitz').innerText = eS;
         document.getElementById('eTotBengal').innerText = eB;
-        
         document.getElementById('totBruto').innerText = "R$ " + bruto.toLocaleString();
         document.getElementById('totDescontos').innerText = "R$ " + vales.toLocaleString();
         document.getElementById('salLiq').innerText = "R$ " + (2000 + comissao - vales).toLocaleString();
@@ -189,21 +183,18 @@
 
         const div = document.getElementById('lista'); div.innerHTML = '';
         [...vMes].sort((a,b) => b.ts - a.ts).forEach(v => {
-            div.innerHTML += `
-                <div class="item">
-                    <div style="display:flex; justify-content:space-between">
-                        <div><b>${v.isVale ? '📉 VALE' : v.cliente} <span class="pgto-tag">${v.pgto||''}</span></b><br>
-                        <small>${v.data.substring(0,5)} • ${v.tipo||''} ${v.sexo||''}</small><br>
-                        ${v.previsao ? '<small style="color:var(--yellow)">Entrega: '+v.previsao+'</small>' : ''}</div>
-                        <div style="text-align:right"><b>R$ ${( (v.valor||0) + (v.frete||0) ).toLocaleString()}</b>
-                        ${v.frete > 0 ? '<br><small style="color:#666">Frete: R$ '+v.frete+'</small>' : ''}</div>
-                    </div>
-                    <div class="actions">
-                        <button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? 'ENTREGUE ✔' : 'PENDENTE 🚚'}</button>
-                        <button class="btn-edit" onclick="editarVenda(${v.id})">✏️</button>
-                        <button class="btn-del" onclick="del(${v.id})">🗑</button>
-                    </div>
-                </div>`;
+            div.innerHTML += `<div class="item">
+                <div style="display:flex; justify-content:space-between">
+                    <div><b>${v.isVale?'📉 VALE':v.cliente} <span class="pgto-tag">${v.pgto||''}</span></b><br>
+                    <small>${v.data.substring(0,5)} • ${v.tipo||''} ${v.sexo||''}</small></div>
+                    <div style="text-align:right"><b>R$ ${((v.valor||0)+(v.frete||0)).toLocaleString()}</b></div>
+                </div>
+                <div class="actions">
+                    <button class="btn-status ${v.entregue?'on':''}" onclick="toggleStatus(${v.id})">${v.entregue?'ENTREGUE ✔':'PENDENTE 🚚'}</button>
+                    <button class="btn-edit" onclick="editarVenda(${v.id})">✏️</button>
+                    <button class="btn-del" onclick="del(${v.id})">🗑</button>
+                </div>
+            </div>`;
         });
         desenharGrafico(histMap, metaM);
     }
@@ -212,34 +203,31 @@
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
         let labels = [], dataProg = [], dataMeta = [], acumulado = 0;
-        let hoje = new Date().getDate();
+        let maxDia = Math.max(new Date().getDate(), ...Object.keys(histMap).map(Number));
         for (let i = 1; i <= 30; i++) {
             labels.push(i);
             acumulado += (histMap[i] || 0);
-            if (i <= Math.max(hoje, ...Object.keys(histMap))) dataProg.push((acumulado / metaM) * 100);
+            if (i <= maxDia) dataProg.push((acumulado / metaM) * 100);
             else dataProg.push(null);
             dataMeta.push((100 / 30) * i);
         }
         chart = new Chart(ctx, {
             type: 'line',
             data: { labels: labels, datasets: [
-                { data: dataProg, borderColor: '#00f2ff', borderWidth: 4, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3, pointRadius: 3, datalabels: { display: (c) => c.dataset.data[c.dataIndex] !== null && c.dataIndex % 5 === 0, color: '#00f2ff', font: {weight:'800'} } },
+                { data: dataProg, borderColor: '#00f2ff', borderWidth: 3, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3, pointRadius: 2, datalabels: { display: (c) => c.dataIndex === maxDia-1, color: '#00f2ff', font: {weight:'800'}, formatter: (v)=>Math.round(v)+'%' } },
                 { data: dataMeta, borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, borderDash: [5, 5], pointRadius: 0 }
             ]},
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 110, display: false }, x: { ticks: { color: '#666' }, grid: { display: false } } }, plugins: { legend: { display: false } } }
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 110, display: false }, x: { ticks: { color: '#666', font:{size:9} }, grid: { display: false } } }, plugins: { legend: { display: false } } }
         });
     }
 
     function gerarPDF() {
-        const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo);
-        let conteudo = `<h2>Relatório Canil My Baby - ${appData.mesAtivo}</h2><table border="1" style="width:100%; border-collapse:collapse; font-size:12px;">
+        const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo && !v.isVale);
+        let t = `<h2>Relatório Canil My Baby - ${appData.mesAtivo}</h2><table border="1" style="width:100%; border-collapse:collapse; font-size:12px">
             <thead><tr><th>Data</th><th>Cliente</th><th>Raça/Sexo</th><th>Pgto</th><th>Previsão</th><th>Valor</th><th>Frete</th></tr></thead><tbody>`;
-        vMes.forEach(v => {
-            if(!v.isVale) conteudo += `<tr><td>${v.data}</td><td>${v.cliente}</td><td>${v.tipo} ${v.sexo}</td><td>${v.pgto}</td><td>${v.previsao}</td><td>R$ ${v.valor.toLocaleString()}</td><td>R$ ${v.frete.toLocaleString()}</td></tr>`;
-        });
-        conteudo += `</tbody></table>`;
+        vMes.forEach(v => { t += `<tr><td>${v.data}</td><td>${v.cliente}</td><td>${v.tipo} ${v.sexo}</td><td>${v.pgto}</td><td>${v.previsao}</td><td>R$ ${v.valor.toLocaleString()}</td><td>R$ ${v.frete.toLocaleString()}</td></tr>`; });
         const win = window.open('', '', 'height=700,width=900');
-        win.document.write(`<html><body style="font-family:sans-serif; padding:20px;">${conteudo}</body></html>`);
+        win.document.write(`<html><body style="font-family:sans-serif;padding:20px">${t}</tbody></table></body></html>`);
         win.document.close(); win.print();
     }
 
@@ -254,11 +242,10 @@
             v.valor = parseFloat(prompt("Valor Filhote:", v.valor)) || v.valor;
             v.frete = parseFloat(prompt("Frete:", v.frete)) || 0;
             v.previsao = prompt("Previsão Entrega:", v.previsao) || v.previsao;
-            v.pgto = prompt("Pgto (PIX/Cartão):", v.pgto) || v.pgto;
+            v.pgto = prompt("Pgto:", v.pgto) || v.pgto;
             salvar();
         }
     }
-
     render();
     setInterval(() => { document.getElementById('relogio').innerHTML = new Date().toLocaleDateString('pt-BR') + '<br>' + new Date().toLocaleTimeString('pt-BR'); }, 1000);
 </script>
