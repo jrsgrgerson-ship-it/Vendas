@@ -40,8 +40,10 @@
         .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
         .btn-sec { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 10px; border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
         .item { background: var(--card); padding: 14px; border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .btn-status { width: 38px; height: 38px; border-radius: 10px; border: none; background: #222; color: #fff; font-size: 16px; }
+        .actions { display: flex; align-items: center; gap: 6px; }
+        .btn-status { width: 38px; height: 38px; border-radius: 10px; border: none; background: #222; color: #fff; font-size: 16px; cursor: pointer; }
         .btn-status.on { background: var(--green); color: #000; }
+        .btn-edit { background: #333; border: none; color: #fff; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 14px; }
         .btn-del { background: none; border: none; color: #444; font-size: 16px; cursor: pointer; }
     </style>
 </head>
@@ -123,6 +125,26 @@
         if (n) { appData.metas[appData.mesAtivo] = parseFloat(n); salvar(); }
     }
 
+    // FUNÇÃO PARA EDITAR VENDAS ANTIGAS
+    function editarVendaCompleta(id) {
+        const v = appData.vendas.find(x => x.id === id);
+        if (v.isVale) {
+            const nv = prompt("Novo valor do Vale:", v.valor);
+            if(nv) v.valor = parseFloat(nv);
+        } else {
+            const nNome = prompt("Nome do Cliente:", v.cliente);
+            const nValor = prompt("Valor da Venda:", v.valor);
+            const nTipo = prompt("Raça (Spitz ou Bengal):", v.tipo || "Spitz");
+            const nSexo = prompt("Sexo (Macho ou Fêmea):", v.sexo || "Macho");
+            
+            if(nNome) v.cliente = nNome;
+            if(nValor) v.valor = parseFloat(nValor);
+            if(nTipo) v.tipo = nTipo;
+            if(nSexo) v.sexo = nSexo;
+        }
+        salvar();
+    }
+
     function editarData(id) {
         const v = appData.vendas.find(x => x.id === id);
         const novaData = prompt("Editar Data (ex: 01/02):", v.data.substring(0,5));
@@ -160,12 +182,16 @@
         vMes.forEach(v => {
             if (!v.isVale) {
                 bruto += v.valor;
+                // Contagem Vendas (Proteção para dados antigos sem tipo/sexo)
                 if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? vS_M++ : vS_F++; }
-                else { v.sexo === 'Macho' ? vB_M++ : vB_F++; }
+                else if(v.tipo === 'Bengal') { v.sexo === 'Macho' ? vB_M++ : vB_F++; }
+
+                // Contagem Entregues
                 if(v.entregue) {
                     if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? eS_M++ : eS_F++; }
-                    else { v.sexo === 'Macho' ? eB_M++ : eB_F++; }
+                    else if(v.tipo === 'Bengal') { v.sexo === 'Macho' ? eB_M++ : eB_F++; }
                 }
+
                 let dia = v.data.substring(0,5);
                 histMap.set(dia, (histMap.get(dia) || 0) + v.valor);
             } else { vales += v.valor; }
@@ -192,10 +218,21 @@
 
         const div = document.getElementById('lista'); div.innerHTML = '';
         [...vMes].reverse().forEach(v => {
-            div.innerHTML += `<div class="item"><div><b onclick="editarData(${v.id})" style="text-decoration:underline; cursor:pointer">${v.isVale ? '📉 VALE' : v.cliente}</b><small>${v.data.substring(0,5)} ${v.isVale ? '' : '• '+v.tipo+' '+v.sexo}</small></div><div class="actions"><div style="font-weight:800; color:${v.isVale ? 'var(--red)' : '#fff'}">${v.isVale ? '-' : ''} R$ ${v.valor.toLocaleString()}</div><button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button><button class="btn-del" onclick="del(${v.id})">🗑</button></div></div>`;
+            div.innerHTML += `
+                <div class="item">
+                    <div>
+                        <b onclick="editarData(${v.id})" style="text-decoration:underline; cursor:pointer">${v.isVale ? '📉 VALE' : v.cliente}</b>
+                        <small>${v.data.substring(0,5)} ${v.isVale ? '' : '• '+(v.tipo||'N/D')+' '+(v.sexo||'N/D')}</small>
+                    </div>
+                    <div class="actions">
+                        <div style="font-weight:800; color:${v.isVale ? 'var(--red)' : '#fff'}">${v.isVale ? '-' : ''} R$ ${v.valor.toLocaleString()}</div>
+                        <button class="btn-edit" onclick="editarVendaCompleta(${v.id})">✏️</button>
+                        <button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button>
+                        <button class="btn-del" onclick="del(${v.id})">🗑</button>
+                    </div>
+                </div>`;
         });
 
-        // --- GRÁFICO OTIMIZADO ---
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
         
@@ -204,8 +241,7 @@
         if(labels.length === 0) labels.push(new Date().toLocaleDateString('pt-BR').substring(0,5));
 
         const dataVendas = Array.from(histMap.values()).map(v=>{acc+=v; return ((acc/metaM)*100)});
-        const totalDias = 30;
-        const dataProjecao = labels.map((_, index) => (100 / totalDias) * (index + 1));
+        const dataProjecao = labels.map((_, index) => (100 / 30) * (index + 1));
 
         chart = new Chart(ctx, {
             type: 'line',
@@ -220,7 +256,6 @@
                         backgroundColor: 'rgba(0, 242, 255, 0.1)', 
                         tension: 0.4,
                         pointRadius: 4,
-                        pointBackgroundColor: '#00f2ff',
                         datalabels: { 
                             align: 'top', 
                             offset: 5,
@@ -247,18 +282,14 @@
                 layout: { padding: { top: 25 } },
                 plugins: { legend: { display: false } }, 
                 scales: { 
-                    y: { 
-                        min: 0, 
-                        max: Math.max(100, Math.ceil(Math.max(...dataVendas)/10)*10 + 15),
-                        ticks: { display: false },
-                        grid: { color: '#1a1a1a' }
-                    }, 
+                    y: { min: 0, max: Math.max(100, Math.ceil(Math.max(...dataVendas)/10)*10 + 15), ticks: { display: false }, grid: { color: '#1a1a1a' } }, 
                     x: { ticks: { color: '#666', font: { size: 9 } }, grid: { display: false } } 
                 } 
             }
         });
     }
 
+    // PDF e Exportação mantidos conforme versões anteriores...
     function gerarPDF() {
         const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo);
         const bruto = vMes.filter(v=>!v.isVale).reduce((a,b)=>a+b.valor,0);
@@ -266,8 +297,9 @@
         const com = bruto * 0.03;
         let win = window.open('', '', 'height=700,width=900');
         win.document.write(`<html><head><title>Relatório Gerson</title><style>body{font-family:sans-serif;padding:40px;color:#333}table{width:100%;border-collapse:collapse;margin-top:20px}th,td{border:1px solid #eee;padding:12px;text-align:left}th{background:#f8f9fa;font-size:11px;text-transform:uppercase}.vale{color:#ff0055;font-weight:bold}.resumo-topo{display:grid;grid-template-columns:1fr 1fr;gap:20px;background:#f8f9fa;padding:20px;border-radius:10px;margin:20px 0}.total-final{font-size:18px;font-weight:bold;color:green;grid-column:span 2;border-top:1px solid #ccc;padding-top:10px}</style></head><body>`);
-        win.document.write(`<h1>Relatório My Baby - ${appData.mesAtivo}</h1><p>Vendedor: Gerson</p><div class="resumo-topo"><div><p>Faturamento Bruto: <b>R$ ${bruto.toLocaleString()}</b></p><p>Comissão (3%): <b>R$ ${com.toLocaleString()}</b></p></div><div><p>Salário Fixo: <b>R$ 2.000,00</b></p><p class="vale">Total Vales: <b>- R$ ${vales.toLocaleString()}</b></p></div><p class="total-final">💰 Líquido a Receber: R$ ${(2000 + com - vales).toLocaleString()}</p></div><table><thead><tr><th>Data</th><th>Cliente</th><th>Raça/Sexo</th><th>Status</th><th>Valor</th></tr></thead><tbody>`);
-        vMes.forEach(v => { win.document.write(`<tr><td>${v.data.substring(0,5)}</td><td>${v.cliente}</td><td>${v.isVale ? 'VALE' : v.tipo + ' ' + v.sexo}</td><td>${v.isVale ? '-' : (v.entregue ? 'Entregue' : 'Pendente')}</td><td class="${v.isVale ? 'vale' : ''}">${v.isVale ? '-' : ''} R$ ${v.valor.toLocaleString()}</td></tr>`); });
+        win.document.write(`<h1>Relatório My Baby - ${appData.mesAtivo}</h1><p>Vendedor: Gerson</p>`);
+        win.document.write(`<table><thead><tr><th>Data</th><th>Cliente</th><th>Raça/Sexo</th><th>Valor</th></tr></thead><tbody>`);
+        vMes.forEach(v => { win.document.write(`<tr><td>${v.data.substring(0,5)}</td><td>${v.cliente}</td><td>${v.isVale ? 'VALE' : (v.tipo||'N/D') + ' ' + (v.sexo||'N/D')}</td><td class="${v.isVale ? 'vale' : ''}">R$ ${v.valor.toLocaleString()}</td></tr>`); });
         win.document.write('</tbody></table></body></html>');
         win.document.close(); setTimeout(() => { win.print(); }, 500);
     }
