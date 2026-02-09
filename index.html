@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <style>
         :root { --blue: #00f2ff; --green: #00ff88; --red: #ff0055; --bg: #050505; --card: #111; --border: #222; --yellow: #ffcc00; }
-        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 10px; padding-bottom: 50px; }
+        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 10px; padding-bottom: 30px; }
         #relogio { position: absolute; top: 15px; right: 15px; text-align: right; font-size: 10px; color: var(--blue); font-weight: 800; line-height: 1.2; }
         header { padding: 10px 5px 15px 5px; border-bottom: 1px solid var(--border); margin-bottom: 15px; position: relative; }
         header h1 { margin: 0; font-size: 16px; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px var(--blue); width: 70%; line-height: 1.1; }
@@ -18,7 +18,7 @@
         .meta-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
         .meta-target { font-size: 18px; color: var(--blue); font-weight: 800; cursor: pointer; text-decoration: underline; }
         .progress-bg { background: #000; height: 14px; border-radius: 20px; width: 100%; border: 1px solid #222; overflow: hidden; }
-        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #0088ff, var(--blue)); box-shadow: 0 0 15px var(--blue); border-radius: 20px; transition: 1s; position: relative; }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #0088ff, var(--blue)); box-shadow: 0 0 15px var(--blue); border-radius: 20px; transition: 1s; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
         .stat-tag { background: #1a1a1a; padding: 12px; border-radius: 12px; border: 1px solid #333; }
         .stat-tag.delivery-box { border-color: var(--green); background: rgba(0, 255, 136, 0.05); }
@@ -36,16 +36,13 @@
         .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
         input, select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; box-sizing: border-box; font-size: 13px; font-family: inherit; }
         .btn-main { background: #fff; color: #000; width: 100%; padding: 14px; border-radius: 10px; font-weight: 800; border: none; margin-bottom: 10px; cursor: pointer; }
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
-        .btn-sec { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 10px; border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
-        .item { background: var(--card); padding: 14px; border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--border); position: relative; }
-        .item-info { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .actions { display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid #222; padding-top: 10px; }
-        .btn-status { background: #222; border: none; color: #fff; padding: 8px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; flex: 1; }
-        .btn-status.on { background: var(--green); color: #000; font-weight: 800; }
-        .btn-edit-small { background: #333; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; }
-        .btn-del-small { background: #441111; color: #ff5555; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; }
-        .tag-pgto { font-size: 9px; padding: 2px 6px; border-radius: 4px; background: #333; color: var(--blue); margin-left: 5px; }
+        .item { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--border); }
+        .actions { display: flex; gap: 8px; margin-top: 10px; border-top: 1px solid #222; padding-top: 10px; }
+        .btn-status { flex: 2; padding: 8px; border-radius: 8px; border: none; background: #222; color: #fff; font-weight: 800; font-size: 11px; cursor: pointer; }
+        .btn-status.on { background: var(--green); color: #000; }
+        .btn-edit { flex: 1; background: #333; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
+        .btn-del { flex: 1; background: rgba(255,0,0,0.1); color: var(--red); border: none; border-radius: 8px; cursor: pointer; }
+        .pgto-tag { font-size: 9px; background: var(--blue); color: #000; padding: 2px 6px; border-radius: 4px; font-weight: 800; margin-left: 5px; }
     </style>
 </head>
 <body>
@@ -70,13 +67,21 @@
     </div>
 
     <div class="stats-grid">
+        <div class="stat-tag"><label>🐕 Total Spitz</label><value id="vTotSpitz">0</value><small id="vSubSpitz">0 M | 0 F</small></div>
+        <div class="stat-tag"><label>🐈 Total Bengal</label><value id="vTotBengal">0</value><small id="vSubBengal">0 M | 0 F</small></div>
+    </div>
+
+    <div class="stats-grid">
         <div class="stat-tag delivery-box"><label>🚚 Spitz Entregues</label><value id="eTotSpitz">0</value><small id="eSubSpitz">0 M | 0 F</small></div>
         <div class="stat-tag delivery-box"><label>🚚 Bengal Entregues</label><value id="eTotBengal">0</value><small id="eSubBengal">0 M | 0 F</small></div>
     </div>
 
     <div class="fin-grid">
+        <div class="fin-box full-box"><span>💵 Faturamento Filhotes</span><b id="totBruto" style="color:var(--blue)">R$ 0</b></div>
+    </div>
+    <div class="fin-grid">
         <div class="fin-box"><span>💰 Comis. (3%)</span><b id="totComissao" style="color:var(--yellow)">R$ 0</b></div>
-        <div class="fin-box"><span>✅ Líquido Real</span><b id="salLiq" style="color:var(--green)">R$ 0</b></div>
+        <div class="fin-box"><span>💸 Vales</span><b id="totDescontos" style="color:var(--red)">R$ 0</b></div>
     </div>
 
     <div class="chart-wrapper"><canvas id="graficoVendas"></canvas></div>
@@ -86,17 +91,17 @@
             <select id="tipo"><option value="Spitz">🐕 Spitz</option><option value="Bengal">🐈 Bengal</option></select>
             <select id="sexo"><option value="Macho">♂ Macho</option><option value="Fêmea">♀ Fêmea</option></select>
         </div>
-        <input type="text" id="cliente" placeholder="👤 Nome do Cliente" style="margin-bottom: 8px;">
+        <input type="text" id="cliente" placeholder="👤 Nome do Cliente">
         <div class="input-row">
             <input type="number" id="valor" placeholder="💰 Valor Filhote">
-            <input type="number" id="frete" placeholder="🚚 Valor Frete">
+            <input type="number" id="frete" placeholder="🚚 Frete">
         </div>
         <div class="input-row">
-            <input type="text" id="previsao" placeholder="📅 Previsão Entrega (ex: 20/02)">
+            <input type="text" id="previsao" placeholder="📅 Entrega (ex: 25/02)">
             <select id="pgto"><option value="PIX">💎 PIX</option><option value="Cartão">💳 Cartão</option></select>
         </div>
         <button class="btn-main" onclick="addVenda()">✅ SALVAR VENDA</button>
-        <div class="btn-group">
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px;">
             <button class="btn-sec" onclick="addVale()">➖ Vale</button>
             <button class="btn-sec" onclick="gerarPDF()">📄 PDF</button>
             <button class="btn-sec" onclick="exportarDados()">💾 Backup</button>
@@ -112,87 +117,79 @@
 
     function salvar() { localStorage.setItem('canil_2026_db', JSON.stringify(appData)); render(); }
     function mudarMes() { appData.mesAtivo = document.getElementById('selecaoMes').value; salvar(); }
-    
+    function editarMeta() {
+        const n = prompt("Nova Meta:", appData.metas[appData.mesAtivo] || 150000);
+        if (n) { appData.metas[appData.mesAtivo] = parseFloat(n); salvar(); }
+    }
+
     function addVenda() {
-        const c = document.getElementById('cliente').value;
-        const v = parseFloat(document.getElementById('valor').value);
-        const f = parseFloat(document.getElementById('frete').value) || 0;
+        const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valor').value);
         if (c && v) {
             appData.vendas.push({
-                id: Date.now(),
-                mesRef: appData.mesAtivo,
-                cliente: c,
-                valor: v,
-                frete: f,
+                id: Date.now(), mesRef: appData.mesAtivo, cliente: c, valor: v,
+                frete: parseFloat(document.getElementById('frete').value) || 0,
                 previsao: document.getElementById('previsao').value,
                 pgto: document.getElementById('pgto').value,
                 tipo: document.getElementById('tipo').value,
                 sexo: document.getElementById('sexo').value,
                 data: new Date().toLocaleDateString('pt-BR'),
-                entregue: false,
-                isVale: false,
-                ts: Date.now()
+                entregue: false, isVale: false, ts: Date.now()
             });
-            limparForm(); salvar();
+            document.getElementById('cliente').value = ''; document.getElementById('valor').value = ''; salvar();
         }
-    }
-
-    function limparForm() {
-        document.getElementById('cliente').value = '';
-        document.getElementById('valor').value = '';
-        document.getElementById('frete').value = '';
-        document.getElementById('previsao').value = '';
     }
 
     function editarVenda(id) {
         const v = appData.vendas.find(x => x.id === id);
-        if(v.isVale) {
-            const nv = prompt("Valor do Vale:", v.valor);
-            if(nv) v.valor = parseFloat(nv);
-        } else {
-            v.cliente = prompt("Nome Cliente:", v.cliente) || v.cliente;
+        if(!v.isVale) {
+            v.cliente = prompt("Cliente:", v.cliente) || v.cliente;
             v.valor = parseFloat(prompt("Valor Filhote:", v.valor)) || v.valor;
-            v.frete = parseFloat(prompt("Valor Frete:", v.frete)) || 0;
+            v.frete = parseFloat(prompt("Frete:", v.frete)) || 0;
             v.previsao = prompt("Previsão Entrega:", v.previsao) || v.previsao;
             v.tipo = prompt("Raça (Spitz/Bengal):", v.tipo) || v.tipo;
             v.sexo = prompt("Sexo (Macho/Fêmea):", v.sexo) || v.sexo;
             v.pgto = prompt("Pgto (PIX/Cartão):", v.pgto) || v.pgto;
+            salvar();
         }
-        salvar();
     }
 
     function render() {
         const metaM = appData.metas[appData.mesAtivo] || 150000;
-        document.getElementById('txtMeta').innerText = "R$ " + metaM.toLocaleString();
-        
-        let brutoVendas = 0, vales = 0, comissaoTotal = 0;
+        let bruto = 0, vales = 0, comissaoTotal = 0;
+        let vS_M = 0, vS_F = 0, vB_M = 0, vB_F = 0;
         let eS_M = 0, eS_F = 0, eB_M = 0, eB_F = 0;
+        
         let histMap = new Map();
         const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo).sort((a,b)=>a.ts-b.ts);
 
         vMes.forEach(v => {
             if (!v.isVale) {
-                brutoVendas += v.valor; // Comissão é sobre o valor do filhote (sem frete)
+                bruto += v.valor;
                 comissaoTotal += (v.valor * 0.03);
-                
+                if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? vS_M++ : vS_F++; }
+                else { v.sexo === 'Macho' ? vB_M++ : vB_F++; }
                 if(v.entregue) {
                     if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? eS_M++ : eS_F++; }
                     else { v.sexo === 'Macho' ? eB_M++ : eB_F++; }
                 }
-                let dia = v.data.substring(0,5);
+                let dia = parseInt(v.data.substring(0,2));
                 histMap.set(dia, (histMap.get(dia) || 0) + v.valor);
             } else { vales += v.valor; }
         });
 
+        document.getElementById('vTotSpitz').innerText = vS_M + vS_F;
+        document.getElementById('vSubSpitz').innerText = `${vS_M}M | ${vS_F}F`;
+        document.getElementById('vTotBengal').innerText = vB_M + vB_F;
+        document.getElementById('vSubBengal').innerText = `${vB_M}M | ${vB_F}F`;
         document.getElementById('eTotSpitz').innerText = eS_M + eS_F;
         document.getElementById('eSubSpitz').innerText = `${eS_M}M | ${eS_F}F`;
-        document.getElementById('eTotBengal').innerText = eB_M + eB_F;
-        document.getElementById('eSubBengal').innerText = `${eB_M}M | ${eB_F}F`;
         
+        document.getElementById('totBruto').innerText = "R$ " + bruto.toLocaleString();
         document.getElementById('totComissao').innerText = "R$ " + comissaoTotal.toLocaleString();
+        document.getElementById('totDescontos').innerText = "R$ " + vales.toLocaleString();
         document.getElementById('salLiq').innerText = "R$ " + (2000 + comissaoTotal - vales).toLocaleString();
         
-        const perc = (brutoVendas / metaM) * 100;
+        const perc = (bruto / metaM) * 100;
         document.getElementById('barraProg').style.width = Math.min(perc, 100) + '%';
         document.getElementById('txtPerc').innerText = perc.toFixed(1) + '%';
 
@@ -200,21 +197,17 @@
         [...vMes].reverse().forEach(v => {
             div.innerHTML += `
                 <div class="item">
-                    <div class="item-info">
-                        <div>
-                            <b>${v.isVale ? '📉 VALE' : v.cliente} <span class="tag-pgto">${v.pgto || ''}</span></b><br>
-                            <small>${v.data.substring(0,5)} • ${v.tipo || ''} ${v.sexo || ''}</small><br>
-                            <small style="color:var(--yellow)">Entrega: ${v.previsao || '---'}</small>
-                        </div>
-                        <div style="text-align:right">
-                            <div style="font-weight:800">R$ ${(v.valor + (v.frete||0)).toLocaleString()}</div>
-                            ${v.frete > 0 ? '<small style="color:#888">Frete: R$ '+v.frete+'</small>' : ''}
-                        </div>
+                    <div style="display:flex; justify-content:space-between">
+                        <div><b>${v.cliente} <span class="pgto-tag">${v.pgto||''}</span></b><br>
+                        <small>${v.data.substring(0,5)} • ${v.tipo} ${v.sexo}</small><br>
+                        <small style="color:var(--yellow)">Entrega: ${v.previsao || '---'}</small></div>
+                        <div style="text-align:right"><div style="font-weight:800">R$ ${(v.valor + (v.frete||0)).toLocaleString()}</div>
+                        ${v.frete > 0 ? '<small style="color:#888">Frete: R$ '+v.frete+'</small>' : ''}</div>
                     </div>
                     <div class="actions">
-                        <button class="btn-edit-small" onclick="editarVenda(${v.id})">✏️</button>
                         <button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? 'ENTREGUE ✔' : 'PENDENTE 🚚'}</button>
-                        <button class="btn-del-small" onclick="del(${v.id})">🗑</button>
+                        <button class="btn-edit" onclick="editarVenda(${v.id})">✏️</button>
+                        <button class="btn-del" onclick="del(${v.id})">🗑</button>
                     </div>
                 </div>`;
         });
@@ -225,46 +218,64 @@
     function desenharGrafico(histMap, metaM) {
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
-        let acc = 0;
-        const labels = Array.from(histMap.keys());
-        if(labels.length === 0) labels.push("---");
-        const dataVendas = Array.from(histMap.values()).map(v=>{acc+=v; return (acc/metaM)*100});
+        
+        const diasNoMes = 30;
+        let labels = [], dataProgresso = [], dataMetaDiaria = [];
+        let acumulado = 0;
+
+        for (let i = 1; i <= diasNoMes; i++) {
+            labels.push(i);
+            if (histMap.has(i)) acumulado += histMap.get(i);
+            
+            // Só desenha a linha azul até o dia de hoje (ou último dia com venda)
+            const hoje = new Date().getDate();
+            const ultimoDiaVenda = Math.max(...histMap.keys(), 0);
+            if (i <= Math.max(hoje, ultimoDiaVenda)) {
+                dataProgresso.push((acumulado / metaM) * 100);
+            } else {
+                dataProgresso.push(null);
+            }
+            dataMetaDiaria.push((100 / diasNoMes) * i);
+        }
 
         chart = new Chart(ctx, {
             type: 'line',
             data: { 
                 labels: labels, 
-                datasets: [{ 
-                    data: dataVendas, borderColor: '#00f2ff', fill: true, backgroundColor: 'rgba(0,242,255,0.1)', tension: 0.4,
-                    datalabels: { align: 'top', color: '#00f2ff', font: { weight: 'bold' }, formatter: (v) => Math.round(v) + '%' }
-                }] 
+                datasets: [
+                    { 
+                        label: 'Seu Progresso', data: dataProgresso, borderColor: '#00f2ff', borderWidth: 3, 
+                        fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3, pointRadius: 2,
+                        datalabels: { 
+                            display: (ctx) => ctx.dataIndex === dataProgresso.filter(x => x !== null).length - 1,
+                            align: 'top', color: '#00f2ff', font: { weight: '800' }, formatter: (v) => Math.round(v) + '%' 
+                        }
+                    },
+                    { 
+                        label: 'Meta Ideal', data: dataMetaDiaria, borderColor: 'rgba(255,255,255,0.1)', 
+                        borderWidth: 1, borderDash: [5, 5], fill: false, pointRadius: 0, datalabels: { display: false } 
+                    }
+                ] 
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { color: '#666' } } } }
+            options: { 
+                responsive: true, maintainAspectRatio: false,
+                scales: { 
+                    y: { min: 0, max: 110, display: false },
+                    x: { grid: { display: false }, ticks: { color: '#444', font: { size: 8 } } }
+                },
+                plugins: { legend: { display: false } }
+            }
         });
     }
 
-    function gerarPDF() {
-        const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo);
-        let win = window.open('', '', 'height=700,width=900');
-        win.document.write(`<html><head><style>body{font-family:sans-serif;padding:20px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ddd;padding:8px;text-align:left;font-size:12px}th{background:#f4f4f4}</style></head><body>`);
-        win.document.write(`<h2>Relatório My Baby - ${appData.mesAtivo}</h2>`);
-        win.document.write(`<table><thead><tr><th>Data</th><th>Cliente</th><th>Raça/Sexo</th><th>Pgto</th><th>Previsão</th><th>Valor</th><th>Frete</th></tr></thead><tbody>`);
-        vMes.forEach(v => {
-            win.document.write(`<tr><td>${v.data.substring(0,5)}</td><td>${v.cliente}</td><td>${v.tipo||''} ${v.sexo||''}</td><td>${v.pgto||''}</td><td>${v.previsao||''}</td><td>R$ ${v.valor.toLocaleString()}</td><td>R$ ${(v.frete||0).toLocaleString()}</td></tr>`);
-        });
-        win.document.write('</tbody></table></body></html>');
-        win.document.close(); setTimeout(() => { win.print(); }, 500);
-    }
-
-    function addVale() { const v = prompt("Valor do Vale:"); if (v) { appData.vendas.push({ id: Date.now(), mesRef: appData.mesAtivo, cliente: 'VALE', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true, ts: Date.now() }); salvar(); } }
+    function addVale() { const v = prompt("Valor do Vale:"); if(v) { appData.vendas.push({ id: Date.now(), mesRef: appData.mesAtivo, cliente: 'VALE', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true, ts: Date.now() }); salvar(); } }
     function toggleStatus(id) { const v = appData.vendas.find(x => x.id === id); v.entregue = !v.entregue; salvar(); }
     function del(id) { if(confirm("Excluir?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); salvar(); } }
     function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup.json'; a.click(); }
+    function gerarPDF() { window.print(); }
+
     render();
-    setInterval(() => { 
-        const agora = new Date(); 
-        document.getElementById('relogio').innerHTML = agora.toLocaleDateString('pt-BR') + '<br>' + agora.toLocaleTimeString('pt-BR');
-    }, 1000);
+    setInterval(() => { document.getElementById('relogio').innerHTML = new Date().toLocaleDateString('pt-BR') + '<br>' + new Date().toLocaleTimeString('pt-BR'); }, 1000);
 </script>
 </body>
 </html>
