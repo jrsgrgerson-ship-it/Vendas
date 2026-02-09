@@ -9,18 +9,16 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
     <style>
         :root { --blue: #00f2ff; --green: #00ff88; --red: #ff0055; --bg: #050505; --card: #111; --border: #222; --yellow: #ffcc00; }
-        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 10px; }
+        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 10px; padding-bottom: 50px; }
         #relogio { position: absolute; top: 15px; right: 15px; text-align: right; font-size: 10px; color: var(--blue); font-weight: 800; line-height: 1.2; }
         header { padding: 10px 5px 15px 5px; border-bottom: 1px solid var(--border); margin-bottom: 15px; position: relative; }
         header h1 { margin: 0; font-size: 16px; font-weight: 800; text-transform: uppercase; text-shadow: 0 0 15px var(--blue); width: 70%; line-height: 1.1; }
-        header p { margin: 5px 0 0 0; font-size: 11px; color: #888; font-weight: 600; }
         .mes-selector { background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 8px; border-radius: 8px; font-size: 13px; margin-top: 12px; font-weight: 800; width: 100%; outline: none; }
         .meta-container { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 15px; }
         .meta-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
         .meta-target { font-size: 18px; color: var(--blue); font-weight: 800; cursor: pointer; text-decoration: underline; }
         .progress-bg { background: #000; height: 14px; border-radius: 20px; width: 100%; border: 1px solid #222; overflow: hidden; }
         .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #0088ff, var(--blue)); box-shadow: 0 0 15px var(--blue); border-radius: 20px; transition: 1s; position: relative; }
-        .rocket { position: absolute; right: -8px; top: -5px; font-size: 16px; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
         .stat-tag { background: #1a1a1a; padding: 12px; border-radius: 12px; border: 1px solid #333; }
         .stat-tag.delivery-box { border-color: var(--green); background: rgba(0, 255, 136, 0.05); }
@@ -35,16 +33,19 @@
         .full-box { grid-column: span 2; border-color: #333; background: rgba(0,242,255,0.02); }
         .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 260px; padding: 15px; box-sizing: border-box; }
         .inputs { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
-        input, select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 8px; box-sizing: border-box; font-size: 13px; font-family: inherit; }
-        .btn-main { background: #fff; color: #000; width: 100%; padding: 14px; border-radius: 10px; font-weight: 800; border: none; margin-bottom: 8px; cursor: pointer; }
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+        input, select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; box-sizing: border-box; font-size: 13px; font-family: inherit; }
+        .btn-main { background: #fff; color: #000; width: 100%; padding: 14px; border-radius: 10px; font-weight: 800; border: none; margin-bottom: 10px; cursor: pointer; }
         .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
         .btn-sec { background: #1a1a1a; color: #fff; border: 1px solid #333; padding: 10px; border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
-        .item { background: var(--card); padding: 14px; border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .actions { display: flex; align-items: center; gap: 6px; }
-        .btn-status { width: 38px; height: 38px; border-radius: 10px; border: none; background: #222; color: #fff; font-size: 16px; cursor: pointer; }
-        .btn-status.on { background: var(--green); color: #000; }
-        .btn-edit { background: #333; border: none; color: #fff; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 14px; }
-        .btn-del { background: none; border: none; color: #444; font-size: 16px; cursor: pointer; }
+        .item { background: var(--card); padding: 14px; border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--border); position: relative; }
+        .item-info { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .actions { display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid #222; padding-top: 10px; }
+        .btn-status { background: #222; border: none; color: #fff; padding: 8px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; flex: 1; }
+        .btn-status.on { background: var(--green); color: #000; font-weight: 800; }
+        .btn-edit-small { background: #333; color: #fff; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; }
+        .btn-del-small { background: #441111; color: #ff5555; border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; }
+        .tag-pgto { font-size: 9px; padding: 2px 6px; border-radius: 4px; background: #333; color: var(--blue); margin-left: 5px; }
     </style>
 </head>
 <body>
@@ -52,13 +53,11 @@
     <div id="relogio"></div>
 
     <header>
-        <h1>Painel de Vendas<br>Canil My Baby 🐾</h1>
-        <p>Especialista Spitz e Bengal: <b>Gerson</b></p>
+        <h1>Painel Canil My Baby 🐾</h1>
         <select class="mes-selector" id="selecaoMes" onchange="mudarMes()">
             <option value="01/2026">Janeiro 2026</option>
             <option value="02/2026">Fevereiro 2026</option>
             <option value="03/2026">Março 2026</option>
-            <option value="04/2026">Abril 2026</option>
         </select>
     </header>
 
@@ -67,12 +66,7 @@
             <div><span style="font-size:10px; color:#666; font-weight:800">🎯 META</span><div class="meta-target" id="txtMeta" onclick="editarMeta()">R$ 150.000,00</div></div>
             <div id="txtPerc" style="color:var(--green); font-weight: 800; font-size: 14px;">0%</div>
         </div>
-        <div class="progress-bg"><div class="progress-fill" id="barraProg"><span class="rocket">🚀</span></div></div>
-    </div>
-
-    <div class="stats-grid">
-        <div class="stat-tag"><label>🐕 Total Spitz</label><value id="vTotSpitz">0</value><small id="vSubSpitz">0 M | 0 F</small></div>
-        <div class="stat-tag"><label>🐈 Total Bengal</label><value id="vTotBengal">0</value><small id="vSubBengal">0 M | 0 F</small></div>
+        <div class="progress-bg"><div class="progress-fill" id="barraProg"></div></div>
     </div>
 
     <div class="stats-grid">
@@ -81,26 +75,26 @@
     </div>
 
     <div class="fin-grid">
-        <div class="fin-box full-box"><span>💵 Faturamento Bruto</span><b id="totBruto" style="color:var(--blue)">R$ 0</b></div>
-    </div>
-
-    <div class="fin-grid">
         <div class="fin-box"><span>💰 Comis. (3%)</span><b id="totComissao" style="color:var(--yellow)">R$ 0</b></div>
-        <div class="fin-box"><span>💸 Vales</span><b id="totDescontos" style="color:var(--red)">R$ 0</b></div>
-    </div>
-    <div class="fin-grid">
-        <div class="fin-box full-box" style="border-color: var(--green);"><span>✅ Líquido Real</span><b id="salLiq" style="color:var(--green)">R$ 0</b></div>
+        <div class="fin-box"><span>✅ Líquido Real</span><b id="salLiq" style="color:var(--green)">R$ 0</b></div>
     </div>
 
     <div class="chart-wrapper"><canvas id="graficoVendas"></canvas></div>
 
     <div class="inputs">
-        <div style="display:flex; gap:6px;">
+        <div class="input-row">
             <select id="tipo"><option value="Spitz">🐕 Spitz</option><option value="Bengal">🐈 Bengal</option></select>
             <select id="sexo"><option value="Macho">♂ Macho</option><option value="Fêmea">♀ Fêmea</option></select>
         </div>
-        <input type="text" id="cliente" placeholder="👤 Nome do Cliente">
-        <input type="number" id="valor" placeholder="💰 Valor da Venda (R$)">
+        <input type="text" id="cliente" placeholder="👤 Nome do Cliente" style="margin-bottom: 8px;">
+        <div class="input-row">
+            <input type="number" id="valor" placeholder="💰 Valor Filhote">
+            <input type="number" id="frete" placeholder="🚚 Valor Frete">
+        </div>
+        <div class="input-row">
+            <input type="text" id="previsao" placeholder="📅 Previsão Entrega (ex: 20/02)">
+            <select id="pgto"><option value="PIX">💎 PIX</option><option value="Cartão">💳 Cartão</option></select>
+        </div>
         <button class="btn-main" onclick="addVenda()">✅ SALVAR VENDA</button>
         <div class="btn-group">
             <button class="btn-sec" onclick="addVale()">➖ Vale</button>
@@ -113,106 +107,92 @@
 
 <script>
     Chart.register(ChartDataLabels);
-
     let appData = JSON.parse(localStorage.getItem('canil_2026_db')) || { mesAtivo: "02/2026", metas: {"02/2026":150000}, vendas: [] };
     let chart = null;
 
     function salvar() { localStorage.setItem('canil_2026_db', JSON.stringify(appData)); render(); }
     function mudarMes() { appData.mesAtivo = document.getElementById('selecaoMes').value; salvar(); }
-    function editarMeta() {
-        let m = appData.metas[appData.mesAtivo] || 150000;
-        const n = prompt("Nova Meta:", m);
-        if (n) { appData.metas[appData.mesAtivo] = parseFloat(n); salvar(); }
+    
+    function addVenda() {
+        const c = document.getElementById('cliente').value;
+        const v = parseFloat(document.getElementById('valor').value);
+        const f = parseFloat(document.getElementById('frete').value) || 0;
+        if (c && v) {
+            appData.vendas.push({
+                id: Date.now(),
+                mesRef: appData.mesAtivo,
+                cliente: c,
+                valor: v,
+                frete: f,
+                previsao: document.getElementById('previsao').value,
+                pgto: document.getElementById('pgto').value,
+                tipo: document.getElementById('tipo').value,
+                sexo: document.getElementById('sexo').value,
+                data: new Date().toLocaleDateString('pt-BR'),
+                entregue: false,
+                isVale: false,
+                ts: Date.now()
+            });
+            limparForm(); salvar();
+        }
     }
 
-    // FUNÇÃO PARA EDITAR VENDAS ANTIGAS
-    function editarVendaCompleta(id) {
+    function limparForm() {
+        document.getElementById('cliente').value = '';
+        document.getElementById('valor').value = '';
+        document.getElementById('frete').value = '';
+        document.getElementById('previsao').value = '';
+    }
+
+    function editarVenda(id) {
         const v = appData.vendas.find(x => x.id === id);
-        if (v.isVale) {
-            const nv = prompt("Novo valor do Vale:", v.valor);
+        if(v.isVale) {
+            const nv = prompt("Valor do Vale:", v.valor);
             if(nv) v.valor = parseFloat(nv);
         } else {
-            const nNome = prompt("Nome do Cliente:", v.cliente);
-            const nValor = prompt("Valor da Venda:", v.valor);
-            const nTipo = prompt("Raça (Spitz ou Bengal):", v.tipo || "Spitz");
-            const nSexo = prompt("Sexo (Macho ou Fêmea):", v.sexo || "Macho");
-            
-            if(nNome) v.cliente = nNome;
-            if(nValor) v.valor = parseFloat(nValor);
-            if(nTipo) v.tipo = nTipo;
-            if(nSexo) v.sexo = nSexo;
+            v.cliente = prompt("Nome Cliente:", v.cliente) || v.cliente;
+            v.valor = parseFloat(prompt("Valor Filhote:", v.valor)) || v.valor;
+            v.frete = parseFloat(prompt("Valor Frete:", v.frete)) || 0;
+            v.previsao = prompt("Previsão Entrega:", v.previsao) || v.previsao;
+            v.tipo = prompt("Raça (Spitz/Bengal):", v.tipo) || v.tipo;
+            v.sexo = prompt("Sexo (Macho/Fêmea):", v.sexo) || v.sexo;
+            v.pgto = prompt("Pgto (PIX/Cartão):", v.pgto) || v.pgto;
         }
         salvar();
     }
 
-    function editarData(id) {
-        const v = appData.vendas.find(x => x.id === id);
-        const novaData = prompt("Editar Data (ex: 01/02):", v.data.substring(0,5));
-        if (novaData) { v.data = novaData + "/2026"; salvar(); }
-    }
-
-    function addVenda() {
-        const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valor').value);
-        if (c && v) {
-            appData.vendas.push({ id: Date.now(), mesRef: appData.mesAtivo, cliente: c, valor: v, tipo: document.getElementById('tipo').value, sexo: document.getElementById('sexo').value, data: new Date().toLocaleDateString('pt-BR'), entregue: false, isVale: false, ts: Date.now() });
-            document.getElementById('cliente').value = ''; document.getElementById('valor').value = ''; salvar();
-        }
-    }
-
-    function addVale() {
-        const v = prompt("Valor do Vale:");
-        if (v) { appData.vendas.push({ id: Date.now(), mesRef: appData.mesAtivo, cliente: 'VALE', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true, ts: Date.now() }); salvar(); }
-    }
-
-    function del(id) { if(confirm("Excluir?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); salvar(); } }
-    function toggleStatus(id) { const v = appData.vendas.find(x => x.id === id); v.entregue = !v.entregue; salvar(); }
-
     function render() {
         const metaM = appData.metas[appData.mesAtivo] || 150000;
         document.getElementById('txtMeta').innerText = "R$ " + metaM.toLocaleString();
-        document.getElementById('selecaoMes').value = appData.mesAtivo;
-
-        let bruto = 0, vales = 0;
-        let vS_M = 0, vS_F = 0, vB_M = 0, vB_F = 0;
+        
+        let brutoVendas = 0, vales = 0, comissaoTotal = 0;
         let eS_M = 0, eS_F = 0, eB_M = 0, eB_F = 0;
-
         let histMap = new Map();
         const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo).sort((a,b)=>a.ts-b.ts);
 
         vMes.forEach(v => {
             if (!v.isVale) {
-                bruto += v.valor;
-                // Contagem Vendas (Proteção para dados antigos sem tipo/sexo)
-                if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? vS_M++ : vS_F++; }
-                else if(v.tipo === 'Bengal') { v.sexo === 'Macho' ? vB_M++ : vB_F++; }
-
-                // Contagem Entregues
+                brutoVendas += v.valor; // Comissão é sobre o valor do filhote (sem frete)
+                comissaoTotal += (v.valor * 0.03);
+                
                 if(v.entregue) {
                     if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? eS_M++ : eS_F++; }
-                    else if(v.tipo === 'Bengal') { v.sexo === 'Macho' ? eB_M++ : eB_F++; }
+                    else { v.sexo === 'Macho' ? eB_M++ : eB_F++; }
                 }
-
                 let dia = v.data.substring(0,5);
                 histMap.set(dia, (histMap.get(dia) || 0) + v.valor);
             } else { vales += v.valor; }
         });
 
-        document.getElementById('vTotSpitz').innerText = vS_M + vS_F;
-        document.getElementById('vSubSpitz').innerText = `${vS_M}M | ${vS_F}F`;
-        document.getElementById('vTotBengal').innerText = vB_M + vB_F;
-        document.getElementById('vSubBengal').innerText = `${vB_M}M | ${vB_F}F`;
         document.getElementById('eTotSpitz').innerText = eS_M + eS_F;
         document.getElementById('eSubSpitz').innerText = `${eS_M}M | ${eS_F}F`;
         document.getElementById('eTotBengal').innerText = eB_M + eB_F;
         document.getElementById('eSubBengal').innerText = `${eB_M}M | ${eB_F}F`;
         
-        document.getElementById('totBruto').innerText = "R$ " + bruto.toLocaleString();
-        let com = bruto * 0.03;
-        document.getElementById('totComissao').innerText = "R$ " + com.toLocaleString();
-        document.getElementById('totDescontos').innerText = "R$ " + vales.toLocaleString();
-        document.getElementById('salLiq').innerText = "R$ " + (2000 + com - vales).toLocaleString();
+        document.getElementById('totComissao').innerText = "R$ " + comissaoTotal.toLocaleString();
+        document.getElementById('salLiq').innerText = "R$ " + (2000 + comissaoTotal - vales).toLocaleString();
         
-        const perc = (bruto / metaM) * 100;
+        const perc = (brutoVendas / metaM) * 100;
         document.getElementById('barraProg').style.width = Math.min(perc, 100) + '%';
         document.getElementById('txtPerc').innerText = perc.toFixed(1) + '%';
 
@@ -220,93 +200,71 @@
         [...vMes].reverse().forEach(v => {
             div.innerHTML += `
                 <div class="item">
-                    <div>
-                        <b onclick="editarData(${v.id})" style="text-decoration:underline; cursor:pointer">${v.isVale ? '📉 VALE' : v.cliente}</b>
-                        <small>${v.data.substring(0,5)} ${v.isVale ? '' : '• '+(v.tipo||'N/D')+' '+(v.sexo||'N/D')}</small>
+                    <div class="item-info">
+                        <div>
+                            <b>${v.isVale ? '📉 VALE' : v.cliente} <span class="tag-pgto">${v.pgto || ''}</span></b><br>
+                            <small>${v.data.substring(0,5)} • ${v.tipo || ''} ${v.sexo || ''}</small><br>
+                            <small style="color:var(--yellow)">Entrega: ${v.previsao || '---'}</small>
+                        </div>
+                        <div style="text-align:right">
+                            <div style="font-weight:800">R$ ${(v.valor + (v.frete||0)).toLocaleString()}</div>
+                            ${v.frete > 0 ? '<small style="color:#888">Frete: R$ '+v.frete+'</small>' : ''}
+                        </div>
                     </div>
                     <div class="actions">
-                        <div style="font-weight:800; color:${v.isVale ? 'var(--red)' : '#fff'}">${v.isVale ? '-' : ''} R$ ${v.valor.toLocaleString()}</div>
-                        <button class="btn-edit" onclick="editarVendaCompleta(${v.id})">✏️</button>
-                        <button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? '✔' : '🚚'}</button>
-                        <button class="btn-del" onclick="del(${v.id})">🗑</button>
+                        <button class="btn-edit-small" onclick="editarVenda(${v.id})">✏️</button>
+                        <button class="btn-status ${v.entregue ? 'on' : ''}" onclick="toggleStatus(${v.id})">${v.entregue ? 'ENTREGUE ✔' : 'PENDENTE 🚚'}</button>
+                        <button class="btn-del-small" onclick="del(${v.id})">🗑</button>
                     </div>
                 </div>`;
         });
 
+        desenharGrafico(histMap, metaM);
+    }
+
+    function desenharGrafico(histMap, metaM) {
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
-        
         let acc = 0;
         const labels = Array.from(histMap.keys());
-        if(labels.length === 0) labels.push(new Date().toLocaleDateString('pt-BR').substring(0,5));
-
-        const dataVendas = Array.from(histMap.values()).map(v=>{acc+=v; return ((acc/metaM)*100)});
-        const dataProjecao = labels.map((_, index) => (100 / 30) * (index + 1));
+        if(labels.length === 0) labels.push("---");
+        const dataVendas = Array.from(histMap.values()).map(v=>{acc+=v; return (acc/metaM)*100});
 
         chart = new Chart(ctx, {
             type: 'line',
             data: { 
                 labels: labels, 
-                datasets: [
-                    { 
-                        data: dataVendas, 
-                        borderColor: '#00f2ff', 
-                        borderWidth: 3, 
-                        fill: true, 
-                        backgroundColor: 'rgba(0, 242, 255, 0.1)', 
-                        tension: 0.4,
-                        pointRadius: 4,
-                        datalabels: { 
-                            align: 'top', 
-                            offset: 5,
-                            color: '#00f2ff', 
-                            font: { weight: '800', size: 10 },
-                            formatter: (v) => Math.round(v) + '%',
-                            display: function(context) { return context.dataIndex % (labels.length > 10 ? 2 : 1) === 0; }
-                        }
-                    },
-                    {
-                        data: dataProjecao,
-                        borderColor: 'rgba(255,255,255,0.15)',
-                        borderWidth: 1,
-                        borderDash: [5, 5],
-                        fill: false,
-                        pointRadius: 0,
-                        datalabels: { display: false }
-                    }
-                ] 
+                datasets: [{ 
+                    data: dataVendas, borderColor: '#00f2ff', fill: true, backgroundColor: 'rgba(0,242,255,0.1)', tension: 0.4,
+                    datalabels: { align: 'top', color: '#00f2ff', font: { weight: 'bold' }, formatter: (v) => Math.round(v) + '%' }
+                }] 
             },
-            options: { 
-                responsive: true, 
-                maintainAspectRatio: false, 
-                layout: { padding: { top: 25 } },
-                plugins: { legend: { display: false } }, 
-                scales: { 
-                    y: { min: 0, max: Math.max(100, Math.ceil(Math.max(...dataVendas)/10)*10 + 15), ticks: { display: false }, grid: { color: '#1a1a1a' } }, 
-                    x: { ticks: { color: '#666', font: { size: 9 } }, grid: { display: false } } 
-                } 
-            }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { color: '#666' } } } }
         });
     }
 
-    // PDF e Exportação mantidos conforme versões anteriores...
     function gerarPDF() {
         const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo);
-        const bruto = vMes.filter(v=>!v.isVale).reduce((a,b)=>a+b.valor,0);
-        const vales = vMes.filter(v=>v.isVale).reduce((a,b)=>a+b.valor,0);
-        const com = bruto * 0.03;
         let win = window.open('', '', 'height=700,width=900');
-        win.document.write(`<html><head><title>Relatório Gerson</title><style>body{font-family:sans-serif;padding:40px;color:#333}table{width:100%;border-collapse:collapse;margin-top:20px}th,td{border:1px solid #eee;padding:12px;text-align:left}th{background:#f8f9fa;font-size:11px;text-transform:uppercase}.vale{color:#ff0055;font-weight:bold}.resumo-topo{display:grid;grid-template-columns:1fr 1fr;gap:20px;background:#f8f9fa;padding:20px;border-radius:10px;margin:20px 0}.total-final{font-size:18px;font-weight:bold;color:green;grid-column:span 2;border-top:1px solid #ccc;padding-top:10px}</style></head><body>`);
-        win.document.write(`<h1>Relatório My Baby - ${appData.mesAtivo}</h1><p>Vendedor: Gerson</p>`);
-        win.document.write(`<table><thead><tr><th>Data</th><th>Cliente</th><th>Raça/Sexo</th><th>Valor</th></tr></thead><tbody>`);
-        vMes.forEach(v => { win.document.write(`<tr><td>${v.data.substring(0,5)}</td><td>${v.cliente}</td><td>${v.isVale ? 'VALE' : (v.tipo||'N/D') + ' ' + (v.sexo||'N/D')}</td><td class="${v.isVale ? 'vale' : ''}">R$ ${v.valor.toLocaleString()}</td></tr>`); });
+        win.document.write(`<html><head><style>body{font-family:sans-serif;padding:20px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ddd;padding:8px;text-align:left;font-size:12px}th{background:#f4f4f4}</style></head><body>`);
+        win.document.write(`<h2>Relatório My Baby - ${appData.mesAtivo}</h2>`);
+        win.document.write(`<table><thead><tr><th>Data</th><th>Cliente</th><th>Raça/Sexo</th><th>Pgto</th><th>Previsão</th><th>Valor</th><th>Frete</th></tr></thead><tbody>`);
+        vMes.forEach(v => {
+            win.document.write(`<tr><td>${v.data.substring(0,5)}</td><td>${v.cliente}</td><td>${v.tipo||''} ${v.sexo||''}</td><td>${v.pgto||''}</td><td>${v.previsao||''}</td><td>R$ ${v.valor.toLocaleString()}</td><td>R$ ${(v.frete||0).toLocaleString()}</td></tr>`);
+        });
         win.document.write('</tbody></table></body></html>');
         win.document.close(); setTimeout(() => { win.print(); }, 500);
     }
 
-    function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup_canil_2026.json'; a.click(); }
+    function addVale() { const v = prompt("Valor do Vale:"); if (v) { appData.vendas.push({ id: Date.now(), mesRef: appData.mesAtivo, cliente: 'VALE', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true, ts: Date.now() }); salvar(); } }
+    function toggleStatus(id) { const v = appData.vendas.find(x => x.id === id); v.entregue = !v.entregue; salvar(); }
+    function del(id) { if(confirm("Excluir?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); salvar(); } }
+    function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup.json'; a.click(); }
     render();
-    setInterval(() => { const agora = new Date(); const dias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']; document.getElementById('relogio').innerHTML = `${dias[agora.getDay()]}, ${agora.toLocaleDateString('pt-BR')}<br>${agora.toLocaleTimeString('pt-BR')}`; }, 1000);
+    setInterval(() => { 
+        const agora = new Date(); 
+        document.getElementById('relogio').innerHTML = agora.toLocaleDateString('pt-BR') + '<br>' + agora.toLocaleTimeString('pt-BR');
+    }, 1000);
 </script>
 </body>
 </html>
