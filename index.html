@@ -12,36 +12,45 @@
         body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 10px; padding-bottom: 30px; }
         #relogio { position: absolute; top: 15px; right: 15px; text-align: right; font-size: 10px; color: var(--blue); font-weight: 800; }
         header { padding: 10px 5px 15px 5px; border-bottom: 1px solid var(--border); margin-bottom: 15px; position: relative; }
-        header h1 { margin: 0; font-size: 16px; font-weight: 800; text-transform: uppercase; color: #fff; width: 70%; }
-        .mes-selector { background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 8px; border-radius: 8px; font-size: 13px; margin-top: 12px; font-weight: 800; width: 100%; }
+        header h1 { margin: 0; font-size: 16px; font-weight: 800; text-transform: uppercase; color: #fff; width: 75%; }
+        .mes-selector { background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 10px; border-radius: 8px; font-size: 13px; margin-top: 12px; font-weight: 800; width: 100%; }
+        
+        /* GRÁFICO MAIOR */
+        .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 380px; padding: 15px; box-sizing: border-box; }
+        
         .meta-container { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 15px; }
         .meta-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
-        .meta-target { font-size: 18px; color: var(--blue); font-weight: 800; cursor: pointer; text-decoration: underline; }
+        .meta-target { font-size: 18px; color: var(--blue); font-weight: 800; cursor: pointer; }
         .progress-bg { background: #000; height: 14px; border-radius: 20px; width: 100%; border: 1px solid #222; overflow: hidden; }
-        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #0088ff, var(--blue)); box-shadow: 0 0 15px var(--blue); border-radius: 20px; transition: 1s; }
+        .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #0088ff, var(--blue)); box-shadow: 0 0 15px var(--blue); transition: 1s; }
+        
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
         .stat-tag { background: #1a1a1a; padding: 12px; border-radius: 12px; border: 1px solid #333; }
         .stat-tag.delivery-box { border-color: var(--green); background: rgba(0, 255, 136, 0.05); }
         .stat-tag label { display: block; font-size: 9px; color: var(--blue); text-transform: uppercase; font-weight: 800; margin-bottom: 4px; }
-        .stat-tag value { font-size: 14px; font-weight: 800; color: #fff; display: block; }
-        .stat-tag small { font-size: 10px; color: #888; font-weight: 600; display: block; }
+        .stat-tag value { font-size: 15px; font-weight: 800; color: #fff; }
+        
         .fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
         .fin-box { background: var(--card); padding: 12px; border-radius: 14px; border: 1px solid var(--border); }
         .fin-box span { font-size: 8px; color: #666; font-weight: 700; display: block; text-transform: uppercase; }
-        .fin-box b { font-size: 16px; display: block; }
-        .full-box { grid-column: span 2; }
-        .chart-wrapper { background: var(--card); border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; height: 260px; padding: 15px; box-sizing: border-box; }
+        .fin-box b { font-size: 15px; display: block; }
+        .full-box { grid-column: span 2; border-color: var(--green); background: rgba(0, 255, 136, 0.03); }
+
         .inputs { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 15px; }
         .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
         input, select { background: #000; border: 1px solid #333; color: #fff; padding: 12px; border-radius: 10px; width: 100%; box-sizing: border-box; font-size: 13px; }
         .btn-main { background: #fff; color: #000; width: 100%; padding: 14px; border-radius: 10px; font-weight: 800; border: none; cursor: pointer; margin-bottom: 10px; }
+        
         .item { background: var(--card); padding: 15px; border-radius: 15px; margin-bottom: 10px; border: 1px solid var(--border); }
         .actions { display: flex; gap: 8px; margin-top: 10px; border-top: 1px solid #222; padding-top: 10px; }
         .btn-status { flex: 2; padding: 8px; border-radius: 8px; border: none; background: #222; color: #fff; font-weight: 800; font-size: 11px; }
         .btn-status.on { background: var(--green); color: #000; }
-        .btn-edit { flex: 1; background: #333; color: #fff; border: none; border-radius: 8px; padding: 8px; }
+        .btn-edit { flex: 1; background: #333; color: #fff; border: none; border-radius: 8px; }
         .btn-del { flex: 1; background: rgba(255,0,0,0.1); color: var(--red); border: none; border-radius: 8px; }
         .pgto-tag { font-size: 9px; background: var(--blue); color: #000; padding: 2px 5px; border-radius: 4px; font-weight: 800; margin-left: 5px; }
+        
+        @media print { .inputs, .chart-wrapper, .meta-container, header, .actions, .btn-sec, .mes-selector, #relogio { display: none !important; } 
+                       body { background: white; color: black; } .item { border: 1px solid #ccc; page-break-inside: avoid; } }
     </style>
 </head>
 <body>
@@ -49,7 +58,7 @@
     <div id="relogio"></div>
 
     <header>
-        <h1>Painel My Baby 🐾</h1>
+        <h1>Painel My Baby | Gerson 🐾</h1>
         <select class="mes-selector" id="selecaoMes" onchange="mudarMes()">
             <option value="01/2026">Janeiro 2026</option>
             <option value="02/2026">Fevereiro 2026</option>
@@ -57,33 +66,33 @@
         </select>
     </header>
 
+    <div class="chart-wrapper"><canvas id="graficoVendas"></canvas></div>
+
     <div class="meta-container">
         <div class="meta-header">
-            <div><span style="font-size:10px; color:#666; font-weight:800">🎯 META</span><div class="meta-target" id="txtMeta" onclick="editarMeta()">R$ 0</div></div>
-            <div id="txtPerc" style="color:var(--green); font-weight: 800;">0%</div>
+            <div><span style="font-size:10px; color:#666; font-weight:800">🎯 META MENSAL</span><div class="meta-target" id="txtMeta" onclick="editarMeta()">R$ 0</div></div>
+            <div id="txtPerc" style="color:var(--green); font-weight: 800; font-size: 18px;">0%</div>
         </div>
         <div class="progress-bg"><div class="progress-fill" id="barraProg"></div></div>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-tag"><label>🐕 Spitz</label><value id="vTotSpitz">0</value><small id="vSubSpitz">0M | 0F</small></div>
-        <div class="stat-tag"><label>🐈 Bengal</label><value id="vTotBengal">0</value><small id="vSubBengal">0M | 0F</small></div>
-    </div>
-
-    <div class="stats-grid">
-        <div class="stat-tag delivery-box"><label>🚚 Entregues S.</label><value id="eTotSpitz">0</value><small id="eSubSpitz">0M | 0F</small></div>
-        <div class="stat-tag delivery-box"><label>🚚 Entregues B.</label><value id="eTotBengal">0</value><small id="eSubBengal">0M | 0F</small></div>
-    </div>
-
     <div class="fin-grid">
-        <div class="fin-box full-box"><span>💵 Faturamento</span><b id="totBruto" style="color:var(--blue)">R$ 0</b></div>
+        <div class="fin-box full-box"><span>💰 SALÁRIO TOTAL (FIXO + COMISSÃO - VALES)</span><b id="salLiq" style="color:var(--green); font-size: 22px;">R$ 0</b></div>
     </div>
     <div class="fin-grid">
-        <div class="fin-box"><span>💰 Comissão</span><b id="totComissao" style="color:var(--yellow)">R$ 0</b></div>
-        <div class="fin-box"><span>💸 Vales</span><b id="totDescontos" style="color:var(--red)">R$ 0</b></div>
+        <div class="fin-box"><span>💵 Faturamento Filhotes</span><b id="totBruto" style="color:var(--blue)">R$ 0</b></div>
+        <div class="fin-box"><span>💸 Total Vales</span><b id="totDescontos" style="color:var(--red)">R$ 0</b></div>
     </div>
 
-    <div class="chart-wrapper"><canvas id="graficoVendas"></canvas></div>
+    <div class="stats-grid">
+        <div class="stat-tag"><label>🐕 Spitz</label><value id="vTotSpitz">0</value> <small id="vSubSpitz">0M | 0F</small></div>
+        <div class="stat-tag"><label>🐈 Bengal</label><value id="vTotBengal">0</value> <small id="vSubBengal">0M | 0F</small></div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-tag delivery-box"><label>🚚 Entregues S.</label><value id="eTotSpitz">0</value></div>
+        <div class="stat-tag delivery-box"><label>🚚 Entregues B.</label><value id="eTotBengal">0</value></div>
+    </div>
 
     <div class="inputs">
         <div class="input-row">
@@ -96,14 +105,14 @@
             <input type="number" id="frete" placeholder="🚚 Frete">
         </div>
         <div class="input-row">
-            <input type="text" id="previsao" placeholder="📅 Previsão Entrega">
+            <input type="text" id="previsao" placeholder="📅 Entrega (ex: 20/02)">
             <select id="pgto"><option value="PIX">💎 PIX</option><option value="Cartão">💳 Cartão</option></select>
         </div>
-        <button class="btn-main" onclick="addVenda()">✅ SALVAR VENDA</button>
+        <button class="btn-main" onclick="addVenda()">✅ SALVAR FILHOTE</button>
         <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px;">
-            <button class="btn-sec" style="background:#1a1a1a;color:#fff;border:1px solid #333;padding:10px;border-radius:8px;font-size:10px;" onclick="addVale()">➖ Vale</button>
-            <button class="btn-sec" style="background:#1a1a1a;color:#fff;border:1px solid #333;padding:10px;border-radius:8px;font-size:10px;" onclick="window.print()">📄 PDF</button>
-            <button class="btn-sec" style="background:#1a1a1a;color:#fff;border:1px solid #333;padding:10px;border-radius:8px;font-size:10px;" onclick="exportarDados()">💾 Backup</button>
+            <button class="btn-sec" style="background:#1a1a1a;color:#fff;border:1px solid #333;padding:12px;border-radius:8px;font-size:10px;font-weight:800;" onclick="addVale()">➖ VALE</button>
+            <button class="btn-sec" style="background:#1a1a1a;color:#fff;border:1px solid #333;padding:12px;border-radius:8px;font-size:10px;font-weight:800;" onclick="gerarPDF()">📄 PDF</button>
+            <button class="btn-sec" style="background:#1a1a1a;color:#fff;border:1px solid #333;padding:12px;border-radius:8px;font-size:10px;font-weight:800;" onclick="exportarDados()">💾 BACKUP</button>
         </div>
     </div>
 
@@ -140,59 +149,39 @@
         }
     }
 
-    function editarVenda(id) {
-        const v = appData.vendas.find(x => x.id === id);
-        if(v && !v.isVale) {
-            v.cliente = prompt("Cliente:", v.cliente) || v.cliente;
-            v.valor = parseFloat(prompt("Valor Filhote:", v.valor)) || v.valor;
-            v.frete = parseFloat(prompt("Frete:", v.frete)) || 0;
-            v.previsao = prompt("Previsão Entrega:", v.previsao) || v.previsao;
-            v.tipo = prompt("Raça:", v.tipo) || v.tipo;
-            v.sexo = prompt("Sexo:", v.sexo) || v.sexo;
-            v.pgto = prompt("Pgto:", v.pgto) || v.pgto;
-            salvar();
-        }
-    }
-
     function render() {
         const metaM = appData.metas[appData.mesAtivo] || 150000;
         document.getElementById('txtMeta').innerText = "R$ " + metaM.toLocaleString();
-        document.getElementById('selecaoMes').value = appData.mesAtivo;
         
         let bruto = 0, vales = 0, comissao = 0;
         let vS_M = 0, vS_F = 0, vB_M = 0, vB_F = 0;
-        let eS_M = 0, eS_F = 0, eB_M = 0, eB_F = 0;
+        let eS = 0, eB = 0;
         let histMap = {};
 
         const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo);
 
         vMes.forEach(v => {
             if (!v.isVale) {
-                bruto += (v.valor || 0);
-                comissao += ((v.valor || 0) * 0.03);
-                if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? vS_M++ : vS_F++; }
-                else { v.sexo === 'Macho' ? vB_M++ : vB_F++; }
-                if(v.entregue) {
-                    if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? eS_M++ : eS_F++; }
-                    else { v.sexo === 'Macho' ? eB_M++ : eB_F++; }
-                }
+                bruto += v.valor;
+                comissao += (v.valor * 0.03);
+                if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? vS_M++ : vS_F++; if(v.entregue) eS++; }
+                else { v.sexo === 'Macho' ? vB_M++ : vB_F++; if(v.entregue) eB++; }
+                
                 let dia = parseInt(v.data.split('/')[0]) || 1;
                 histMap[dia] = (histMap[dia] || 0) + v.valor;
-            } else { vales += (v.valor || 0); }
+            } else { vales += v.valor; }
         });
 
         document.getElementById('vTotSpitz').innerText = vS_M + vS_F;
         document.getElementById('vSubSpitz').innerText = `${vS_M}M | ${vS_F}F`;
         document.getElementById('vTotBengal').innerText = vB_M + vB_F;
         document.getElementById('vSubBengal').innerText = `${vB_M}M | ${vB_F}F`;
-        document.getElementById('eTotSpitz').innerText = eS_M + eS_F;
-        document.getElementById('eSubSpitz').innerText = `${eS_M}M | ${eS_F}F`;
-        document.getElementById('eTotBengal').innerText = eB_M + eB_F;
-        document.getElementById('eSubBengal').innerText = `${eB_M}M | ${eB_F}F`;
+        document.getElementById('eTotSpitz').innerText = eS;
+        document.getElementById('eTotBengal').innerText = eB;
         
         document.getElementById('totBruto').innerText = "R$ " + bruto.toLocaleString();
-        document.getElementById('totComissao').innerText = "R$ " + comissao.toLocaleString();
         document.getElementById('totDescontos').innerText = "R$ " + vales.toLocaleString();
+        document.getElementById('salLiq').innerText = "R$ " + (2000 + comissao - vales).toLocaleString();
         
         const perc = (bruto / metaM) * 100;
         document.getElementById('barraProg').style.width = Math.min(perc, 100) + '%';
@@ -222,41 +211,53 @@
     function desenharGrafico(histMap, metaM) {
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
-        
-        let labels = [], dataProg = [], dataMeta = [];
-        let acumulado = 0;
+        let labels = [], dataProg = [], dataMeta = [], acumulado = 0;
         let hoje = new Date().getDate();
-        let maxDia = Math.max(...Object.keys(histMap).map(Number), hoje, 1);
-        if(maxDia < 5) maxDia = 5;
-
         for (let i = 1; i <= 30; i++) {
             labels.push(i);
             acumulado += (histMap[i] || 0);
-            if (i <= maxDia) {
-                dataProg.push((acumulado / metaM) * 100);
-            } else {
-                dataProg.push(null);
-            }
+            if (i <= Math.max(hoje, ...Object.keys(histMap))) dataProg.push((acumulado / metaM) * 100);
+            else dataProg.push(null);
             dataMeta.push((100 / 30) * i);
         }
-
         chart = new Chart(ctx, {
             type: 'line',
-            data: { 
-                labels: labels, 
-                datasets: [
-                    { data: dataProg, borderColor: '#00f2ff', borderWidth: 3, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3, pointRadius: 2, datalabels: { display: (c) => c.dataIndex === maxDia-1, align: 'top', color: '#00f2ff', font: {weight:'800'}, formatter: (v)=>Math.round(v)+'%' } },
-                    { data: dataMeta, borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, borderDash: [5, 5], fill: false, pointRadius: 0, datalabels: {display: false} }
-                ] 
-            },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 110, display: false }, x: { ticks: { color: '#444', font: { size: 8 } }, grid: { display: false } } }, plugins: { legend: { display: false } } }
+            data: { labels: labels, datasets: [
+                { data: dataProg, borderColor: '#00f2ff', borderWidth: 4, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3, pointRadius: 3, datalabels: { display: (c) => c.dataset.data[c.dataIndex] !== null && c.dataIndex % 5 === 0, color: '#00f2ff', font: {weight:'800'} } },
+                { data: dataMeta, borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, borderDash: [5, 5], pointRadius: 0 }
+            ]},
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 110, display: false }, x: { ticks: { color: '#666' }, grid: { display: false } } }, plugins: { legend: { display: false } } }
         });
+    }
+
+    function gerarPDF() {
+        const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo);
+        let conteudo = `<h2>Relatório Canil My Baby - ${appData.mesAtivo}</h2><table border="1" style="width:100%; border-collapse:collapse; font-size:12px;">
+            <thead><tr><th>Data</th><th>Cliente</th><th>Raça/Sexo</th><th>Pgto</th><th>Previsão</th><th>Valor</th><th>Frete</th></tr></thead><tbody>`;
+        vMes.forEach(v => {
+            if(!v.isVale) conteudo += `<tr><td>${v.data}</td><td>${v.cliente}</td><td>${v.tipo} ${v.sexo}</td><td>${v.pgto}</td><td>${v.previsao}</td><td>R$ ${v.valor.toLocaleString()}</td><td>R$ ${v.frete.toLocaleString()}</td></tr>`;
+        });
+        conteudo += `</tbody></table>`;
+        const win = window.open('', '', 'height=700,width=900');
+        win.document.write(`<html><body style="font-family:sans-serif; padding:20px;">${conteudo}</body></html>`);
+        win.document.close(); win.print();
     }
 
     function addVale() { const v = prompt("Valor do Vale:"); if(v) { appData.vendas.push({ id: Date.now(), mesRef: appData.mesAtivo, cliente: 'VALE', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true, ts: Date.now() }); salvar(); } }
     function toggleStatus(id) { const v = appData.vendas.find(x => x.id === id); v.entregue = !v.entregue; salvar(); }
     function del(id) { if(confirm("Excluir?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); salvar(); } }
-    function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup.json'; a.click(); }
+    function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup_canil.json'; a.click(); }
+    function editarVenda(id) {
+        const v = appData.vendas.find(x => x.id === id);
+        if(v && !v.isVale) {
+            v.cliente = prompt("Cliente:", v.cliente) || v.cliente;
+            v.valor = parseFloat(prompt("Valor Filhote:", v.valor)) || v.valor;
+            v.frete = parseFloat(prompt("Frete:", v.frete)) || 0;
+            v.previsao = prompt("Previsão Entrega:", v.previsao) || v.previsao;
+            v.pgto = prompt("Pgto (PIX/Cartão):", v.pgto) || v.pgto;
+            salvar();
+        }
+    }
 
     render();
     setInterval(() => { document.getElementById('relogio').innerHTML = new Date().toLocaleDateString('pt-BR') + '<br>' + new Date().toLocaleTimeString('pt-BR'); }, 1000);
