@@ -18,22 +18,22 @@
         
         .header-controls { display: flex; gap: 10px; align-items: center; margin-top: 15px; }
         .mes-selector { flex: 1; background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 800; outline: none; appearance: none; }
-        .btn-meta { background: #1a1a1a; color: var(--white); border: 1px solid #333; padding: 14px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; }
+        .btn-meta { background: #1a1a1a; color: var(--white); border: 1px solid #333; padding: 14px; border-radius: 12px; cursor: pointer; }
 
-        .fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-        .fin-box { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); }
-        .fin-box span { font-size: 9px; color: #777; font-weight: 800; display: block; text-transform: uppercase; margin-bottom: 6px; }
-        .fin-box b { font-size: 19px; display: block; }
+        /* GRID FINANCEIRA NO TOPO */
+        .fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+        .fin-box { background: var(--card); padding: 15px; border-radius: 20px; border: 1px solid var(--border); position: relative; overflow: hidden; }
+        .fin-box span { font-size: 8px; color: #888; font-weight: 800; display: block; text-transform: uppercase; margin-bottom: 4px; }
+        .fin-box b { font-size: 17px; display: block; white-space: nowrap; }
         .full-box { grid-column: span 2; border-color: var(--green); background: linear-gradient(145deg, rgba(0,255,136,0.05) 0%, rgba(0,0,0,0) 100%); }
-        .full-box b { color: var(--green); font-size: 24px; font-weight: 800; }
+        .full-box b { color: var(--green); font-size: 24px; }
 
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
         .stat-tag { background: #181818; padding: 14px; border-radius: 16px; border: 1px solid #282828; }
         .stat-tag label { display: block; font-size: 9px; color: var(--blue); font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
         .stat-tag value { font-size: 20px; font-weight: 800; display: block; }
-        .stat-tag.delivery { border-color: var(--green); background: rgba(0,255,136,0.03); }
 
-        .chart-wrapper { background: var(--card); border-radius: 28px; border: 1px solid var(--border); margin: 10px 0 25px 0; padding: 15px; height: 350px; width: 100%; box-sizing: border-box; }
+        .chart-wrapper { background: var(--card); border-radius: 28px; border: 1px solid var(--border); margin: 10px 0 25px 0; padding: 15px; height: 320px; width: 100%; box-sizing: border-box; }
 
         .inputs { background: var(--card); padding: 22px; border-radius: 24px; border: 1px solid var(--border); margin-bottom: 25px; }
         .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
@@ -43,22 +43,21 @@
         .btn-group-sec { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
         .btn-sec { background: #1a1a1a; color: var(--white); border: 1px solid #333; padding: 14px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; cursor: pointer; }
 
+        /* ESTILO DOS ITENS NA LISTA */
         .item { background: var(--card); padding: 18px; border-radius: 22px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .item.is-vale { border-color: rgba(255, 0, 85, 0.3); background: rgba(255, 0, 85, 0.02); }
         .item-header { display: flex; justify-content: space-between; align-items: flex-start; }
         .actions { display: flex; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #222; }
         .btn-status { flex: 2.5; padding: 12px; border-radius: 12px; border: none; background: #222; color: #aaa; font-weight: 800; font-size: 11px; text-transform: uppercase; }
         .btn-status.on { background: var(--green); color: #000; }
         .btn-circle { width: 45px; height: 45px; border-radius: 12px; border: none; background: #252525; color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 18px; }
 
-        /* ESTILO DE IMPRESSÃO (PDF) */
         @media print { 
-            body { background: #fff !important; color: #000 !important; padding: 0; }
+            body { background: #fff !important; color: #000 !important; }
             .inputs, .chart-wrapper, .btn-meta, .btn-group-sec, .actions, .mes-selector, #relogio { display: none !important; } 
-            .fin-grid, .stats-grid { gap: 5px; }
-            .fin-box, .stat-tag, .item { border: 1px solid #eee !important; background: #fff !important; color: #000 !important; box-shadow: none !important; }
-            .fin-box b, .stat-tag value, b, span { color: #000 !important; }
-            .item { break-inside: avoid; margin-bottom: 10px; }
-            header h1 { color: #000 !important; text-align: center; width: 100%; }
+            .fin-box, .stat-tag, .item { border: 1px solid #ddd !important; background: #fff !important; color: #000 !important; }
+            .fin-box b, .stat-tag value, b { color: #000 !important; }
+            header h1 { color: #000 !important; text-align: center; }
         }
     </style>
 </head>
@@ -70,7 +69,7 @@
             <select class="mes-selector" id="selecaoMes" onchange="mudarMes()">
                 <option value="01/2026">Janeiro 2026</option>
                 <option value="02/2026">Fevereiro 2026</option>
-                <option value="03/2026">Março 2026</option>
+                <option value="03/2026" selected>Março 2026</option>
                 <option value="04/2026">Abril 2026</option>
             </select>
             <button class="btn-meta" onclick="ajustarMeta()">⚙️ Meta</button>
@@ -78,18 +77,16 @@
     </header>
 
     <div class="fin-grid">
-        <div class="fin-box full-box"><span>💰 SALÁRIO LÍQUIDO</span><b id="salLiq">R$ 0,00</b></div>
-        <div class="fin-box"><span>💵 FATURAMENTO BRUTO</span><b id="totBruto" style="color:var(--blue)">R$ 0,00</b></div>
-        <div class="fin-box"><span>🎯 META DO MÊS</span><b id="metaDisplay" style="color:var(--yellow)">R$ 0,00</b></div>
+        <div class="fin-box full-box"><span>💰 SALÁRIO LÍQUIDO (FIXO + 3%)</span><b id="salLiq">R$ 0,00</b></div>
+        <div class="fin-box"><span>💵 BRUTO (VENDAS)</span><b id="totBruto" style="color:var(--blue)">R$ 0,00</b></div>
+        <div class="fin-box" style="border-color: var(--red)"><span>📉 VALES PEGOS</span><b id="totVales" style="color:var(--red)">R$ 0,00</b></div>
+        <div class="fin-box"><span>🎯 META DEFINIDA</span><b id="metaDisplay" style="color:var(--yellow)">R$ 0,00</b></div>
+        <div class="fin-box"><span>🐕 QTD VENDIDA</span><b id="qtdVendas">0 Filhotes</b></div>
     </div>
 
     <div class="stats-grid">
-        <div class="stat-tag"><label>🐕 Spitz Total</label><value id="vTotS">0</value></div>
-        <div class="stat-tag"><label>🐈 Bengal Total</label><value id="vTotB">0</value></div>
-    </div>
-    <div class="stats-grid">
-        <div class="stat-tag delivery"><label>🚚 Entregues Spitz</label><value id="eTotS">0</value></div>
-        <div class="stat-tag delivery"><label>🚚 Entregues Bengal</label><value id="eTotB">0</value></div>
+        <div class="stat-tag"><label>🐕 Spitz</label><value id="vTotS">0</value></div>
+        <div class="stat-tag"><label>🐈 Bengal</label><value id="vTotB">0</value></div>
     </div>
 
     <div class="chart-wrapper"><canvas id="graficoVendas"></canvas></div>
@@ -101,16 +98,16 @@
         </div>
         <input type="text" id="cliente" placeholder="👤 Nome do Cliente" style="margin-bottom:12px">
         <div class="input-row">
-            <input type="number" id="valor" placeholder="💰 Valor Filhote">
-            <input type="number" id="frete" placeholder="🚚 Valor Frete">
+            <input type="number" id="valor" placeholder="💰 Valor do Filhote">
+            <input type="number" id="frete" placeholder="🚚 Frete">
         </div>
-        <input type="text" id="previsao" placeholder="📅 Previsão Entrega" style="margin-bottom:12px">
+        <input type="text" id="previsao" placeholder="📅 Previsão de Entrega" style="margin-bottom:12px">
         
-        <button class="btn-main" onclick="addVenda()">✅ REGISTRAR FILHOTE</button>
+        <button class="btn-main" onclick="addVenda()">✅ REGISTRAR VENDA</button>
         
         <div class="btn-group-sec">
-            <button class="btn-sec" onclick="addVale()">➖ VALE</button>
-            <button class="btn-sec" onclick="window.print()" style="color:var(--green)">📄 GERAR PDF</button>
+            <button class="btn-sec" onclick="addVale()" style="border-color:var(--red)">➖ NOVO VALE</button>
+            <button class="btn-sec" onclick="window.print()" style="color:var(--green)">📄 PDF</button>
             <button class="btn-sec" onclick="exportarDados()">💾 BACKUP</button>
         </div>
     </div>
@@ -120,7 +117,7 @@
 <script>
     Chart.register(ChartDataLabels);
     let appData = JSON.parse(localStorage.getItem('canil_2026_db')) || { 
-        mesAtivo: "02/2026", metas: {"02/2026": 150000}, vendas: [] 
+        mesAtivo: "03/2026", metas: {"03/2026": 150000}, vendas: [] 
     };
     let chart = null;
 
@@ -141,12 +138,23 @@
             tipo: document.getElementById('tipo').value, sexo: document.getElementById('sexo').value,
             data: new Date().toLocaleDateString('pt-BR'), entregue: false, isVale: false, ts: Date.now()
         });
-        document.getElementById('cliente').value=''; document.getElementById('valor').value=''; document.getElementById('frete').value=''; document.getElementById('previsao').value='';
+        document.getElementById('cliente').value=''; document.getElementById('valor').value='';
         salvar();
     }
 
+    function addVale() {
+        const v = prompt("Valor do vale para descontar?");
+        if(v) {
+            appData.vendas.push({
+                id: Date.now(), mesRef: appData.mesAtivo, cliente: 'RETIRADA DE VALE', valor: parseFloat(v),
+                data: new Date().toLocaleDateString('pt-BR'), isVale: true, ts: Date.now()
+            });
+            salvar();
+        }
+    }
+
     function render() {
-        let bruto=0, vales=0, comiss=0, s=0, b=0, es=0, eb=0;
+        let bruto=0, vales=0, comiss=0, s=0, b=0;
         let histDiario = {};
         const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo);
         const meta = appData.metas[appData.mesAtivo] || 150000;
@@ -154,7 +162,7 @@
         vMes.forEach(v => {
             if (!v.isVale) {
                 bruto += v.valor; comiss += (v.valor * 0.03);
-                if(v.tipo === 'Spitz') { s++; if(v.entregue) es++; } else { b++; if(v.entregue) eb++; }
+                v.tipo === 'Spitz' ? s++ : b++;
                 let dia = parseInt(v.data.split('/')[0]) || 1;
                 histDiario[dia] = (histDiario[dia] || 0) + v.valor;
             } else { vales += v.valor; }
@@ -162,23 +170,29 @@
 
         document.getElementById('metaDisplay').innerText = meta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         document.getElementById('totBruto').innerText = bruto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        document.getElementById('totVales').innerText = vales.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         document.getElementById('salLiq').innerText = (2000 + comiss - vales).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         document.getElementById('vTotS').innerText = s; document.getElementById('vTotB').innerText = b;
-        document.getElementById('eTotS').innerText = es; document.getElementById('eTotB').innerText = eb;
+        document.getElementById('qtdVendas').innerText = (s + b) + " Filhotes";
         
         const div = document.getElementById('lista'); div.innerHTML = '';
         [...vMes].sort((a,b) => b.ts - a.ts).forEach(v => {
             div.innerHTML += `
-                <div class="item">
+                <div class="item ${v.isVale ? 'is-vale' : ''}">
                     <div class="item-header">
-                        <div><b>${v.isVale ? '📉 VALE' : v.cliente}</b><br><small>${v.data.substring(0,5)} • ${v.tipo} ${v.sexo}</small><br>
-                        ${v.previsao ? '<small style="color:var(--yellow)">📅 Prev: '+v.previsao+'</small>' : ''}</div>
-                        <div style="text-align:right"><b>R$ ${v.valor.toLocaleString('pt-BR')}</b><br>
-                        ${v.frete > 0 ? '<small style="color:var(--blue)">+ Frete R$ '+v.frete.toLocaleString('pt-BR')+'</small>' : ''}</div>
+                        <div>
+                            <b style="color:${v.isVale ? 'var(--red)' : '#fff'}">${v.cliente}</b><br>
+                            <small>${v.data.substring(0,5)} • ${v.isVale ? 'Desconto de Salário' : v.tipo + ' ' + v.sexo}</small>
+                            ${v.previsao ? '<br><small style="color:var(--yellow)">📅 Prev: '+v.previsao+'</small>' : ''}
+                        </div>
+                        <div style="text-align:right">
+                            <b style="color:${v.isVale ? 'var(--red)' : '#fff'}">${v.isVale ? '-' : ''} R$ ${v.valor.toLocaleString('pt-BR')}</b>
+                            ${v.frete > 0 ? '<br><small style="color:var(--blue)">+ Frete R$ '+v.frete+'</small>' : ''}
+                        </div>
                     </div>
                     <div class="actions">
-                        <button class="btn-status ${v.entregue?'on':''}" onclick="toggleS(${v.id})">${v.entregue ? 'ENTREGUE ✔' : 'PENDENTE 🚚'}</button>
-                        <button class="btn-circle" onclick="del(${v.id})">🗑</button>
+                        ${!v.isVale ? `<button class="btn-status ${v.entregue?'on':''}" onclick="toggleS(${v.id})">${v.entregue ? 'ENTREGUE ✔' : 'PENDENTE 🚚'}</button>` : '<div style="flex:2.5"></div>'}
+                        <button class="btn-circle" onclick="del(${v.id})" style="color:var(--red)">🗑</button>
                     </div>
                 </div>`;
         });
@@ -188,29 +202,21 @@
     function desenharGrafico(histDiario, meta) {
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
-        
-        let labels = [], dataAcum = [], dataDia = [], acumulado = 0;
+        let labels = [], dataAcum = [], acumulado = 0;
         let hoje = new Date().getDate();
         let mesAgora = new Date().toLocaleDateString('pt-BR', {month:'2-digit', year:'numeric'});
         let isMesPassado = appData.mesAtivo !== mesAgora;
 
         for (let i = 1; i <= 31; i++) {
             labels.push(i);
-            let diaVenda = histDiario[i] || 0;
-            acumulado += diaVenda;
-            dataDia.push((diaVenda / meta) * 100);
-            if (isMesPassado || i <= hoje) { dataAcum.push((acumulado / meta) * 100); } 
-            else { dataAcum.push(null); }
+            acumulado += (histDiario[i] || 0);
+            if (isMesPassado || i <= hoje) dataAcum.push((acumulado / meta) * 100);
+            else dataAcum.push(null);
         }
 
         chart = new Chart(ctx, {
-            data: {
-                labels: labels,
-                datasets: [
-                    { type: 'line', data: dataAcum, borderColor: '#00f2ff', borderWidth: 4, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3, pointRadius: 0, spanGaps: true },
-                    { type: 'bar', data: dataDia, backgroundColor: 'rgba(0, 255, 136, 0.3)', borderRadius: 4 }
-                ]
-            },
+            type: 'line',
+            data: { labels: labels, datasets: [{ data: dataAcum, borderColor: '#00f2ff', borderWidth: 4, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3, pointRadius: 0, spanGaps: true }] },
             options: {
                 responsive: true, maintainAspectRatio: false,
                 scales: {
@@ -220,7 +226,7 @@
                 plugins: {
                     legend: { display: false },
                     datalabels: {
-                        display: (c) => c.datasetIndex === 0 && (isMesPassado ? c.dataIndex === 27 : c.dataIndex === hoje-1),
+                        display: (c) => c.dataIndex === (isMesPassado ? 27 : hoje-1),
                         align: 'top', color: '#00f2ff', font: { weight: '800' }, formatter: v => Math.round(v) + '%'
                     }
                 }
@@ -229,9 +235,8 @@
     }
 
     function toggleS(id) { const v = appData.vendas.find(x => x.id === id); v.entregue = !v.entregue; salvar(); }
-    function del(id) { if(confirm("Apagar venda?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); salvar(); } }
-    function addVale() { const v = prompt("Valor do vale?"); if(v) { appData.vendas.push({ id: Date.now(), mesRef: appData.mesAtivo, cliente: 'VALE', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true, ts: Date.now() }); salvar(); } }
-    function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `backup_canil.json`; a.click(); }
+    function del(id) { if(confirm("Apagar registro?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); salvar(); } }
+    function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `backup.json`; a.click(); }
 
     render();
     setInterval(() => { const d = new Date(); document.getElementById('relogio').innerHTML = d.toLocaleDateString('pt-BR') + '<br>' + d.toLocaleTimeString('pt-BR'); }, 1000);
