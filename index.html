@@ -15,7 +15,6 @@
         header h1 { margin: 0; font-size: 19px; font-weight: 800; text-transform: uppercase; color: var(--white); }
         .mes-selector { background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 14px; border-radius: 12px; font-size: 15px; margin-top: 15px; font-weight: 800; width: 100%; outline: none; appearance: none; }
 
-        /* DASHBOARD */
         .fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
         .fin-box { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); }
         .fin-box span { font-size: 10px; color: #777; font-weight: 800; display: block; text-transform: uppercase; margin-bottom: 6px; }
@@ -23,7 +22,6 @@
         .full-box { grid-column: span 2; border-color: var(--green); background: linear-gradient(145deg, rgba(0,255,136,0.05) 0%, rgba(0,0,0,0) 100%); }
         .full-box b { color: var(--green); font-size: 26px; font-weight: 800; }
 
-        /* ENTREGAS */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
         .stat-tag { background: #181818; padding: 14px; border-radius: 16px; border: 1px solid #282828; }
         .stat-tag.delivery { border-color: var(--green); background: rgba(0,255,136,0.03); }
@@ -31,10 +29,8 @@
         .stat-tag value { font-size: 20px; font-weight: 800; display: block; }
         .stat-tag small { font-size: 11px; color: #666; font-weight: 600; }
 
-        /* GRÁFICO NO TOPO */
         .chart-wrapper { background: var(--card); border-radius: 28px; border: 1px solid var(--border); margin: 10px 0 25px 0; padding: 20px; height: 340px; width: 100%; box-sizing: border-box; }
 
-        /* INPUTS */
         .inputs { background: var(--card); padding: 22px; border-radius: 24px; border: 1px solid var(--border); margin-bottom: 25px; }
         .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
         input, select { background: #000; border: 1px solid #333; color: var(--white); padding: 15px; border-radius: 14px; width: 100%; box-sizing: border-box; font-size: 15px; }
@@ -42,14 +38,13 @@
         .btn-group-sec { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
         .btn-sec { background: #1a1a1a; color: var(--white); border: 1px solid #333; padding: 14px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
 
-        /* HISTÓRICO CORRIGIDO */
         .item { background: var(--card); padding: 18px; border-radius: 22px; margin-bottom: 15px; border: 1px solid var(--border); animation: slideUp 0.4s ease; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         .item-header { display: flex; justify-content: space-between; align-items: flex-start; }
         .pgto-tag { font-size: 10px; background: var(--blue); color: #000; padding: 3px 8px; border-radius: 6px; font-weight: 800; margin-left: 8px; }
         .actions { display: flex; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #222; }
         .btn-status { flex: 2.5; padding: 12px; border-radius: 12px; border: none; background: #222; color: #aaa; font-weight: 800; font-size: 11px; text-transform: uppercase; }
-        .btn-status.on { background: var(--green); color: #000; box-shadow: 0 4px 15px rgba(0,255,136,0.2); }
+        .btn-status.on { background: var(--green); color: #000; }
         .btn-circle { width: 45px; height: 45px; border-radius: 12px; border: none; background: #252525; color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 18px; }
 
         @media print { .inputs, .chart-wrapper, header, .actions, .btn-group-sec, .mes-selector, #relogio { display: none !important; } }
@@ -116,7 +111,7 @@
     
     function addVenda() {
         const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valor').value);
-        if (!c || !v) { alert("Preencha Nome e Valor!"); return; }
+        if (!c || !v) return;
         appData.vendas.push({
             id: Date.now(), mesRef: appData.mesAtivo, cliente: c, valor: v,
             frete: parseFloat(document.getElementById('frete').value) || 0,
@@ -136,8 +131,8 @@
 
         vMes.forEach(v => {
             if (!v.isVale) {
-                bruto += v.valor + (v.frete || 0); // Soma bruta total (filhote + frete)
-                comiss += (v.valor * 0.03); // Comissão apenas sobre o valor do filhote
+                bruto += v.valor; // Faturamento Bruto REAL (sem o frete)
+                comiss += (v.valor * 0.03);
                 if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? sM++ : sF++; if(v.entregue) eS++; } 
                 else { v.sexo === 'Macho' ? bM++ : bF++; if(v.entregue) eB++; }
                 let dia = parseInt(v.data.split('/')[0]) || 1;
@@ -185,10 +180,25 @@
         if (chart) chart.destroy();
         let labels = [], dataProg = [], meta = appData.metas[appData.mesAtivo] || 150000, acumulado = 0, hoje = new Date().getDate();
         for (let i = 1; i <= 31; i++) { labels.push(i); acumulado += (histMap[i] || 0); dataProg.push(i <= hoje || histMap[i] ? (acumulado / meta) * 100 : null); }
+        
+        // CORREÇÃO: Pega o maior valor do faturamento para o gráfico não quebrar
+        let maxVal = Math.max(...dataProg.filter(v => v !== null), 100) + 10;
+
         chart = new Chart(ctx, {
             type: 'line',
             data: { labels: labels, datasets: [{ data: dataProg, borderColor: '#00f2ff', borderWidth: 4, fill: true, backgroundColor: (c) => { const g = c.chart.ctx.createLinearGradient(0,0,0,300); g.addColorStop(0,'rgba(0,242,255,0.2)'); g.addColorStop(1,'rgba(0,0,0,0)'); return g; }, tension: 0.35, pointRadius: 2, pointBackgroundColor: '#00f2ff' }] },
-            options: { responsive: true, maintainAspectRatio: false, scales: { y: { min: 0, max: 110, display: false }, x: { ticks: { color: '#555', font: { size: 10, weight: 'bold' } }, grid: { display: false } } }, plugins: { legend: { display: false }, datalabels: { display: (c) => c.dataIndex === hoje-1, align: 'top', color: '#00f2ff', font: { weight: '800', size: 12 }, formatter: (v) => Math.round(v) + '%' } } }
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                scales: { 
+                    y: { min: 0, max: maxVal, display: false }, // Agora o máximo é dinâmico!
+                    x: { ticks: { color: '#555', font: { size: 10, weight: 'bold' } }, grid: { display: false } } 
+                }, 
+                plugins: { 
+                    legend: { display: false }, 
+                    datalabels: { display: (c) => c.dataIndex === hoje-1, align: 'top', color: '#00f2ff', font: { weight: '800', size: 12 }, formatter: (v) => Math.round(v) + '%' } 
+                } 
+            }
         });
     }
 
