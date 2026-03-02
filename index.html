@@ -38,14 +38,28 @@
         .inputs { background: var(--card); padding: 22px; border-radius: 24px; border: 1px solid var(--border); margin-bottom: 25px; }
         .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
         input, select { background: #000; border: 1px solid #333; color: var(--white); padding: 15px; border-radius: 14px; width: 100%; box-sizing: border-box; font-size: 15px; }
-        .btn-main { background: var(--white); color: #000; width: 100%; padding: 18px; border-radius: 15px; font-weight: 800; border: none; cursor: pointer; text-transform: uppercase; }
+        .btn-main { background: var(--white); color: #000; width: 100%; padding: 18px; border-radius: 15px; font-weight: 800; border: none; cursor: pointer; text-transform: uppercase; margin-bottom: 10px; }
         
+        .btn-group-sec { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .btn-sec { background: #1a1a1a; color: var(--white); border: 1px solid #333; padding: 14px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; cursor: pointer; }
+
         .item { background: var(--card); padding: 18px; border-radius: 22px; margin-bottom: 15px; border: 1px solid var(--border); }
         .item-header { display: flex; justify-content: space-between; align-items: flex-start; }
         .actions { display: flex; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #222; }
         .btn-status { flex: 2.5; padding: 12px; border-radius: 12px; border: none; background: #222; color: #aaa; font-weight: 800; font-size: 11px; text-transform: uppercase; }
         .btn-status.on { background: var(--green); color: #000; }
         .btn-circle { width: 45px; height: 45px; border-radius: 12px; border: none; background: #252525; color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+        /* ESTILO DE IMPRESSÃO (PDF) */
+        @media print { 
+            body { background: #fff !important; color: #000 !important; padding: 0; }
+            .inputs, .chart-wrapper, .btn-meta, .btn-group-sec, .actions, .mes-selector, #relogio { display: none !important; } 
+            .fin-grid, .stats-grid { gap: 5px; }
+            .fin-box, .stat-tag, .item { border: 1px solid #eee !important; background: #fff !important; color: #000 !important; box-shadow: none !important; }
+            .fin-box b, .stat-tag value, b, span { color: #000 !important; }
+            .item { break-inside: avoid; margin-bottom: 10px; }
+            header h1 { color: #000 !important; text-align: center; width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -59,19 +73,19 @@
                 <option value="03/2026">Março 2026</option>
                 <option value="04/2026">Abril 2026</option>
             </select>
-            <button class="btn-meta" onclick="ajustarMeta()">⚙️</button>
+            <button class="btn-meta" onclick="ajustarMeta()">⚙️ Meta</button>
         </div>
     </header>
 
     <div class="fin-grid">
         <div class="fin-box full-box"><span>💰 SALÁRIO LÍQUIDO</span><b id="salLiq">R$ 0,00</b></div>
         <div class="fin-box"><span>💵 FATURAMENTO BRUTO</span><b id="totBruto" style="color:var(--blue)">R$ 0,00</b></div>
-        <div class="fin-box"><span>🎯 META ATUAL</span><b id="metaDisplay" style="color:var(--yellow)">R$ 0,00</b></div>
+        <div class="fin-box"><span>🎯 META DO MÊS</span><b id="metaDisplay" style="color:var(--yellow)">R$ 0,00</b></div>
     </div>
 
     <div class="stats-grid">
-        <div class="stat-tag"><label>🐕 Spitz</label><value id="vTotS">0</value></div>
-        <div class="stat-tag"><label>🐈 Bengal</label><value id="vTotB">0</value></div>
+        <div class="stat-tag"><label>🐕 Spitz Total</label><value id="vTotS">0</value></div>
+        <div class="stat-tag"><label>🐈 Bengal Total</label><value id="vTotB">0</value></div>
     </div>
     <div class="stats-grid">
         <div class="stat-tag delivery"><label>🚚 Entregues Spitz</label><value id="eTotS">0</value></div>
@@ -91,7 +105,14 @@
             <input type="number" id="frete" placeholder="🚚 Valor Frete">
         </div>
         <input type="text" id="previsao" placeholder="📅 Previsão Entrega" style="margin-bottom:12px">
-        <button class="btn-main" onclick="addVenda()">✅ Registrar Filhote</button>
+        
+        <button class="btn-main" onclick="addVenda()">✅ REGISTRAR FILHOTE</button>
+        
+        <div class="btn-group-sec">
+            <button class="btn-sec" onclick="addVale()">➖ VALE</button>
+            <button class="btn-sec" onclick="window.print()" style="color:var(--green)">📄 GERAR PDF</button>
+            <button class="btn-sec" onclick="exportarDados()">💾 BACKUP</button>
+        </div>
     </div>
 
     <div id="lista"></div>
@@ -120,7 +141,7 @@
             tipo: document.getElementById('tipo').value, sexo: document.getElementById('sexo').value,
             data: new Date().toLocaleDateString('pt-BR'), entregue: false, isVale: false, ts: Date.now()
         });
-        document.getElementById('cliente').value=''; document.getElementById('valor').value='';
+        document.getElementById('cliente').value=''; document.getElementById('valor').value=''; document.getElementById('frete').value=''; document.getElementById('previsao').value='';
         salvar();
     }
 
@@ -150,13 +171,13 @@
             div.innerHTML += `
                 <div class="item">
                     <div class="item-header">
-                        <div><b>${v.isVale ? '📉 VALE' : v.cliente}</b><br><small>${v.data.substring(0,5)} • ${v.tipo}</small><br>
-                        ${v.previsao ? '<small style="color:var(--yellow)">📅 '+v.previsao+'</small>' : ''}</div>
+                        <div><b>${v.isVale ? '📉 VALE' : v.cliente}</b><br><small>${v.data.substring(0,5)} • ${v.tipo} ${v.sexo}</small><br>
+                        ${v.previsao ? '<small style="color:var(--yellow)">📅 Prev: '+v.previsao+'</small>' : ''}</div>
                         <div style="text-align:right"><b>R$ ${v.valor.toLocaleString('pt-BR')}</b><br>
-                        ${v.frete > 0 ? '<small style="color:var(--blue)">+ Frete R$ '+v.frete+'</small>' : ''}</div>
+                        ${v.frete > 0 ? '<small style="color:var(--blue)">+ Frete R$ '+v.frete.toLocaleString('pt-BR')+'</small>' : ''}</div>
                     </div>
                     <div class="actions">
-                        <button class="btn-status ${v.entregue?'on':''}" onclick="toggleS(${v.id})">${v.entregue ? 'ENTREGUE ✔' : 'PENDENTE'}</button>
+                        <button class="btn-status ${v.entregue?'on':''}" onclick="toggleS(${v.id})">${v.entregue ? 'ENTREGUE ✔' : 'PENDENTE 🚚'}</button>
                         <button class="btn-circle" onclick="del(${v.id})">🗑</button>
                     </div>
                 </div>`;
@@ -178,7 +199,6 @@
             let diaVenda = histDiario[i] || 0;
             acumulado += diaVenda;
             dataDia.push((diaVenda / meta) * 100);
-            // Se for mês passado, mostra a linha inteira. Se for o atual, para no dia de hoje.
             if (isMesPassado || i <= hoje) { dataAcum.push((acumulado / meta) * 100); } 
             else { dataAcum.push(null); }
         }
@@ -187,7 +207,7 @@
             data: {
                 labels: labels,
                 datasets: [
-                    { type: 'line', data: dataAcum, borderColor: '#00f2ff', borderWidth: 4, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3, pointRadius: 0 },
+                    { type: 'line', data: dataAcum, borderColor: '#00f2ff', borderWidth: 4, fill: true, backgroundColor: 'rgba(0, 242, 255, 0.1)', tension: 0.3, pointRadius: 0, spanGaps: true },
                     { type: 'bar', data: dataDia, backgroundColor: 'rgba(0, 255, 136, 0.3)', borderRadius: 4 }
                 ]
             },
@@ -195,7 +215,7 @@
                 responsive: true, maintainAspectRatio: false,
                 scales: {
                     y: { min: 0, max: Math.max(115, Math.max(...dataAcum.filter(v => v !== null)) + 15), ticks: { color: '#555', callback: v => v + '%' } },
-                    x: { ticks: { color: '#555' } }
+                    x: { ticks: { color: '#555' }, grid: { display: false } }
                 },
                 plugins: {
                     legend: { display: false },
@@ -209,10 +229,12 @@
     }
 
     function toggleS(id) { const v = appData.vendas.find(x => x.id === id); v.entregue = !v.entregue; salvar(); }
-    function del(id) { if(confirm("Apagar?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); salvar(); } }
+    function del(id) { if(confirm("Apagar venda?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); salvar(); } }
     function addVale() { const v = prompt("Valor do vale?"); if(v) { appData.vendas.push({ id: Date.now(), mesRef: appData.mesAtivo, cliente: 'VALE', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true, ts: Date.now() }); salvar(); } }
+    function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `backup_canil.json`; a.click(); }
 
     render();
+    setInterval(() => { const d = new Date(); document.getElementById('relogio').innerHTML = d.toLocaleDateString('pt-BR') + '<br>' + d.toLocaleTimeString('pt-BR'); }, 1000);
 </script>
 </body>
 </html>
