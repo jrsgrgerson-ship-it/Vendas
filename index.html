@@ -9,38 +9,42 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <style>
         :root { --blue: #00f2ff; --green: #00ff88; --red: #ff0055; --bg: #050505; --card: #111; --border: #222; --yellow: #ffcc00; --white: #fff; }
-        body { background: var(--bg); color: var(--white); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 12px; padding-bottom: 60px; overflow-x: hidden; }
-        #relogio { position: absolute; top: 18px; right: 15px; text-align: right; font-size: 11px; color: var(--blue); font-weight: 800; line-height: 1.2; }
+        body { background: var(--bg); color: var(--white); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 12px; padding-bottom: 60px; }
+        
+        #relogio { position: absolute; top: 18px; right: 15px; text-align: right; font-size: 11px; color: var(--blue); font-weight: 800; }
+        
         header { padding: 12px 5px 20px 5px; border-bottom: 1px solid var(--border); margin-bottom: 20px; position: relative; }
         header h1 { margin: 0; font-size: 19px; font-weight: 800; text-transform: uppercase; color: var(--white); }
-        .mes-selector { background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 14px; border-radius: 12px; font-size: 15px; margin-top: 15px; font-weight: 800; width: 100%; outline: none; appearance: none; }
+        
+        .header-controls { display: flex; gap: 10px; align-items: center; margin-top: 15px; }
+        .mes-selector { flex: 1; background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 800; outline: none; appearance: none; }
+        .btn-meta { background: #1a1a1a; color: var(--white); border: 1px solid #333; padding: 14px; border-radius: 12px; cursor: pointer; }
 
         .fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-        .fin-box { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); }
-        .fin-box span { font-size: 10px; color: #777; font-weight: 800; display: block; text-transform: uppercase; margin-bottom: 6px; }
-        .fin-box b { font-size: 20px; display: block; }
+        .fin-box { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+        .fin-box span { font-size: 9px; color: #777; font-weight: 800; display: block; text-transform: uppercase; margin-bottom: 6px; }
+        .fin-box b { font-size: 19px; display: block; }
         .full-box { grid-column: span 2; border-color: var(--green); background: linear-gradient(145deg, rgba(0,255,136,0.05) 0%, rgba(0,0,0,0) 100%); }
-        .full-box b { color: var(--green); font-size: 26px; font-weight: 800; }
+        .full-box b { color: var(--green); font-size: 24px; font-weight: 800; }
 
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
         .stat-tag { background: #181818; padding: 14px; border-radius: 16px; border: 1px solid #282828; }
-        .stat-tag.delivery { border-color: var(--green); background: rgba(0,255,136,0.03); }
+        .stat-tag.delivery { border-color: var(--green); }
         .stat-tag label { display: block; font-size: 9px; color: var(--blue); font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
         .stat-tag value { font-size: 20px; font-weight: 800; display: block; }
-        .stat-tag small { font-size: 11px; color: #666; font-weight: 600; }
 
-        .chart-wrapper { background: var(--card); border-radius: 28px; border: 1px solid var(--border); margin: 10px 0 25px 0; padding: 15px; height: 350px; width: 100%; box-sizing: border-box; }
+        .chart-wrapper { background: var(--card); border-radius: 28px; border: 1px solid var(--border); margin: 10px 0 25px 0; padding: 15px; height: 320px; width: 100%; box-sizing: border-box; }
 
         .inputs { background: var(--card); padding: 22px; border-radius: 24px; border: 1px solid var(--border); margin-bottom: 25px; }
         .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
         input, select { background: #000; border: 1px solid #333; color: var(--white); padding: 15px; border-radius: 14px; width: 100%; box-sizing: border-box; font-size: 15px; }
-        .btn-main { background: var(--white); color: #000; width: 100%; padding: 18px; border-radius: 15px; font-weight: 800; border: none; cursor: pointer; font-size: 15px; text-transform: uppercase; }
+        .btn-main { background: var(--white); color: #000; width: 100%; padding: 18px; border-radius: 15px; font-weight: 800; border: none; cursor: pointer; text-transform: uppercase; }
         .btn-group-sec { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
         .btn-sec { background: #1a1a1a; color: var(--white); border: 1px solid #333; padding: 14px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
 
         .item { background: var(--card); padding: 18px; border-radius: 22px; margin-bottom: 15px; border: 1px solid var(--border); }
         .item-header { display: flex; justify-content: space-between; align-items: flex-start; }
-        .pgto-tag { font-size: 10px; background: var(--blue); color: #000; padding: 3px 8px; border-radius: 6px; font-weight: 800; margin-left: 8px; }
+        .pgto-tag { font-size: 10px; background: var(--blue); color: #000; padding: 3px 8px; border-radius: 6px; font-weight: 800; }
         .actions { display: flex; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #222; }
         .btn-status { flex: 2.5; padding: 12px; border-radius: 12px; border: none; background: #222; color: #aaa; font-weight: 800; font-size: 11px; text-transform: uppercase; }
         .btn-status.on { background: var(--green); color: #000; }
@@ -52,26 +56,27 @@
 <body>
     <div id="relogio"></div>
     <header>
-        <h1>Painel My Baby | Gerson 🐾</h1>
-        <select class="mes-selector" id="selecaoMes" onchange="mudarMes()">
-            <option value="01/2026">Janeiro 2026</option><option value="02/2026" selected>Fevereiro 2026</option>
-            <option value="03/2026">Março 2026</option><option value="04/2026">Abril 2026</option>
-        </select>
+        <h1>My Baby | Gerson 🐾</h1>
+        <div class="header-controls">
+            <select class="mes-selector" id="selecaoMes" onchange="mudarMes()">
+                <option value="01/2026">Janeiro 2026</option>
+                <option value="02/2026">Fevereiro 2026</option>
+                <option value="03/2026">Março 2026</option>
+                <option value="04/2026">Abril 2026</option>
+            </select>
+            <button class="btn-meta" onclick="ajustarMeta()" title="Ajustar Meta do Mês">⚙️</button>
+        </div>
     </header>
 
     <div class="fin-grid">
-        <div class="fin-box full-box"><span>💰 SALÁRIO LÍQUIDO (FIXO + 3% - VALES)</span><b id="salLiq">R$ 0,00</b></div>
-        <div class="fin-box"><span>💵 FATURAMENTO BRUTO (FILHOTES)</span><b id="totBruto" style="color:var(--blue)">R$ 0,00</b></div>
-        <div class="fin-box"><span>💸 VALES ACUMULADOS</span><b id="totDescontos" style="color:var(--red)">R$ 0,00</b></div>
+        <div class="fin-box full-box"><span>💰 SALÁRIO LÍQUIDO</span><b id="salLiq">R$ 0,00</b></div>
+        <div class="fin-box"><span>💵 FATURAMENTO BRUTO</span><b id="totBruto" style="color:var(--blue)">R$ 0,00</b></div>
+        <div class="fin-box"><span>🎯 META ATUAL</span><b id="metaDisplay" style="color:var(--yellow)">R$ 0,00</b></div>
     </div>
 
     <div class="stats-grid">
-        <div class="stat-tag"><label>🐕 Spitz Total</label><value id="vTotS">0</value><small id="vSubS">0M | 0F</small></div>
-        <div class="stat-tag"><label>🐈 Bengal Total</label><value id="vTotB">0</value><small id="vSubB">0M | 0F</small></div>
-    </div>
-    <div class="stats-grid">
-        <div class="stat-tag delivery"><label>🚚 Entregues Spitz</label><value id="eTotS">0</value></div>
-        <div class="stat-tag delivery"><label>🚚 Entregues Bengal</label><value id="eTotB">0</value></div>
+        <div class="stat-tag"><label>🐕 Spitz</label><value id="vTotS">0</value></div>
+        <div class="stat-tag"><label>🐈 Bengal</label><value id="vTotB">0</value></div>
     </div>
 
     <div class="chart-wrapper"><canvas id="graficoVendas"></canvas></div>
@@ -83,17 +88,13 @@
         </div>
         <input type="text" id="cliente" placeholder="👤 Nome do Cliente" style="margin-bottom:12px">
         <div class="input-row">
-            <input type="number" id="valor" placeholder="💰 Valor do Filhote">
-            <input type="number" id="frete" placeholder="🚚 Valor Frete">
+            <input type="number" id="valor" placeholder="💰 Valor Filhote">
+            <input type="number" id="frete" placeholder="🚚 Frete">
         </div>
-        <div class="input-row">
-            <input type="text" id="previsao" placeholder="📅 Previsão Entrega">
-            <select id="pgto"><option value="PIX">💎 PIX</option><option value="Cartão">💳 Cartão</option></select>
-        </div>
-        <button class="btn-main" onclick="addVenda()">✅ Registrar Filhote</button>
+        <button class="btn-main" onclick="addVenda()">✅ Registrar Venda</button>
         <div class="btn-group-sec">
-            <button class="btn-sec" onclick="addVale()">➖ NOVO VALE</button>
-            <button class="btn-sec" onclick="window.print()">📄 IMPRIMIR</button>
+            <button class="btn-sec" onclick="addVale()">➖ VALE</button>
+            <button class="btn-sec" onclick="window.print()">📄 PDF</button>
             <button class="btn-sec" onclick="exportarDados()">💾 BACKUP</button>
         </div>
     </div>
@@ -102,11 +103,28 @@
 
 <script>
     Chart.register(ChartDataLabels);
-    let appData = JSON.parse(localStorage.getItem('canil_2026_db')) || { mesAtivo: "02/2026", metas: {"02/2026": 150000}, vendas: [] };
+    let appData = JSON.parse(localStorage.getItem('canil_2026_db')) || { 
+        mesAtivo: "02/2026", 
+        metas: {"02/2026": 150000}, 
+        vendas: [] 
+    };
     let chart = null;
 
     function salvar() { localStorage.setItem('canil_2026_db', JSON.stringify(appData)); render(); }
-    function mudarMes() { appData.mesAtivo = document.getElementById('selecaoMes').value; salvar(); }
+    
+    function mudarMes() { 
+        appData.mesAtivo = document.getElementById('selecaoMes').value; 
+        if(!appData.metas[appData.mesAtivo]) appData.metas[appData.mesAtivo] = 150000;
+        salvar(); 
+    }
+
+    function ajustarMeta() {
+        const nova = prompt("Defina a Meta para " + appData.mesAtivo, appData.metas[appData.mesAtivo]);
+        if(nova) {
+            appData.metas[appData.mesAtivo] = parseFloat(nova);
+            salvar();
+        }
+    }
     
     function addVenda() {
         const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valor').value);
@@ -114,8 +132,7 @@
         appData.vendas.push({
             id: Date.now(), mesRef: appData.mesAtivo, cliente: c, valor: v,
             frete: parseFloat(document.getElementById('frete').value) || 0,
-            previsao: document.getElementById('previsao').value || '',
-            pgto: document.getElementById('pgto').value, tipo: document.getElementById('tipo').value,
+            pgto: 'PIX', tipo: document.getElementById('tipo').value,
             sexo: document.getElementById('sexo').value, data: new Date().toLocaleDateString('pt-BR'),
             entregue: false, isVale: false, ts: Date.now()
         });
@@ -124,29 +141,25 @@
     }
 
     function render() {
-        let bruto=0, vales=0, comiss=0, sM=0, sF=0, bM=0, bF=0, eS=0, eB=0;
-        let histMap = {};
+        let bruto=0, vales=0, comiss=0, s=0, b=0;
+        let histAcum = {}, histDiario = {};
         const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo);
+        const metaAtual = appData.metas[appData.mesAtivo] || 150000;
 
         vMes.forEach(v => {
             if (!v.isVale) {
                 bruto += v.valor;
                 comiss += (v.valor * 0.03);
-                if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? sM++ : sF++; if(v.entregue) eS++; } 
-                else { v.sexo === 'Macho' ? bM++ : bF++; if(v.entregue) eB++; }
+                v.tipo === 'Spitz' ? s++ : b++;
                 let dia = parseInt(v.data.split('/')[0]) || 1;
-                histMap[dia] = (histMap[dia] || 0) + v.valor;
+                histDiario[dia] = (histDiario[dia] || 0) + v.valor;
             } else { vales += v.valor; }
         });
 
-        document.getElementById('vTotS').innerText = (sM + sF);
-        document.getElementById('vSubS').innerText = `${sM}M | ${sF}F`;
-        document.getElementById('vTotB').innerText = (bM + bF);
-        document.getElementById('vSubB').innerText = `${bM}M | ${bF}F`;
-        document.getElementById('eTotS').innerText = eS;
-        document.getElementById('eTotB').innerText = eB;
+        document.getElementById('metaDisplay').innerText = metaAtual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        document.getElementById('vTotS').innerText = s;
+        document.getElementById('vTotB').innerText = b;
         document.getElementById('totBruto').innerText = bruto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        document.getElementById('totDescontos').innerText = vales.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         document.getElementById('salLiq').innerText = (2000 + comiss - vales).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         
         const div = document.getElementById('lista'); div.innerHTML = '';
@@ -154,108 +167,93 @@
             div.innerHTML += `
                 <div class="item">
                     <div class="item-header">
-                        <div class="item-info">
-                            <b>${v.isVale ? '📉 VALE' : v.cliente} <span class="pgto-tag">${v.pgto||''}</span></b><br>
-                            <small>${v.data.substring(0,5)} • ${v.tipo} ${v.sexo}</small><br>
-                            ${v.previsao ? '<small style="color:var(--yellow); font-weight:800">📅 '+v.previsao+'</small>' : ''}
-                        </div>
+                        <div><b>${v.isVale ? '📉 VALE' : v.cliente}</b><br><small>${v.data.substring(0,5)} • ${v.tipo}</small></div>
                         <div style="text-align:right">
-                            <b style="color:var(--white)">R$ ${v.valor.toLocaleString('pt-BR')}</b><br>
-                            ${v.frete > 0 ? '<small style="color:var(--blue); font-weight:800">+ Frete R$ '+v.frete.toLocaleString('pt-BR')+'</small>' : ''}
+                            <b style="color:#fff">R$ ${v.valor.toLocaleString('pt-BR')}</b><br>
+                            ${v.frete > 0 ? '<small style="color:var(--blue)">+ Frete R$ '+v.frete+'</small>' : ''}
                         </div>
                     </div>
                     <div class="actions">
-                        <button class="btn-status ${v.entregue?'on':''}" onclick="toggleS(${v.id})">${v.entregue ? 'ENTREGUE ✔' : 'PENDENTE 🚚'}</button>
-                        <button class="btn-circle" onclick="editarVenda(${v.id})">✏️</button>
-                        <button class="btn-circle" onclick="del(${v.id})" style="color:var(--red)">🗑</button>
+                        <button class="btn-status ${v.entregue?'on':''}" onclick="toggleS(${v.id})">${v.entregue ? 'ENTREGUE ✔' : 'PENDENTE'}</button>
+                        <button class="btn-circle" onclick="del(${v.id})">🗑</button>
                     </div>
                 </div>`;
         });
-        desenharGrafico(histMap);
+        desenharGrafico(histDiario, metaAtual);
     }
 
-    function desenharGrafico(histMap) {
+    function desenharGrafico(histDiario, meta) {
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
         
-        let labels = [], dataProg = [], meta = appData.metas[appData.mesAtivo] || 150000, acumulado = 0;
+        let labels = [], dataAcum = [], dataDia = [], acumulado = 0;
         let hoje = new Date().getDate();
-        let ultimoPerc = 0;
 
-        // Loop para preencher todos os dias do mês sem buracos
         for (let i = 1; i <= 31; i++) {
             labels.push(i);
-            acumulado += (histMap[i] || 0);
-            let p = (acumulado / meta) * 100;
+            let diaVenda = histDiario[i] || 0;
+            acumulado += diaVenda;
             
-            if (i <= hoje) {
-                dataProg.push(p);
-                ultimoPerc = p;
-            } else {
-                dataProg.push(null);
-            }
+            dataDia.push( (diaVenda / meta) * 100 ); // Venda do dia em %
+            dataAcum.push( i <= hoje ? (acumulado / meta) * 100 : null );
         }
 
-        let teto = Math.max(115, ultimoPerc + 20);
-
         chart = new Chart(ctx, {
-            type: 'line',
-            data: { labels: labels, datasets: [{ 
-                data: dataProg, 
-                borderColor: '#00f2ff', 
-                borderWidth: 4, 
-                fill: true,
-                spanGaps: true, // ESSENCIAL: Conecta os pontos sem espaços brancos
-                backgroundColor: (c) => { 
-                    const g = c.chart.ctx.createLinearGradient(0,0,0,300); 
-                    g.addColorStop(0,'rgba(0,242,255,0.3)'); 
-                    g.addColorStop(1,'rgba(0,0,0,0)'); return g; 
-                }, 
-                tension: 0.2, // Linha mais firme para evitar bugs visuais
-                pointRadius: (c) => c.dataIndex === hoje-1 ? 6 : 0,
-                pointBackgroundColor: '#00f2ff'
-            }] },
-            options: { 
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        type: 'line',
+                        label: 'Acumulado',
+                        data: dataAcum,
+                        borderColor: '#00f2ff',
+                        borderWidth: 4,
+                        fill: true,
+                        spanGaps: true,
+                        backgroundColor: 'rgba(0, 242, 255, 0.1)',
+                        tension: 0.3,
+                        pointRadius: (c) => c.dataIndex === hoje-1 ? 6 : 0,
+                    },
+                    {
+                        type: 'bar',
+                        label: 'Venda do Dia',
+                        data: dataDia,
+                        backgroundColor: 'rgba(0, 255, 136, 0.4)',
+                        borderRadius: 4,
+                        barPercentage: 0.6
+                    }
+                ]
+            },
+            options: {
                 responsive: true, maintainAspectRatio: false,
-                layout: { padding: { top: 30 } },
-                scales: { 
+                scales: {
                     y: { 
-                        min: 0, max: teto, display: true,
+                        min: 0, 
+                        max: Math.max(110, Math.max(...dataAcum.filter(v => v !== null)) + 20),
                         grid: { color: '#222' },
-                        ticks: { color: '#555', font: { size: 10 }, callback: (v) => v + '%' }
-                    }, 
-                    x: { ticks: { color: '#555', font: { weight: 'bold', size: 10 } }, grid: { display: false } } 
-                }, 
-                plugins: { 
-                    legend: { display: false }, 
-                    datalabels: { 
-                        display: (c) => c.dataIndex === hoje-1, 
-                        align: 'top', offset: 10, color: '#00f2ff', 
-                        font: { weight: '800', size: 14 }, 
-                        formatter: (v) => Math.round(v) + '%' 
-                    } 
-                } 
+                        ticks: { color: '#555', callback: (v) => v + '%' }
+                    },
+                    x: { grid: { display: false }, ticks: { color: '#555' } }
+                },
+                plugins: {
+                    legend: { display: false },
+                    datalabels: {
+                        display: (c) => c.datasetIndex === 0 && c.dataIndex === hoje-1,
+                        align: 'top', color: '#00f2ff', font: { weight: '800' },
+                        formatter: (v) => Math.round(v) + '%'
+                    }
+                }
             }
         });
     }
 
     function toggleS(id) { const v = appData.vendas.find(x => x.id === id); v.entregue = !v.entregue; salvar(); }
-    function del(id) { if(confirm("Deseja apagar?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); salvar(); } }
+    function del(id) { if(confirm("Apagar?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); salvar(); } }
     function addVale() { const v = prompt("Valor do vale?"); if(v) { appData.vendas.push({ id: Date.now(), mesRef: appData.mesAtivo, cliente: 'VALE', valor: parseFloat(v), data: new Date().toLocaleDateString('pt-BR'), isVale: true, ts: Date.now() }); salvar(); } }
-    function editarVenda(id) {
-        const v = appData.vendas.find(x => x.id === id);
-        if(v && !v.isVale) {
-            v.cliente = prompt("Cliente:", v.cliente) || v.cliente;
-            v.valor = parseFloat(prompt("Valor:", v.valor)) || v.valor;
-            v.frete = parseFloat(prompt("Frete:", v.frete)) || 0;
-            v.previsao = prompt("Previsão:", v.previsao) || v.previsao;
-            salvar();
-        }
-    }
-    function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `backup_canil.json`; a.click(); }
+    function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `backup.json`; a.click(); }
 
     render();
-    setInterval(() => { const agora = new Date(); document.getElementById('relogio').innerHTML = agora.toLocaleDateString('pt-BR') + '<br>' + agora.toLocaleTimeString('pt-BR'); }, 1000);
+    setInterval(() => { const d = new Date(); document.getElementById('relogio').innerHTML = d.toLocaleDateString('pt-BR') + '<br>' + d.toLocaleTimeString('pt-BR'); }, 1000);
 </script>
 </body>
 </html>
