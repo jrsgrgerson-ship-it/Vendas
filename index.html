@@ -10,23 +10,18 @@
     <style>
         :root { --blue: #00f2ff; --green: #00ff88; --red: #ff0055; --bg: #050505; --card: #111; --border: #222; --yellow: #ffcc00; --white: #fff; }
         body { background: var(--bg); color: var(--white); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 12px; padding-bottom: 60px; overflow-x: hidden; }
-        
-        #relogio { position: absolute; top: 18px; right: 15px; text-align: right; font-size: 11px; color: var(--blue); font-weight: 800; line-height: 1.2; text-shadow: 0 0 10px rgba(0,242,255,0.3); }
-        
+        #relogio { position: absolute; top: 18px; right: 15px; text-align: right; font-size: 11px; color: var(--blue); font-weight: 800; line-height: 1.2; }
         header { padding: 12px 5px 20px 5px; border-bottom: 1px solid var(--border); margin-bottom: 20px; position: relative; }
-        header h1 { margin: 0; font-size: 19px; font-weight: 800; text-transform: uppercase; color: var(--white); letter-spacing: -0.5px; }
-        
-        .mes-selector { background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 14px; border-radius: 12px; font-size: 15px; margin-top: 15px; font-weight: 800; width: 100%; outline: none; appearance: none; box-shadow: inset 0 0 10px rgba(0,242,255,0.1); }
+        header h1 { margin: 0; font-size: 19px; font-weight: 800; text-transform: uppercase; color: var(--white); }
+        .mes-selector { background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 14px; border-radius: 12px; font-size: 15px; margin-top: 15px; font-weight: 800; width: 100%; outline: none; appearance: none; }
 
-        /* FINANCEIRO */
         .fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-        .fin-box { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+        .fin-box { background: var(--card); padding: 18px; border-radius: 20px; border: 1px solid var(--border); }
         .fin-box span { font-size: 10px; color: #777; font-weight: 800; display: block; text-transform: uppercase; margin-bottom: 6px; }
-        .fin-box b { font-size: 20px; display: block; letter-spacing: -0.5px; }
+        .fin-box b { font-size: 20px; display: block; }
         .full-box { grid-column: span 2; border-color: var(--green); background: linear-gradient(145deg, rgba(0,255,136,0.05) 0%, rgba(0,0,0,0) 100%); }
         .full-box b { color: var(--green); font-size: 26px; font-weight: 800; }
 
-        /* ENTREGAS */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
         .stat-tag { background: #181818; padding: 14px; border-radius: 16px; border: 1px solid #282828; }
         .stat-tag.delivery { border-color: var(--green); background: rgba(0,255,136,0.03); }
@@ -34,29 +29,24 @@
         .stat-tag value { font-size: 20px; font-weight: 800; display: block; }
         .stat-tag small { font-size: 11px; color: #666; font-weight: 600; }
 
-        /* GRÁFICO ESCALÁVEL */
-        .chart-wrapper { background: var(--card); border-radius: 28px; border: 1px solid var(--border); margin: 10px 0 25px 0; padding: 15px; height: 350px; width: 100%; box-sizing: border-box; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+        .chart-wrapper { background: var(--card); border-radius: 28px; border: 1px solid var(--border); margin: 10px 0 25px 0; padding: 15px; height: 350px; width: 100%; box-sizing: border-box; }
 
-        /* INPUTS */
         .inputs { background: var(--card); padding: 22px; border-radius: 24px; border: 1px solid var(--border); margin-bottom: 25px; }
         .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-        input, select { background: #000; border: 1px solid #333; color: var(--white); padding: 15px; border-radius: 14px; width: 100%; box-sizing: border-box; font-size: 15px; transition: 0.3s; }
-        input:focus { border-color: var(--blue); }
+        input, select { background: #000; border: 1px solid #333; color: var(--white); padding: 15px; border-radius: 14px; width: 100%; box-sizing: border-box; font-size: 15px; }
         .btn-main { background: var(--white); color: #000; width: 100%; padding: 18px; border-radius: 15px; font-weight: 800; border: none; cursor: pointer; font-size: 15px; text-transform: uppercase; }
         .btn-group-sec { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .btn-sec { background: #1a1a1a; color: var(--white); border: 1px solid #333; padding: 14px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; cursor: pointer; }
+        .btn-sec { background: #1a1a1a; color: var(--white); border: 1px solid #333; padding: 14px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; }
 
-        /* LISTA */
-        .item { background: var(--card); padding: 18px; border-radius: 22px; margin-bottom: 15px; border: 1px solid var(--border); animation: slideUp 0.4s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .item { background: var(--card); padding: 18px; border-radius: 22px; margin-bottom: 15px; border: 1px solid var(--border); }
         .item-header { display: flex; justify-content: space-between; align-items: flex-start; }
         .pgto-tag { font-size: 10px; background: var(--blue); color: #000; padding: 3px 8px; border-radius: 6px; font-weight: 800; margin-left: 8px; }
         .actions { display: flex; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #222; }
         .btn-status { flex: 2.5; padding: 12px; border-radius: 12px; border: none; background: #222; color: #aaa; font-weight: 800; font-size: 11px; text-transform: uppercase; }
-        .btn-status.on { background: var(--green); color: #000; box-shadow: 0 4px 15px rgba(0,255,136,0.2); }
+        .btn-status.on { background: var(--green); color: #000; }
         .btn-circle { width: 45px; height: 45px; border-radius: 12px; border: none; background: #252525; color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 18px; }
 
-        @media print { .inputs, .chart-wrapper, header, .actions, .btn-group-sec, .mes-selector, #relogio { display: none !important; } body { background: white; color: black; } .item { border: 1px solid #eee; break-inside: avoid; } }
+        @media print { .inputs, .chart-wrapper, header, .actions, .btn-group-sec, .mes-selector, #relogio { display: none !important; } }
     </style>
 </head>
 <body>
@@ -64,7 +54,7 @@
     <header>
         <h1>Painel My Baby | Gerson 🐾</h1>
         <select class="mes-selector" id="selecaoMes" onchange="mudarMes()">
-            <option value="01/2026">Janeiro 2026</option><option value="02/2026">Fevereiro 2026</option>
+            <option value="01/2026">Janeiro 2026</option><option value="02/2026" selected>Fevereiro 2026</option>
             <option value="03/2026">Março 2026</option><option value="04/2026">Abril 2026</option>
         </select>
     </header>
@@ -140,7 +130,7 @@
 
         vMes.forEach(v => {
             if (!v.isVale) {
-                bruto += v.valor; // Faturamento apenas filhotes
+                bruto += v.valor;
                 comiss += (v.valor * 0.03);
                 if(v.tipo === 'Spitz') { v.sexo === 'Macho' ? sM++ : sF++; if(v.entregue) eS++; } 
                 else { v.sexo === 'Macho' ? bM++ : bF++; if(v.entregue) eB++; }
@@ -192,15 +182,20 @@
         let hoje = new Date().getDate();
         let ultimoPerc = 0;
 
+        // Loop para preencher todos os dias do mês sem buracos
         for (let i = 1; i <= 31; i++) {
             labels.push(i);
             acumulado += (histMap[i] || 0);
             let p = (acumulado / meta) * 100;
-            if (i <= hoje || histMap[i]) { dataProg.push(p); ultimoPerc = p; }
-            else { dataProg.push(null); }
+            
+            if (i <= hoje) {
+                dataProg.push(p);
+                ultimoPerc = p;
+            } else {
+                dataProg.push(null);
+            }
         }
 
-        // Teto dinâmico para o gráfico não "bater no teto"
         let teto = Math.max(115, ultimoPerc + 20);
 
         chart = new Chart(ctx, {
@@ -209,13 +204,14 @@
                 data: dataProg, 
                 borderColor: '#00f2ff', 
                 borderWidth: 4, 
-                fill: true, 
+                fill: true,
+                spanGaps: true, // ESSENCIAL: Conecta os pontos sem espaços brancos
                 backgroundColor: (c) => { 
                     const g = c.chart.ctx.createLinearGradient(0,0,0,300); 
-                    g.addColorStop(0,'rgba(0,242,255,0.2)'); 
+                    g.addColorStop(0,'rgba(0,242,255,0.3)'); 
                     g.addColorStop(1,'rgba(0,0,0,0)'); return g; 
                 }, 
-                tension: 0.3, 
+                tension: 0.2, // Linha mais firme para evitar bugs visuais
                 pointRadius: (c) => c.dataIndex === hoje-1 ? 6 : 0,
                 pointBackgroundColor: '#00f2ff'
             }] },
