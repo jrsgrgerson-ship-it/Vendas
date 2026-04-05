@@ -20,9 +20,8 @@
         .mes-selector { flex: 1; background: #000; color: var(--blue); border: 1px solid var(--blue); padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 800; outline: none; appearance: none; }
         .btn-meta { background: #1a1a1a; color: var(--white); border: 1px solid #333; padding: 14px; border-radius: 12px; cursor: pointer; }
 
-        /* GRID FINANCEIRA NO TOPO */
         .fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-        .fin-box { background: var(--card); padding: 15px; border-radius: 20px; border: 1px solid var(--border); position: relative; overflow: hidden; }
+        .fin-box { background: var(--card); padding: 15px; border-radius: 20px; border: 1px solid var(--border); position: relative; }
         .fin-box span { font-size: 8px; color: #888; font-weight: 800; display: block; text-transform: uppercase; margin-bottom: 4px; }
         .fin-box b { font-size: 17px; display: block; white-space: nowrap; }
         .full-box { grid-column: span 2; border-color: var(--green); background: linear-gradient(145deg, rgba(0,255,136,0.05) 0%, rgba(0,0,0,0) 100%); }
@@ -43,7 +42,6 @@
         .btn-group-sec { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
         .btn-sec { background: #1a1a1a; color: var(--white); border: 1px solid #333; padding: 14px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; cursor: pointer; }
 
-        /* ESTILO DOS ITENS NA LISTA */
         .item { background: var(--card); padding: 18px; border-radius: 22px; margin-bottom: 15px; border: 1px solid var(--border); }
         .item.is-vale { border-color: rgba(255, 0, 85, 0.3); background: rgba(255, 0, 85, 0.02); }
         .item-header { display: flex; justify-content: space-between; align-items: flex-start; }
@@ -69,19 +67,23 @@
             <select class="mes-selector" id="selecaoMes" onchange="mudarMes()">
                 <option value="01/2026">Janeiro 2026</option>
                 <option value="02/2026">Fevereiro 2026</option>
-                <option value="03/2026" selected>Março 2026</option>
-                <option value="04/2026">Abril 2026</option>
+                <option value="03/2026">Março 2026</option>
+                <option value="04/2026" selected>Abril 2026</option>
+                <option value="05/2026">Maio 2026</option>
             </select>
             <button class="btn-meta" onclick="ajustarMeta()">⚙️ Meta</button>
         </div>
     </header>
 
     <div class="fin-grid">
-        <div class="fin-box full-box"><span>💰 SALÁRIO LÍQUIDO (FIXO + 3%)</span><b id="salLiq">R$ 0,00</b></div>
+        <div class="fin-box full-box">
+            <span id="labelSalario">💰 SALÁRIO LÍQUIDO</span>
+            <b id="salLiq">R$ 0,00</b>
+        </div>
         <div class="fin-box"><span>💵 BRUTO (VENDAS)</span><b id="totBruto" style="color:var(--blue)">R$ 0,00</b></div>
         <div class="fin-box" style="border-color: var(--red)"><span>📉 VALES PEGOS</span><b id="totVales" style="color:var(--red)">R$ 0,00</b></div>
-        <div class="fin-box"><span>🎯 META DEFINIDA</span><b id="metaDisplay" style="color:var(--yellow)">R$ 0,00</b></div>
-        <div class="fin-box"><span>🐕 QTD VENDIDA</span><b id="qtdVendas">0 Filhotes</b></div>
+        <div class="fin-box"><span>🎯 META</span><b id="metaDisplay" style="color:var(--yellow)">R$ 0,00</b></div>
+        <div class="fin-box"><span>🐕 QTD VENDIDA</span><b id="qtdVendas">0</b></div>
     </div>
 
     <div class="stats-grid">
@@ -106,7 +108,7 @@
         <button class="btn-main" onclick="addVenda()">✅ REGISTRAR VENDA</button>
         
         <div class="btn-group-sec">
-            <button class="btn-sec" onclick="addVale()" style="border-color:var(--red)">➖ NOVO VALE</button>
+            <button class="btn-sec" onclick="addVale()" style="border-color:var(--red)">➖ VALE</button>
             <button class="btn-sec" onclick="window.print()" style="color:var(--green)">📄 PDF</button>
             <button class="btn-sec" onclick="exportarDados()">💾 BACKUP</button>
         </div>
@@ -117,7 +119,7 @@
 <script>
     Chart.register(ChartDataLabels);
     let appData = JSON.parse(localStorage.getItem('canil_2026_db')) || { 
-        mesAtivo: "03/2026", metas: {"03/2026": 150000}, vendas: [] 
+        mesAtivo: "04/2026", metas: {"04/2026": 150000}, vendas: [] 
     };
     let chart = null;
 
@@ -143,7 +145,7 @@
     }
 
     function addVale() {
-        const v = prompt("Valor do vale para descontar?");
+        const v = prompt("Valor do vale?");
         if(v) {
             appData.vendas.push({
                 id: Date.now(), mesRef: appData.mesAtivo, cliente: 'RETIRADA DE VALE', valor: parseFloat(v),
@@ -154,24 +156,35 @@
     }
 
     function render() {
-        let bruto=0, vales=0, comiss=0, s=0, b=0;
+        let bruto=0, vales=0, s=0, b=0;
         let histDiario = {};
         const vMes = appData.vendas.filter(v => v.mesRef === appData.mesAtivo);
         const meta = appData.metas[appData.mesAtivo] || 150000;
 
         vMes.forEach(v => {
             if (!v.isVale) {
-                bruto += v.valor; comiss += (v.valor * 0.03);
+                bruto += v.valor;
                 v.tipo === 'Spitz' ? s++ : b++;
                 let dia = parseInt(v.data.split('/')[0]) || 1;
                 histDiario[dia] = (histDiario[dia] || 0) + v.valor;
             } else { vales += v.valor; }
         });
 
+        // LÓGICA DE ABRIL/2026: 5% SEM FIXO
+        const [mes, ano] = appData.mesAtivo.split('/');
+        let salCalculado = 0;
+        if (parseInt(ano) >= 2026 && parseInt(mes) >= 4) {
+            salCalculado = (bruto * 0.05) - vales;
+            document.getElementById('labelSalario').innerText = "💰 SALÁRIO LÍQUIDO (COMISSÃO 5%)";
+        } else {
+            salCalculado = 2000 + (bruto * 0.03) - vales;
+            document.getElementById('labelSalario').innerText = "💰 SALÁRIO LÍQUIDO (FIXO + 3%)";
+        }
+
         document.getElementById('metaDisplay').innerText = meta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         document.getElementById('totBruto').innerText = bruto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         document.getElementById('totVales').innerText = vales.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        document.getElementById('salLiq').innerText = (2000 + comiss - vales).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        document.getElementById('salLiq').innerText = salCalculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         document.getElementById('vTotS').innerText = s; document.getElementById('vTotB').innerText = b;
         document.getElementById('qtdVendas').innerText = (s + b) + " Filhotes";
         
@@ -182,17 +195,16 @@
                     <div class="item-header">
                         <div>
                             <b style="color:${v.isVale ? 'var(--red)' : '#fff'}">${v.cliente}</b><br>
-                            <small>${v.data.substring(0,5)} • ${v.isVale ? 'Desconto de Salário' : v.tipo + ' ' + v.sexo}</small>
+                            <small>${v.data.substring(0,5)} • ${v.isVale ? 'Vale' : v.tipo}</small>
                             ${v.previsao ? '<br><small style="color:var(--yellow)">📅 Prev: '+v.previsao+'</small>' : ''}
                         </div>
                         <div style="text-align:right">
                             <b style="color:${v.isVale ? 'var(--red)' : '#fff'}">${v.isVale ? '-' : ''} R$ ${v.valor.toLocaleString('pt-BR')}</b>
-                            ${v.frete > 0 ? '<br><small style="color:var(--blue)">+ Frete R$ '+v.frete+'</small>' : ''}
                         </div>
                     </div>
                     <div class="actions">
-                        ${!v.isVale ? `<button class="btn-status ${v.entregue?'on':''}" onclick="toggleS(${v.id})">${v.entregue ? 'ENTREGUE ✔' : 'PENDENTE 🚚'}</button>` : '<div style="flex:2.5"></div>'}
-                        <button class="btn-circle" onclick="del(${v.id})" style="color:var(--red)">🗑</button>
+                        ${!v.isVale ? `<button class="btn-status ${v.entregue?'on':''}" onclick="toggleS(${v.id})">${v.entregue ? 'ENTREGUE' : 'PENDENTE'}</button>` : '<div style="flex:2.5"></div>'}
+                        <button class="btn-circle" onclick="del(${v.id})">🗑</button>
                     </div>
                 </div>`;
         });
@@ -235,8 +247,8 @@
     }
 
     function toggleS(id) { const v = appData.vendas.find(x => x.id === id); v.entregue = !v.entregue; salvar(); }
-    function del(id) { if(confirm("Apagar registro?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); salvar(); } }
-    function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `backup.json`; a.click(); }
+    function del(id) { if(confirm("Apagar?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); salvar(); } }
+    function exportarDados() { const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `backup_canil.json`; a.click(); }
 
     render();
     setInterval(() => { const d = new Date(); document.getElementById('relogio').innerHTML = d.toLocaleDateString('pt-BR') + '<br>' + d.toLocaleTimeString('pt-BR'); }, 1000);
