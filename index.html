@@ -10,6 +10,7 @@
         :root { 
             --blue: #00f2ff; --green: #00ff88; --red: #ff0055; --bg: #080808; 
             --card: #141414; --border: #252525; --white: #ffffff; --glass: rgba(255, 255, 255, 0.03);
+            --pink: #ff85a1; --male: #4dabff;
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -33,45 +34,27 @@
         }
 
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .stat-card { 
-            background: var(--card); border: 1px solid var(--border); padding: 15px; 
-            border-radius: 20px;
-        }
+        .stat-card { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 20px; }
         .stat-card span { font-size: 9px; color: #888; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 5px; }
         .stat-card b { font-size: 20px; font-weight: 800; display: block; }
         .stat-card.main { grid-column: span 2; border-color: var(--green); background: linear-gradient(145deg, rgba(0,255,136,0.05) 0%, transparent 100%); }
         .stat-card.main b { color: var(--green); font-size: 28px; }
 
-        .chart-container { 
-            background: var(--card); border: 1px solid var(--border); border-radius: 24px; 
-            padding: 15px; margin-bottom: 25px; height: 220px;
-        }
+        .chart-container { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 15px; margin-bottom: 25px; height: 200px; }
 
-        .glass-form { 
-            background: var(--card); border: 1px solid var(--border); padding: 20px; 
-            border-radius: 24px; margin-bottom: 25px;
-        }
+        .glass-form { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 24px; margin-bottom: 25px; }
         .input-group { margin-bottom: 15px; }
         label { display: block; font-size: 10px; font-weight: 700; color: #666; margin-bottom: 5px; text-transform: uppercase; }
-        input, select { 
-            background: #000; border: 1px solid var(--border); color: #fff; padding: 14px; 
-            border-radius: 12px; width: 100%; font-size: 15px;
-        }
+        input, select { background: #000; border: 1px solid var(--border); color: #fff; padding: 14px; border-radius: 12px; width: 100%; font-size: 15px; }
         
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-add { background: var(--green); color: #000; width: 100%; padding: 18px; border-radius: 15px; font-weight: 800; border: none; font-size: 16px; }
 
-        .btn-add { 
-            background: var(--green); color: #000; width: 100%; padding: 18px; 
-            border-radius: 15px; font-weight: 800; border: none; font-size: 16px;
-        }
-
-        .venda-item { 
-            background: var(--card); border: 1px solid var(--border); padding: 15px; 
-            border-radius: 18px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;
-        }
-        .venda-info b { display: block; font-size: 15px; }
+        .venda-item { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 18px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+        .venda-info b { display: flex; align-items: center; font-size: 15px; gap: 5px; }
         .venda-info small { color: #888; font-size: 11px; display: block; margin-top: 2px; }
-        .venda-badge { background: #1a1a1a; padding: 2px 6px; border-radius: 4px; font-size: 9px; color: var(--blue); margin-left: 5px; border: 1px solid #333; }
+        .venda-badge { background: #1a1a1a; padding: 2px 6px; border-radius: 4px; font-size: 9px; color: var(--blue); border: 1px solid #333; }
+        .sexo-tag { font-size: 12px; font-weight: bold; }
         .btn-del { color: var(--red); background: none; border: none; font-size: 18px; }
         
         #syncStatus { font-size: 10px; color: var(--yellow); }
@@ -85,6 +68,8 @@
         <span>Vendedor Gerson</span>
         <h1>Painel Canil My Baby</h1>
         <select id="selecaoMes" onchange="render()" style="margin-top:10px; border-color: var(--green); color: var(--green); height: 45px;">
+            <option value="01/2026">Janeiro 2026</option>
+            <option value="02/2026">Fevereiro 2026</option>
             <option value="03/2026">Março 2026</option>
             <option value="04/2026" selected>Abril 2026</option>
             <option value="05/2026">Maio 2026</option>
@@ -93,36 +78,19 @@
 
     <div class="sync-bar">
         <button class="btn-tiny" onclick="carregarDoGithub()" style="background: var(--blue);">📥 Buscar</button>
-        <div id="syncStatus">Nuvem Pronta</div>
+        <div id="syncStatus">Pronto</div>
         <button class="btn-tiny" onclick="salvarNoGithub()" style="background: var(--green);">💾 Salvar</button>
     </div>
 
     <div class="stats-grid">
-        <div class="stat-card main">
-            <span>💰 Comissões Totais</span>
-            <b id="salLiq">R$ 0,00</b>
-        </div>
-        <div class="stat-card">
-            <span>🐕 Spitz</span>
-            <b id="countSpitz">0</b>
-        </div>
-        <div class="stat-card">
-            <span>🐈 Bengals</span>
-            <b id="countBengal">0</b>
-        </div>
-        <div class="stat-card">
-            <span>🐾 Filhotes Totais</span>
-            <b id="countTotal">0</b>
-        </div>
-        <div class="stat-card">
-            <span>💵 Vendas Totais</span>
-            <b id="totBruto">R$ 0,00</b>
-        </div>
+        <div class="stat-card main"><span>💰 Comissões Totais</span><b id="salLiq">R$ 0,00</b></div>
+        <div class="stat-card"><span>🐕 Spitz</span><b id="countSpitz">0</b></div>
+        <div class="stat-card"><span>🐈 Bengals</span><b id="countBengal">0</b></div>
+        <div class="stat-card"><span>🐾 Filhotes Totais</span><b id="countTotal">0</b></div>
+        <div class="stat-card"><span>💵 Faturamento</span><b id="totBruto">R$ 0,00</b></div>
     </div>
 
-    <div class="chart-container">
-        <canvas id="graficoVendas"></canvas>
-    </div>
+    <div class="chart-container"><canvas id="graficoVendas"></canvas></div>
 
     <div class="glass-form">
         <div class="row">
@@ -136,18 +104,24 @@
             </div>
         </div>
 
-        <div class="input-group">
-            <label>Cliente</label>
-            <input type="text" id="cliente" placeholder="Nome Completo">
+        <div class="row">
+            <div class="input-group"><label>Cliente</label><input type="text" id="cliente" placeholder="Nome"></div>
+            <div class="input-group">
+                <label>Sexo</label>
+                <select id="sexo">
+                    <option value="M">♂ Macho</option>
+                    <option value="F">♀ Fêmea</option>
+                </select>
+            </div>
         </div>
 
         <div class="row">
             <div class="input-group"><label>Valor Animal</label><input type="number" id="valor" placeholder="0.00"></div>
-            <div class="input-group"><label>Valor Frete</label><input type="number" id="frete" placeholder="0.00"></div>
+            <div class="input-group"><label>Frete</label><input type="number" id="frete" placeholder="0.00"></div>
         </div>
 
         <div class="input-group">
-            <label>Estado do Cliente</label>
+            <label>Estado (UF)</label>
             <select id="uf">
                 <option value="RS">Rio Grande do Sul</option>
                 <option value="SC">Santa Catarina</option>
@@ -155,11 +129,6 @@
                 <option value="SP">São Paulo</option>
                 <option value="RJ">Rio de Janeiro</option>
                 <option value="MG">Minas Gerais</option>
-                <option value="ES">Espírito Santo</option>
-                <option value="MT">Mato Grosso</option>
-                <option value="MS">Mato Grosso do Sul</option>
-                <option value="GO">Goiás</option>
-                <option value="DF">Distrito Federal</option>
                 <option value="OUTRO">Outros</option>
             </select>
         </div>
@@ -181,7 +150,7 @@
 
     async function salvarNoGithub() {
         const status = document.getElementById('syncStatus');
-        status.innerText = "⏳ Salvando...";
+        status.innerText = "⏳ Gravando...";
         try {
             const resGet = await fetch(GH_URL + "?t=" + Date.now(), {
                 headers: { 'Authorization': `token ${GH_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
@@ -193,7 +162,7 @@
                 headers: { 'Authorization': `token ${GH_TOKEN}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: "Update Gerson", content, sha: dataGet.sha })
             });
-            if(resPut.ok) status.innerText = "✅ Salvo na Nuvem";
+            if(resPut.ok) status.innerText = "✅ Salvo";
         } catch (e) { status.innerText = "❌ Erro"; }
     }
 
@@ -206,20 +175,21 @@
             appData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
             localStorage.setItem('canil_2026_db', JSON.stringify(appData));
             render();
-            alert("Dados buscados!");
-        } catch (e) { alert("Erro ao buscar."); }
+            alert("Sincronizado!");
+        } catch (e) { alert("Erro ao carregar."); }
     }
 
     function addVenda() {
         const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valor').value);
         const f = parseFloat(document.getElementById('frete').value) || 0;
         const d = document.getElementById('dataVenda').value, u = document.getElementById('uf').value;
+        const s = document.getElementById('sexo').value;
         if (!c || !v || !d) return;
         
         const [ano, mes, dia] = d.split('-');
         appData.vendas.push({
             id: Date.now(), mesRef: `${mes}/${ano}`, cliente: c, valor: v, frete: f,
-            tipo: document.getElementById('tipo').value, uf: u, data: `${dia}/${mes}/${ano}`,
+            tipo: document.getElementById('tipo').value, sexo: s, uf: u, data: `${dia}/${mes}/${ano}`,
             ts: new Date(d).getTime()
         });
         
@@ -248,18 +218,22 @@
         document.getElementById('countBengal').innerText = qBengal;
         document.getElementById('countTotal').innerText = qSpitz + qBengal;
         document.getElementById('totBruto').innerText = bruto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        
-        const comissao = (bruto * 0.05);
-        document.getElementById('salLiq').innerText = comissao.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        document.getElementById('salLiq').innerText = (bruto * 0.05).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
         const div = document.getElementById('lista');
         div.innerHTML = '';
         vMes.sort((a,b) => b.ts - a.ts).forEach(v => {
+            const sexoCor = v.sexo === 'M' ? 'var(--male)' : 'var(--pink)';
+            const sexoIcon = v.sexo === 'M' ? '♂' : '♀';
             div.innerHTML += `
                 <div class="venda-item">
                     <div class="venda-info">
-                        <b>${v.tipo === 'Spitz' ? '🐕' : '🐈'} ${v.cliente} <span class="venda-badge">${v.uf}</span></b>
-                        <small>${v.data} • Animal: R$ ${v.valor.toLocaleString('pt-BR')} ${v.frete > 0 ? `+ Frete: R$ ${v.frete.toLocaleString('pt-BR')}` : ''}</small>
+                        <b>
+                            ${v.tipo === 'Spitz' ? '🐕' : '🐈'} ${v.cliente} 
+                            <span style="color:${sexoCor}" class="sexo-tag">${sexoIcon}</span>
+                            <span class="venda-badge">${v.uf}</span>
+                        </b>
+                        <small>${v.data} • R$ ${v.valor.toLocaleString('pt-BR')} ${v.frete > 0 ? `(+R$ ${v.frete} frete)` : ''}</small>
                     </div>
                     <button class="btn-del" onclick="del(${v.id})">🗑️</button>
                 </div>`;
@@ -277,35 +251,15 @@
             data: {
                 labels: Array.from({length: 31}, (_, i) => i + 1),
                 datasets: [{
-                    data: pontos,
-                    borderColor: '#00ff88',
-                    borderWidth: 3,
-                    pointRadius: 0,
-                    tension: 0.4,
-                    fill: true,
-                    backgroundColor: 'rgba(0, 255, 136, 0.1)'
+                    data: pontos, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0, tension: 0.4, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.1)'
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { grid: { display: false }, ticks: { color: '#444', font: { size: 9 } } },
-                    y: { display: false }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#444', font: { size: 9 } } }, y: { display: false } } }
         });
     }
 
-    function del(id) {
-        if(confirm("Excluir?")) {
-            appData.vendas = appData.vendas.filter(x => x.id !== id);
-            localStorage.setItem('canil_2026_db', JSON.stringify(appData));
-            render();
-        }
-    }
-
+    function del(id) { if(confirm("Excluir?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); localStorage.setItem('canil_2026_db', JSON.stringify(appData)); render(); } }
+    
     setInterval(() => {
         const d = new Date();
         document.getElementById('relogio').innerText = d.toLocaleDateString('pt-BR') + ' | ' + d.toLocaleTimeString('pt-BR');
