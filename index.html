@@ -73,6 +73,7 @@
 
 <script>
     Chart.register(ChartDataLabels);
+    
     // Configurações atualizadas para jrsgrgerson-ship-it
     const GH_TOKEN = "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";
     const GH_REPO = "jrsgrgerson-ship-it/vendas-canil";
@@ -87,10 +88,15 @@
         const status = document.getElementById('syncStatus');
         status.innerText = "Conectando ao GitHub...";
         try {
-            const resGet = await fetch(GH_URL, { headers: { Authorization: `token ${GH_TOKEN}`, 'Cache-Control': 'no-cache' } });
+            const resGet = await fetch(GH_URL, { 
+                headers: { 
+                    'Authorization': `token ${GH_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                } 
+            });
             
             if (!resGet.ok) {
-                throw new Error("Arquivo 'vendas.json' não encontrado. Verifique se o repositório 'vendas-canil' existe.");
+                throw new Error("Não achou o arquivo no GitHub. Crie 'vendas.json' no repositório 'vendas-canil'.");
             }
 
             const dataGet = await resGet.json();
@@ -99,8 +105,12 @@
 
             const resPut = await fetch(GH_URL, {
                 method: 'PUT',
-                headers: { Authorization: `token ${GH_TOKEN}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: "Backup Canil", content, sha })
+                headers: { 
+                    'Authorization': `token ${GH_TOKEN}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify({ message: "Backup", content, sha })
             });
 
             if(resPut.ok) {
@@ -110,23 +120,28 @@
                 throw new Error("Erro de permissão no Token.");
             }
         } catch (e) { 
-            alert(e.message);
-            status.innerText = "❌ Falha na conexão";
-            status.style.color = "var(--red)";
+            console.error(e);
+            alert("Erro: " + e.message);
+            status.innerText = "❌ Falha de Conexão";
         }
     }
 
     async function carregarDoGithub() {
-        if(!confirm("Deseja recuperar os dados da nuvem? Isso apagará o que está na tela agora.")) return;
+        if(!confirm("Substituir dados locais pelos da nuvem?")) return;
         try {
-            const res = await fetch(GH_URL, { headers: { Authorization: `token ${GH_TOKEN}`, 'Cache-Control': 'no-cache' } });
-            if (!res.ok) throw new Error("Não foi possível ler os dados.");
+            const res = await fetch(GH_URL, { 
+                headers: { 
+                    'Authorization': `token ${GH_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                } 
+            });
+            if (!res.ok) throw new Error("Não achou o arquivo na nuvem.");
             const data = await res.json();
             appData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
             localStorage.setItem('canil_2026_db', JSON.stringify(appData));
             render();
-            alert("Dados recuperados com sucesso!");
-        } catch (e) { alert(e.message); }
+            alert("Dados recuperados!");
+        } catch (e) { alert("Erro: " + e.message); }
     }
 
     function addVenda() {
