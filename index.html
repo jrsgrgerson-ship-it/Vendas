@@ -1,26 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Painel Canil My Baby</title>
+    <style>
+        body { background: #050505; color: #fff; font-family: sans-serif; padding: 20px; }
+        .btn { background: #00ff88; color: #000; padding: 15px; border: none; border-radius: 10px; width: 100%; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Configuração Inicial</h2>
+    <p>Para o app carregar, preciso do seu Token (só precisa fazer uma vez):</p>
+    <button class="btn" onclick="pedirToken()">CONFIGURAR TOKEN</button>
+    <p id="status"></p>
+
 <script>
-    // Agora o código busca o token da memória local do seu aparelho
+    // Se o token já existe, carrega o app. Se não, espera o botão.
     let GH_TOKEN = localStorage.getItem('gh_token_canil');
-
-    // Se não tiver token salvo, ele pergunta pra você
-    if (!GH_TOKEN) {
-        GH_TOKEN = prompt("Por favor, cole seu novo Token do GitHub aqui:");
-        if (GH_TOKEN) {
-            localStorage.setItem('gh_token_canil', GH_TOKEN);
-        }
-    }
-
-    const GH_REPO = "jrsgrgerson-ship-it/Vendas";
-    const GH_URL = `https://api.github.com/repos/${GH_REPO}/contents/vendas.json`;
-
-    // Função extra para você trocar o token se precisar
-    function trocarToken() {
-        const novo = prompt("Cole o novo Token:");
-        if(novo) {
-            localStorage.setItem('gh_token_canil', novo);
+    
+    function pedirToken() {
+        let t = prompt("Cole seu Token Classic do GitHub:");
+        if (t) {
+            localStorage.setItem('gh_token_canil', t);
             location.reload();
         }
     }
-    
-    // ... restante das funções de salvar e carregar ...
+
+    if (GH_TOKEN) {
+        // App está configurado, podemos rodar o restante
+        document.getElementById('status').innerText = "Token carregado. Iniciando app...";
+        // Aqui o restante do seu código entraria (vendas, render, etc)
+        // Como o app ficou branco, recomendo você colar o seu código antigo 
+        // mas substituindo a linha do token pela variável GH_TOKEN que definimos aqui.
+        console.log("Token ativo:", GH_TOKEN);
+    } else {
+        document.getElementById('status').innerText = "Aguardando configuração.";
+    }
 </script>
+</body>
+</html>
