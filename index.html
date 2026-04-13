@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>My Baby | Premium Panel</title>
+    <title>Painel Canil My Baby</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
@@ -18,12 +18,11 @@
             margin: 0; padding: 15px; padding-bottom: 50px; line-height: 1.4;
         }
 
-        /* Relógio e Header */
         #relogio { text-align: right; font-size: 10px; color: var(--green); font-weight: 600; margin-bottom: 10px; letter-spacing: 1px; }
-        header { margin-bottom: 25px; }
-        header h1 { margin: 0; font-size: 22px; font-weight: 800; background: linear-gradient(90deg, #fff, #555); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        header { margin-bottom: 25px; border-left: 4px solid var(--green); padding-left: 15px; }
+        header h1 { margin: 0; font-size: 20px; font-weight: 800; line-height: 1.2; }
+        header span { font-size: 12px; color: var(--green); font-weight: 600; text-transform: uppercase; }
 
-        /* Status de Sincronia */
         .sync-bar { 
             background: var(--glass); border: 1px solid var(--border); padding: 12px; 
             border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
@@ -33,63 +32,59 @@
             border-radius: 10px; font-weight: 700; font-size: 11px; text-transform: uppercase;
         }
 
-        /* Grid de Métricas */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .stat-card { 
             background: var(--card); border: 1px solid var(--border); padding: 15px; 
-            border-radius: 20px; position: relative; overflow: hidden;
+            border-radius: 20px;
         }
         .stat-card span { font-size: 9px; color: #888; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 5px; }
         .stat-card b { font-size: 20px; font-weight: 800; display: block; }
         .stat-card.main { grid-column: span 2; border-color: var(--green); background: linear-gradient(145deg, rgba(0,255,136,0.05) 0%, transparent 100%); }
         .stat-card.main b { color: var(--green); font-size: 28px; }
 
-        /* Seção de Gráfico */
         .chart-container { 
             background: var(--card); border: 1px solid var(--border); border-radius: 24px; 
-            padding: 15px; margin-bottom: 25px; height: 250px;
+            padding: 15px; margin-bottom: 25px; height: 220px;
         }
 
-        /* Formulário Moderno */
         .glass-form { 
             background: var(--card); border: 1px solid var(--border); padding: 20px; 
             border-radius: 24px; margin-bottom: 25px;
         }
         .input-group { margin-bottom: 15px; }
-        label { display: block; font-size: 10px; font-weight: 700; color: #666; margin-bottom: 5px; text-transform: uppercase; padding-left: 5px; }
+        label { display: block; font-size: 10px; font-weight: 700; color: #666; margin-bottom: 5px; text-transform: uppercase; }
         input, select { 
             background: #000; border: 1px solid var(--border); color: #fff; padding: 14px; 
-            border-radius: 12px; width: 100%; font-size: 15px; font-family: inherit;
+            border-radius: 12px; width: 100%; font-size: 15px;
         }
-        input:focus { border-color: var(--blue); outline: none; }
         
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
         .btn-add { 
             background: var(--green); color: #000; width: 100%; padding: 18px; 
-            border-radius: 15px; font-weight: 800; border: none; font-size: 16px; margin-top: 10px;
+            border-radius: 15px; font-weight: 800; border: none; font-size: 16px;
         }
 
-        /* Lista de Vendas */
         .venda-item { 
             background: var(--card); border: 1px solid var(--border); padding: 15px; 
             border-radius: 18px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;
         }
         .venda-info b { display: block; font-size: 15px; }
-        .venda-info small { color: #666; font-size: 11px; }
-        .venda-badge { background: #1a1a1a; padding: 4px 8px; border-radius: 6px; font-size: 9px; font-weight: 800; color: var(--blue); }
-        .btn-del { color: var(--red); background: none; border: none; font-size: 18px; padding: 10px; }
-
-        #syncStatus { font-size: 10px; text-align: center; margin-bottom: 10px; color: var(--yellow); }
+        .venda-info small { color: #888; font-size: 11px; display: block; margin-top: 2px; }
+        .venda-badge { background: #1a1a1a; padding: 2px 6px; border-radius: 4px; font-size: 9px; color: var(--blue); margin-left: 5px; border: 1px solid #333; }
+        .btn-del { color: var(--red); background: none; border: none; font-size: 18px; }
+        
+        #syncStatus { font-size: 10px; color: var(--yellow); }
     </style>
 </head>
 <body>
 
-    <div id="relogio">00/00/0000 | 00:00:00</div>
+    <div id="relogio">--/--/-- | --:--:--</div>
 
     <header>
-        <h1>My Baby Business</h1>
-        <select id="selecaoMes" onchange="render()" style="margin-top:15px; border-color: var(--green); color: var(--green); font-weight: 800;">
+        <span>Vendedor Gerson</span>
+        <h1>Painel Canil My Baby</h1>
+        <select id="selecaoMes" onchange="render()" style="margin-top:10px; border-color: var(--green); color: var(--green); height: 45px;">
             <option value="03/2026">Março 2026</option>
             <option value="04/2026" selected>Abril 2026</option>
             <option value="05/2026">Maio 2026</option>
@@ -97,30 +92,30 @@
     </header>
 
     <div class="sync-bar">
-        <button class="btn-tiny" onclick="carregarDoGithub()" style="background: var(--blue);">📥 Importar</button>
+        <button class="btn-tiny" onclick="carregarDoGithub()" style="background: var(--blue);">📥 Buscar</button>
         <div id="syncStatus">Nuvem Pronta</div>
         <button class="btn-tiny" onclick="salvarNoGithub()" style="background: var(--green);">💾 Salvar</button>
     </div>
 
     <div class="stats-grid">
         <div class="stat-card main">
-            <span>💰 Comissão Estimada (5%)</span>
+            <span>💰 Comissões Totais</span>
             <b id="salLiq">R$ 0,00</b>
         </div>
         <div class="stat-card">
-            <span>🐕 Spitz Vendidos</span>
+            <span>🐕 Spitz</span>
             <b id="countSpitz">0</b>
         </div>
         <div class="stat-card">
-            <span>🐈 Bengals Vendidos</span>
+            <span>🐈 Bengals</span>
             <b id="countBengal">0</b>
         </div>
         <div class="stat-card">
-            <span>🐾 Total Filhotes</span>
+            <span>🐾 Filhotes Totais</span>
             <b id="countTotal">0</b>
         </div>
         <div class="stat-card">
-            <span>💵 Faturamento Bruto</span>
+            <span>💵 Vendas Totais</span>
             <b id="totBruto">R$ 0,00</b>
         </div>
     </div>
@@ -131,41 +126,42 @@
 
     <div class="glass-form">
         <div class="row">
-            <div class="input-group">
-                <label>Data</label>
-                <input type="date" id="dataVenda">
-            </div>
+            <div class="input-group"><label>Data</label><input type="date" id="dataVenda"></div>
             <div class="input-group">
                 <label>Raça</label>
                 <select id="tipo">
-                    <option value="Spitz">🐕 Spitz Alemão</option>
-                    <option value="Bengal">🐈 Bengal Cat</option>
+                    <option value="Spitz">🐕 Spitz</option>
+                    <option value="Bengal">🐈 Bengal</option>
                 </select>
             </div>
         </div>
 
         <div class="input-group">
-            <label>Nome do Cliente</label>
-            <input type="text" id="cliente" placeholder="Ex: João Silva">
+            <label>Cliente</label>
+            <input type="text" id="cliente" placeholder="Nome Completo">
         </div>
 
         <div class="row">
-            <div class="input-group">
-                <label>Valor (R$)</label>
-                <input type="number" id="valor" placeholder="0.00">
-            </div>
-            <div class="input-group">
-                <label>Estado (UF)</label>
-                <select id="uf">
-                    <option value="RS">Rio Grande do Sul</option>
-                    <option value="SC">Santa Catarina</option>
-                    <option value="PR">Paraná</option>
-                    <option value="SP">São Paulo</option>
-                    <option value="RJ">Rio de Janeiro</option>
-                    <option value="MG">Minas Gerais</option>
-                    <option value="OUTRO">Outros</option>
-                </select>
-            </div>
+            <div class="input-group"><label>Valor Animal</label><input type="number" id="valor" placeholder="0.00"></div>
+            <div class="input-group"><label>Valor Frete</label><input type="number" id="frete" placeholder="0.00"></div>
+        </div>
+
+        <div class="input-group">
+            <label>Estado do Cliente</label>
+            <select id="uf">
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="PR">Paraná</option>
+                <option value="SP">São Paulo</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="ES">Espírito Santo</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="MS">Mato Grosso do Sul</option>
+                <option value="GO">Goiás</option>
+                <option value="DF">Distrito Federal</option>
+                <option value="OUTRO">Outros</option>
+            </select>
         </div>
 
         <button class="btn-add" onclick="addVenda()">REGISTRAR VENDA</button>
@@ -174,7 +170,6 @@
     <div id="lista"></div>
 
 <script>
-    // Configurações GitHub do Gerson
     const GH_TOKEN = localStorage.getItem('gh_token_gerson');
     const GH_REPO = "jrsgrgerson-ship-it/Vendas";
     const GH_URL = `https://api.github.com/repos/${GH_REPO}/contents/vendas.json`;
@@ -186,7 +181,7 @@
 
     async function salvarNoGithub() {
         const status = document.getElementById('syncStatus');
-        status.innerText = "⏳ Enviando...";
+        status.innerText = "⏳ Salvando...";
         try {
             const resGet = await fetch(GH_URL + "?t=" + Date.now(), {
                 headers: { 'Authorization': `token ${GH_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
@@ -196,10 +191,10 @@
             const resPut = await fetch(GH_URL, {
                 method: 'PUT',
                 headers: { 'Authorization': `token ${GH_TOKEN}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: "Update via App", content, sha: dataGet.sha })
+                body: JSON.stringify({ message: "Update Gerson", content, sha: dataGet.sha })
             });
-            if(resPut.ok) status.innerText = "✅ Sincronizado";
-        } catch (e) { status.innerText = "❌ Erro ao salvar"; }
+            if(resPut.ok) status.innerText = "✅ Salvo na Nuvem";
+        } catch (e) { status.innerText = "❌ Erro"; }
     }
 
     async function carregarDoGithub() {
@@ -211,18 +206,19 @@
             appData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
             localStorage.setItem('canil_2026_db', JSON.stringify(appData));
             render();
-            alert("Dados atualizados com sucesso!");
-        } catch (e) { alert("Erro ao buscar dados."); }
+            alert("Dados buscados!");
+        } catch (e) { alert("Erro ao buscar."); }
     }
 
     function addVenda() {
         const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valor').value);
+        const f = parseFloat(document.getElementById('frete').value) || 0;
         const d = document.getElementById('dataVenda').value, u = document.getElementById('uf').value;
         if (!c || !v || !d) return;
         
         const [ano, mes, dia] = d.split('-');
         appData.vendas.push({
-            id: Date.now(), mesRef: `${mes}/${ano}`, cliente: c, valor: v,
+            id: Date.now(), mesRef: `${mes}/${ano}`, cliente: c, valor: v, frete: f,
             tipo: document.getElementById('tipo').value, uf: u, data: `${dia}/${mes}/${ano}`,
             ts: new Date(d).getTime()
         });
@@ -230,6 +226,7 @@
         localStorage.setItem('canil_2026_db', JSON.stringify(appData));
         document.getElementById('cliente').value = '';
         document.getElementById('valor').value = '';
+        document.getElementById('frete').value = '';
         render();
     }
 
@@ -247,14 +244,13 @@
             histDiario[dia] += v.valor;
         });
 
-        // Cálculos na tela
         document.getElementById('countSpitz').innerText = qSpitz;
         document.getElementById('countBengal').innerText = qBengal;
         document.getElementById('countTotal').innerText = qSpitz + qBengal;
         document.getElementById('totBruto').innerText = bruto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         
-        const sal = (bruto * 0.05); // Regra de 5% fixa para 2026
-        document.getElementById('salLiq').innerText = sal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        const comissao = (bruto * 0.05);
+        document.getElementById('salLiq').innerText = comissao.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
         const div = document.getElementById('lista');
         div.innerHTML = '';
@@ -263,7 +259,7 @@
                 <div class="venda-item">
                     <div class="venda-info">
                         <b>${v.tipo === 'Spitz' ? '🐕' : '🐈'} ${v.cliente} <span class="venda-badge">${v.uf}</span></b>
-                        <small>${v.data} • R$ ${v.valor.toLocaleString('pt-BR')}</small>
+                        <small>${v.data} • Animal: R$ ${v.valor.toLocaleString('pt-BR')} ${v.frete > 0 ? `+ Frete: R$ ${v.frete.toLocaleString('pt-BR')}` : ''}</small>
                     </div>
                     <button class="btn-del" onclick="del(${v.id})">🗑️</button>
                 </div>`;
@@ -274,19 +270,16 @@
     function desenharGrafico(dados) {
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
-        
         let acumulado = 0;
         const pontos = dados.slice(1).map(v => { acumulado += v; return acumulado; });
-
         chart = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: Array.from({length: 31}, (_, i) => i + 1),
                 datasets: [{
-                    label: 'Faturamento',
                     data: pontos,
                     borderColor: '#00ff88',
-                    borderWidth: 4,
+                    borderWidth: 3,
                     pointRadius: 0,
                     tension: 0.4,
                     fill: true,
@@ -298,15 +291,15 @@
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
-                    x: { grid: { display: false }, ticks: { color: '#444' } },
-                    y: { grid: { color: '#1a1a1a' }, ticks: { display: false } }
+                    x: { grid: { display: false }, ticks: { color: '#444', font: { size: 9 } } },
+                    y: { display: false }
                 }
             }
         });
     }
 
     function del(id) {
-        if(confirm("Excluir esta venda?")) {
+        if(confirm("Excluir?")) {
             appData.vendas = appData.vendas.filter(x => x.id !== id);
             localStorage.setItem('canil_2026_db', JSON.stringify(appData));
             render();
