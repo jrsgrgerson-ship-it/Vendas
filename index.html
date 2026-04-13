@@ -3,117 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Painel Canil My Baby | Gerson 🐾</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>My Baby | Premium Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <style>
-        :root { --blue: #00f2ff; --green: #00ff88; --red: #ff0055; --bg: #050505; --card: #111; --border: #222; --yellow: #ffcc00; --white: #fff; }
-        body { background: var(--bg); color: var(--white); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 12px; padding-bottom: 60px; }
-        #relogio { position: absolute; top: 18px; right: 15px; text-align: right; font-size: 11px; color: var(--green); font-weight: 800; line-height: 1.2; }
-        header { padding: 12px 5px 20px 5px; border-bottom: 1px solid var(--border); margin-bottom: 20px; position: relative; }
-        header h1 { margin: 0; font-size: 19px; font-weight: 800; text-transform: uppercase; }
-        .sync-box { background: #1a1a1a; padding: 15px; border-radius: 18px; margin-bottom: 15px; border: 1px solid var(--green); text-align: center; }
-        .sync-box span { font-size: 10px; color: var(--green); font-weight: 800; display: block; margin-bottom: 10px; }
-        .fin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-        .fin-box { background: var(--card); padding: 15px; border-radius: 20px; border: 1px solid var(--border); }
-        .fin-box span { font-size: 8px; color: #888; font-weight: 800; display: block; text-transform: uppercase; margin-bottom: 4px; }
-        .fin-box b { font-size: 17px; display: block; white-space: nowrap; }
-        .full-box { grid-column: span 2; border-color: var(--green); background: linear-gradient(145deg, rgba(0,255,136,0.05) 0%, rgba(0,0,0,0) 100%); }
-        .full-box b { color: var(--green); font-size: 24px; }
-        .chart-wrapper { background: var(--card); border-radius: 28px; border: 1px solid var(--border); margin-bottom: 25px; padding: 15px; height: 320px; box-sizing: border-box; }
-        .inputs { background: var(--card); padding: 22px; border-radius: 24px; border: 1px solid var(--border); margin-bottom: 25px; }
-        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-        input, select { background: #000; border: 1px solid #333; color: var(--white); padding: 15px; border-radius: 14px; width: 100%; box-sizing: border-box; font-size: 15px; }
-        .btn-main { background: var(--white); color: #000; width: 100%; padding: 18px; border-radius: 15px; font-weight: 800; border: none; cursor: pointer; text-transform: uppercase; margin-bottom: 10px; }
-        .btn-sync { background: var(--green); color: #000; width: 48%; padding: 12px; border-radius: 10px; font-weight: 800; border: none; cursor: pointer; text-transform: uppercase; font-size: 10px; }
-        .btn-load { background: var(--blue); color: #000; width: 48%; padding: 12px; border-radius: 10px; font-weight: 800; border: none; cursor: pointer; text-transform: uppercase; font-size: 10px; }
-        .item { background: var(--card); padding: 18px; border-radius: 22px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .item-header { display: flex; justify-content: space-between; align-items: flex-start; }
-        .btn-circle { width: 45px; height: 45px; border-radius: 12px; border: none; background: #252525; color: var(--red); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        :root { 
+            --blue: #00f2ff; --green: #00ff88; --red: #ff0055; --bg: #080808; 
+            --card: #141414; --border: #252525; --white: #ffffff; --glass: rgba(255, 255, 255, 0.03);
+        }
         
-        /* Estilo da tela de bloqueio do token */
-        #bloqueioToken { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; text-align: center; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            background: var(--bg); color: var(--white); font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0; padding: 15px; padding-bottom: 50px; line-height: 1.4;
+        }
+
+        /* Relógio e Header */
+        #relogio { text-align: right; font-size: 10px; color: var(--green); font-weight: 600; margin-bottom: 10px; letter-spacing: 1px; }
+        header { margin-bottom: 25px; }
+        header h1 { margin: 0; font-size: 22px; font-weight: 800; background: linear-gradient(90deg, #fff, #555); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* Status de Sincronia */
+        .sync-bar { 
+            background: var(--glass); border: 1px solid var(--border); padding: 12px; 
+            border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+        }
+        .btn-tiny { 
+            background: var(--white); color: #000; border: none; padding: 8px 15px; 
+            border-radius: 10px; font-weight: 700; font-size: 11px; text-transform: uppercase;
+        }
+
+        /* Grid de Métricas */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-card { 
+            background: var(--card); border: 1px solid var(--border); padding: 15px; 
+            border-radius: 20px; position: relative; overflow: hidden;
+        }
+        .stat-card span { font-size: 9px; color: #888; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        .stat-card b { font-size: 20px; font-weight: 800; display: block; }
+        .stat-card.main { grid-column: span 2; border-color: var(--green); background: linear-gradient(145deg, rgba(0,255,136,0.05) 0%, transparent 100%); }
+        .stat-card.main b { color: var(--green); font-size: 28px; }
+
+        /* Seção de Gráfico */
+        .chart-container { 
+            background: var(--card); border: 1px solid var(--border); border-radius: 24px; 
+            padding: 15px; margin-bottom: 25px; height: 250px;
+        }
+
+        /* Formulário Moderno */
+        .glass-form { 
+            background: var(--card); border: 1px solid var(--border); padding: 20px; 
+            border-radius: 24px; margin-bottom: 25px;
+        }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 10px; font-weight: 700; color: #666; margin-bottom: 5px; text-transform: uppercase; padding-left: 5px; }
+        input, select { 
+            background: #000; border: 1px solid var(--border); color: #fff; padding: 14px; 
+            border-radius: 12px; width: 100%; font-size: 15px; font-family: inherit;
+        }
+        input:focus { border-color: var(--blue); outline: none; }
+        
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        .btn-add { 
+            background: var(--green); color: #000; width: 100%; padding: 18px; 
+            border-radius: 15px; font-weight: 800; border: none; font-size: 16px; margin-top: 10px;
+        }
+
+        /* Lista de Vendas */
+        .venda-item { 
+            background: var(--card); border: 1px solid var(--border); padding: 15px; 
+            border-radius: 18px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;
+        }
+        .venda-info b { display: block; font-size: 15px; }
+        .venda-info small { color: #666; font-size: 11px; }
+        .venda-badge { background: #1a1a1a; padding: 4px 8px; border-radius: 6px; font-size: 9px; font-weight: 800; color: var(--blue); }
+        .btn-del { color: var(--red); background: none; border: none; font-size: 18px; padding: 10px; }
+
+        #syncStatus { font-size: 10px; text-align: center; margin-bottom: 10px; color: var(--yellow); }
     </style>
 </head>
 <body>
 
-    <div id="bloqueioToken" style="display: none;">
-        <h2 style="color: var(--green);">Configuração Necessária</h2>
-        <p>O GitHub bloqueia senhas expostas. Para funcionar, cole seu Token abaixo (ele ficará salvo apenas neste aparelho):</p>
-        <input type="text" id="tokenInput" placeholder="ghp_xxxxxxxxxxxx" style="margin-bottom: 20px;">
-        <button class="btn-main" onclick="salvarTokenLocal()">ATIVAR PAINEL</button>
-        <small style="color: #666; margin-top: 10px;">O token nunca será enviado para ninguém além do seu próprio GitHub.</small>
-    </div>
+    <div id="relogio">00/00/0000 | 00:00:00</div>
 
-    <div id="relogio"></div>
     <header>
-        <h1>My Baby | Gerson 🐾</h1>
-        <select class="mes-selector" id="selecaoMes" onchange="render()" style="color:var(--green); border: 1px solid var(--green); background: #000; padding: 14px; border-radius: 12px; font-weight: 800; width: 100%; margin-top: 10px;">
-            <option value="01/2026">Janeiro 2026</option>
-            <option value="02/2026">Fevereiro 2026</option>
+        <h1>My Baby Business</h1>
+        <select id="selecaoMes" onchange="render()" style="margin-top:15px; border-color: var(--green); color: var(--green); font-weight: 800;">
             <option value="03/2026">Março 2026</option>
             <option value="04/2026" selected>Abril 2026</option>
             <option value="05/2026">Maio 2026</option>
         </select>
     </header>
 
-    <div class="sync-box">
-        <span>☁️ NUVEM: REPO VENDAS</span>
-        <div style="display: flex; justify-content: space-between;">
-            <button class="btn-sync" onclick="salvarNoGithub()">💾 Salvar</button>
-            <button class="btn-load" onclick="carregarDoGithub()">📥 Buscar</button>
+    <div class="sync-bar">
+        <button class="btn-tiny" onclick="carregarDoGithub()" style="background: var(--blue);">📥 Importar</button>
+        <div id="syncStatus">Nuvem Pronta</div>
+        <button class="btn-tiny" onclick="salvarNoGithub()" style="background: var(--green);">💾 Salvar</button>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card main">
+            <span>💰 Comissão Estimada (5%)</span>
+            <b id="salLiq">R$ 0,00</b>
         </div>
-        <div id="syncStatus" style="font-size: 10px; margin-top: 10px; color: var(--yellow);">Status: Ativo</div>
-        <button onclick="resetToken()" style="background:none; border:none; color:#444; font-size:9px; margin-top:10px;">Trocar Token</button>
+        <div class="stat-card">
+            <span>🐕 Spitz Vendidos</span>
+            <b id="countSpitz">0</b>
+        </div>
+        <div class="stat-card">
+            <span>🐈 Bengals Vendidos</span>
+            <b id="countBengal">0</b>
+        </div>
+        <div class="stat-card">
+            <span>🐾 Total Filhotes</span>
+            <b id="countTotal">0</b>
+        </div>
+        <div class="stat-card">
+            <span>💵 Faturamento Bruto</span>
+            <b id="totBruto">R$ 0,00</b>
+        </div>
     </div>
 
-    <div class="fin-grid">
-        <div class="fin-box full-box"><span>💰 SALÁRIO LÍQUIDO (5%)</span><b id="salLiq">R$ 0,00</b></div>
-        <div class="fin-box"><span>💵 BRUTO</span><b id="totBruto" style="color:var(--green)">R$ 0,00</b></div>
-        <div class="fin-box"><span>📉 VALES</span><b id="totVales" style="color:var(--red)">R$ 0,00</b></div>
+    <div class="chart-container">
+        <canvas id="graficoVendas"></canvas>
     </div>
 
-    <div class="chart-wrapper"><canvas id="graficoVendas"></canvas></div>
+    <div class="glass-form">
+        <div class="row">
+            <div class="input-group">
+                <label>Data</label>
+                <input type="date" id="dataVenda">
+            </div>
+            <div class="input-group">
+                <label>Raça</label>
+                <select id="tipo">
+                    <option value="Spitz">🐕 Spitz Alemão</option>
+                    <option value="Bengal">🐈 Bengal Cat</option>
+                </select>
+            </div>
+        </div>
 
-    <div class="inputs">
-        <div class="input-row"><input type="date" id="dataVenda"><select id="tipo"><option value="Spitz">🐕 Spitz</option><option value="Bengal">🐈 Bengal</option></select></div>
-        <input type="text" id="cliente" placeholder="👤 Cliente" style="margin-bottom:12px">
-        <div class="input-row"><input type="number" id="valor" placeholder="💰 Valor"><input type="number" id="frete" placeholder="🚚 Frete"></div>
-        <button class="btn-main" onclick="addVenda()">✅ REGISTRAR VENDA</button>
+        <div class="input-group">
+            <label>Nome do Cliente</label>
+            <input type="text" id="cliente" placeholder="Ex: João Silva">
+        </div>
+
+        <div class="row">
+            <div class="input-group">
+                <label>Valor (R$)</label>
+                <input type="number" id="valor" placeholder="0.00">
+            </div>
+            <div class="input-group">
+                <label>Estado (UF)</label>
+                <select id="uf">
+                    <option value="RS">Rio Grande do Sul</option>
+                    <option value="SC">Santa Catarina</option>
+                    <option value="PR">Paraná</option>
+                    <option value="SP">São Paulo</option>
+                    <option value="RJ">Rio de Janeiro</option>
+                    <option value="MG">Minas Gerais</option>
+                    <option value="OUTRO">Outros</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn-add" onclick="addVenda()">REGISTRAR VENDA</button>
     </div>
+
     <div id="lista"></div>
 
 <script>
-    Chart.register(ChartDataLabels);
-    
-    // --- LÓGICA DE SEGURANÇA DO GERSON ---
-    let GH_TOKEN = localStorage.getItem('gh_token_gerson');
+    // Configurações GitHub do Gerson
+    const GH_TOKEN = localStorage.getItem('gh_token_gerson');
     const GH_REPO = "jrsgrgerson-ship-it/Vendas";
     const GH_URL = `https://api.github.com/repos/${GH_REPO}/contents/vendas.json`;
 
-    if (!GH_TOKEN) {
-        document.getElementById('bloqueioToken').style.display = 'flex';
-    }
-
-    function salvarTokenLocal() {
-        const input = document.getElementById('tokenInput').value.trim();
-        if (input.startsWith('ghp_')) {
-            localStorage.setItem('gh_token_gerson', input);
-            location.reload();
-        } else {
-            alert("Token inválido! Deve começar com ghp_");
-        }
-    }
-
-    function resetToken() {
-        if(confirm("Deseja trocar o token salvo?")) {
-            localStorage.removeItem('gh_token_gerson');
-            location.reload();
-        }
-    }
-
-    // --- RESTANTE DO APP ---
     let appData = JSON.parse(localStorage.getItem('canil_2026_db')) || { vendas: [] };
     let chart = null;
 
@@ -121,94 +186,139 @@
 
     async function salvarNoGithub() {
         const status = document.getElementById('syncStatus');
-        status.innerText = "Sincronizando...";
+        status.innerText = "⏳ Enviando...";
         try {
             const resGet = await fetch(GH_URL + "?t=" + Date.now(), {
                 headers: { 'Authorization': `token ${GH_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
             });
-            if (!resGet.ok) throw new Error("Erro de conexão. Token pode estar expirado.");
-
             const dataGet = await resGet.json();
-            const sha = dataGet.sha;
             const content = btoa(unescape(encodeURIComponent(JSON.stringify(appData))));
-
             const resPut = await fetch(GH_URL, {
                 method: 'PUT',
                 headers: { 'Authorization': `token ${GH_TOKEN}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: "Update Painel", content, sha })
+                body: JSON.stringify({ message: "Update via App", content, sha: dataGet.sha })
             });
-
-            if(resPut.ok) {
-                status.innerText = "✅ SALVO COM SUCESSO!";
-                status.style.color = "var(--green)";
-            }
-        } catch (e) { alert(e.message); }
+            if(resPut.ok) status.innerText = "✅ Sincronizado";
+        } catch (e) { status.innerText = "❌ Erro ao salvar"; }
     }
 
     async function carregarDoGithub() {
         try {
             const res = await fetch(GH_URL + "?t=" + Date.now(), {
-                headers: { 'Authorization': `token ${GH_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+                headers: { 'Authorization': `token ${GH_TOKEN}` }
             });
-            if (!res.ok) throw new Error("Não achou o arquivo na nuvem.");
             const data = await res.json();
             appData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
             localStorage.setItem('canil_2026_db', JSON.stringify(appData));
             render();
-            alert("Dados sincronizados!");
-        } catch (e) { alert(e.message); }
+            alert("Dados atualizados com sucesso!");
+        } catch (e) { alert("Erro ao buscar dados."); }
     }
 
     function addVenda() {
         const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valor').value);
-        const d = document.getElementById('dataVenda').value;
+        const d = document.getElementById('dataVenda').value, u = document.getElementById('uf').value;
         if (!c || !v || !d) return;
+        
         const [ano, mes, dia] = d.split('-');
         appData.vendas.push({
             id: Date.now(), mesRef: `${mes}/${ano}`, cliente: c, valor: v,
-            frete: parseFloat(document.getElementById('frete').value) || 0,
-            tipo: document.getElementById('tipo').value, data: `${dia}/${mes}/${ano}`, ts: new Date(d).getTime(), isVale: false
+            tipo: document.getElementById('tipo').value, uf: u, data: `${dia}/${mes}/${ano}`,
+            ts: new Date(d).getTime()
         });
+        
         localStorage.setItem('canil_2026_db', JSON.stringify(appData));
+        document.getElementById('cliente').value = '';
+        document.getElementById('valor').value = '';
         render();
     }
 
     function render() {
         const mesAtivo = document.getElementById('selecaoMes').value;
-        let bruto=0, vales=0; let histDiario = {};
         const vMes = appData.vendas.filter(v => v.mesRef === mesAtivo);
+        
+        let bruto = 0, qSpitz = 0, qBengal = 0;
+        let histDiario = Array(32).fill(0);
+
         vMes.forEach(v => {
-            if (!v.isVale) {
-                bruto += v.valor;
-                let dia = parseInt(v.data.split('/')[0]);
-                histDiario[dia] = (histDiario[dia] || 0) + v.valor;
-            } else { vales += v.valor; }
+            bruto += v.valor;
+            if(v.tipo === 'Spitz') qSpitz++; else qBengal++;
+            let dia = parseInt(v.data.split('/')[0]);
+            histDiario[dia] += v.valor;
         });
-        const mesNum = parseInt(mesAtivo.split('/')[0]);
-        let sal = mesNum >= 4 ? (bruto * 0.05) - vales : 2000 + (bruto * 0.03) - vales;
-        document.getElementById('salLiq').innerText = sal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        // Cálculos na tela
+        document.getElementById('countSpitz').innerText = qSpitz;
+        document.getElementById('countBengal').innerText = qBengal;
+        document.getElementById('countTotal').innerText = qSpitz + qBengal;
         document.getElementById('totBruto').innerText = bruto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        document.getElementById('totVales').innerText = vales.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        const div = document.getElementById('lista'); div.innerHTML = '';
+        
+        const sal = (bruto * 0.05); // Regra de 5% fixa para 2026
+        document.getElementById('salLiq').innerText = sal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        const div = document.getElementById('lista');
+        div.innerHTML = '';
         vMes.sort((a,b) => b.ts - a.ts).forEach(v => {
-            div.innerHTML += `<div class="item"><div class="item-header"><div><b>${v.cliente}</b><br><small>${v.data} • ${v.tipo}</small></div><div style="text-align:right"><b>R$ ${v.valor.toLocaleString('pt-BR')}</b>${v.frete > 0 ? `<br><small style="color:var(--blue)">+ Frete ${v.frete}</small>` : ''}</div><button class="btn-circle" onclick="del(${v.id})">🗑</button></div></div>`;
+            div.innerHTML += `
+                <div class="venda-item">
+                    <div class="venda-info">
+                        <b>${v.tipo === 'Spitz' ? '🐕' : '🐈'} ${v.cliente} <span class="venda-badge">${v.uf}</span></b>
+                        <small>${v.data} • R$ ${v.valor.toLocaleString('pt-BR')}</small>
+                    </div>
+                    <button class="btn-del" onclick="del(${v.id})">🗑️</button>
+                </div>`;
         });
         desenharGrafico(histDiario);
     }
 
-    function desenharGrafico(histDiario) {
+    function desenharGrafico(dados) {
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
-        let labels = Array.from({length: 31}, (_, i) => i + 1);
-        let dataAcum = [], acumulado = 0;
-        labels.forEach(dia => { acumulado += (histDiario[dia] || 0); dataAcum.push(acumulado); });
-        chart = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ data: dataAcum, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.1)', tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, datalabels: { display: false } } } });
+        
+        let acumulado = 0;
+        const pontos = dados.slice(1).map(v => { acumulado += v; return acumulado; });
+
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 31}, (_, i) => i + 1),
+                datasets: [{
+                    label: 'Faturamento',
+                    data: pontos,
+                    borderColor: '#00ff88',
+                    borderWidth: 4,
+                    pointRadius: 0,
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(0, 255, 136, 0.1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { display: false }, ticks: { color: '#444' } },
+                    y: { grid: { color: '#1a1a1a' }, ticks: { display: false } }
+                }
+            }
+        });
     }
 
-    function del(id) { if(confirm("Apagar?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); localStorage.setItem('canil_2026_db', JSON.stringify(appData)); render(); } }
-    
+    function del(id) {
+        if(confirm("Excluir esta venda?")) {
+            appData.vendas = appData.vendas.filter(x => x.id !== id);
+            localStorage.setItem('canil_2026_db', JSON.stringify(appData));
+            render();
+        }
+    }
+
+    setInterval(() => {
+        const d = new Date();
+        document.getElementById('relogio').innerText = d.toLocaleDateString('pt-BR') + ' | ' + d.toLocaleTimeString('pt-BR');
+    }, 1000);
+
     render();
-    setInterval(() => { const d = new Date(); document.getElementById('relogio').innerHTML = d.toLocaleDateString('pt-BR') + '<br>' + d.toLocaleTimeString('pt-BR'); }, 1000);
 </script>
 </body>
 </html>
