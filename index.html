@@ -47,17 +47,17 @@
     </header>
 
     <div class="sync-box">
-        <span>☁️ SINCRONIZAÇÃO GITHUB (ATIVO)</span>
+        <span>☁️ SINCRONIZAÇÃO EM TEMPO REAL</span>
         <div style="display: flex; justify-content: space-between;">
-            <button class="btn-sync" onclick="salvarNoGithub()">💾 Salvar</button>
-            <button class="btn-load" onclick="carregarDoGithub()">📥 Recuperar</button>
+            <button class="btn-sync" onclick="salvarNoGithub()">💾 Salvar na Nuvem</button>
+            <button class="btn-load" onclick="carregarDoGithub()">📥 Buscar Dados</button>
         </div>
-        <div id="syncStatus" style="font-size: 10px; margin-top: 10px; color: var(--yellow);">Status: jrsgrgerson-ship-it</div>
+        <div id="syncStatus" style="font-size: 10px; margin-top: 10px; color: var(--yellow);">Sistema Pronto</div>
     </div>
 
     <div class="fin-grid">
-        <div class="fin-box full-box"><span>💰 SALÁRIO LÍQUIDO</span><b id="salLiq">R$ 0,00</b></div>
-        <div class="fin-box"><span>💵 BRUTO</span><b id="totBruto" style="color:var(--green)">R$ 0,00</b></div>
+        <div class="fin-box full-box"><span>💰 COMISSÃO ESTIMADA (5%)</span><b id="salLiq">R$ 0,00</b></div>
+        <div class="fin-box"><span>💵 TOTAL VENDAS</span><b id="totBruto" style="color:var(--green)">R$ 0,00</b></div>
         <div class="fin-box"><span>📉 VALES</span><b id="totVales" style="color:var(--red)">R$ 0,00</b></div>
     </div>
 
@@ -66,7 +66,7 @@
     <div class="inputs">
         <div class="input-row"><input type="date" id="dataVenda"><select id="tipo"><option value="Spitz">🐕 Spitz</option><option value="Bengal">🐈 Bengal</option></select></div>
         <input type="text" id="cliente" placeholder="👤 Nome do Cliente" style="margin-bottom:12px">
-        <div class="input-row"><input type="number" id="valor" placeholder="💰 Valor"><input type="number" id="frete" placeholder="🚚 Frete"></div>
+        <div class="input-row"><input type="number" id="valor" placeholder="💰 Valor do Animal"><input type="number" id="frete" placeholder="🚚 Valor Frete"></div>
         <button class="btn-main" onclick="addVenda()">✅ REGISTRAR VENDA</button>
     </div>
     <div id="lista"></div>
@@ -74,7 +74,7 @@
 <script>
     Chart.register(ChartDataLabels);
     
-    // Configurações do Gerson
+    // Dados de conexão direta do Gerson
     const GH_TOKEN = "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";
     const GH_REPO = "jrsgrgerson-ship-it/vendas-canil";
     const GH_URL = `https://api.github.com/repos/${GH_REPO}/contents/vendas.json`;
@@ -86,59 +86,62 @@
 
     async function salvarNoGithub() {
         const status = document.getElementById('syncStatus');
-        status.innerText = "Forçando conexão...";
+        status.innerText = "Conectando...";
         try {
-            // Adicionamos um timestamp no final para o GitHub não usar cache antigo
-            const resGet = await fetch(GH_URL + "?t=" + Date.now(), { 
-                headers: { 
-                    'Authorization': `Bearer ${GH_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                } 
+            // Passo 1: Pegar o arquivo atual para obter o SHA (obrigatório para salvar)
+            const resGet = await fetch(GH_URL, {
+                headers: { 'Authorization': `token ${GH_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
             });
             
-            if (!resGet.ok) {
-                const erroTexto = await resGet.text();
-                throw new Error("GitHub recusou: Verifique se o Token tem permissão 'repo'.");
-            }
+            if (!resGet.ok) throw new Error("Erro: O arquivo vendas.json não foi encontrado no GitHub.");
 
             const dataGet = await resGet.json();
             const sha = dataGet.sha;
+
+            // Passo 2: Preparar os dados (convertendo para Base64)
             const content = btoa(unescape(encodeURIComponent(JSON.stringify(appData))));
 
+            // Passo 3: Enviar para o GitHub
             const resPut = await fetch(GH_URL, {
                 method: 'PUT',
                 headers: { 
-                    'Authorization': `Bearer ${GH_TOKEN}`,
+                    'Authorization': `token ${GH_TOKEN}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ message: "Backup", content, sha })
+                body: JSON.stringify({
+                    message: `Backup via Painel - ${new Date().toLocaleString()}`,
+                    content: content,
+                    sha: sha
+                })
             });
 
             if(resPut.ok) {
-                status.innerText = "✅ SINCRONIZADO COM SUCESSO!";
+                status.innerText = "✅ SALVO NA NUVEM!";
                 status.style.color = "var(--green)";
             } else {
-                throw new Error("Erro ao gravar. Token inválido.");
+                throw new Error("Erro ao gravar. Verifique se o Token tem todas as caixas marcadas.");
             }
         } catch (e) { 
             alert(e.message);
-            status.innerText = "❌ Erro: " + e.message;
+            status.innerText = "❌ Falha na Sincronização";
             status.style.color = "var(--red)";
         }
     }
 
     async function carregarDoGithub() {
+        const status = document.getElementById('syncStatus');
         try {
-            const res = await fetch(GH_URL + "?t=" + Date.now(), { 
-                headers: { 'Authorization': `Bearer ${GH_TOKEN}` } 
+            const res = await fetch(GH_URL, {
+                headers: { 'Authorization': `token ${GH_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
             });
-            if (!res.ok) throw new Error("Não achou o arquivo.");
+            if (!res.ok) throw new Error("Arquivo não encontrado.");
             const data = await res.json();
             appData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
             localStorage.setItem('canil_2026_db', JSON.stringify(appData));
             render();
-            alert("Dados recuperados!");
-        } catch (e) { alert(e.message); }
+            status.innerText = "📥 DADOS CARREGADOS!";
+            status.style.color = "var(--blue)";
+        } catch (e) { alert("Erro ao ler: " + e.message); }
     }
 
     function addVenda() {
@@ -166,11 +169,15 @@
                 histDiario[dia] = (histDiario[dia] || 0) + v.valor;
             } else { vales += v.valor; }
         });
+        
+        // Lógica de Comissão: 5% a partir de Abril (sem fixo)
         const mesNum = parseInt(mesAtivo.split('/')[0]);
         let sal = mesNum >= 4 ? (bruto * 0.05) - vales : 2000 + (bruto * 0.03) - vales;
+        
         document.getElementById('salLiq').innerText = sal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         document.getElementById('totBruto').innerText = bruto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         document.getElementById('totVales').innerText = vales.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        
         const div = document.getElementById('lista'); div.innerHTML = '';
         vMes.sort((a,b) => b.ts - a.ts).forEach(v => {
             div.innerHTML += `<div class="item"><div class="item-header"><div><b>${v.cliente}</b><br><small>${v.data} • ${v.tipo}</small></div><div style="text-align:right"><b>R$ ${v.valor.toLocaleString('pt-BR')}</b>${v.frete > 0 ? `<br><small style="color:var(--blue)">+ Frete ${v.frete}</small>` : ''}</div><button class="btn-circle" onclick="del(${v.id})">🗑</button></div></div>`;
@@ -187,7 +194,7 @@
         chart = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ data: dataAcum, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.1)', tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, datalabels: { display: false } } } });
     }
 
-    function del(id) { if(confirm("Apagar?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); localStorage.setItem('canil_2026_db', JSON.stringify(appData)); render(); } }
+    function del(id) { if(confirm("Apagar venda?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); localStorage.setItem('canil_2026_db', JSON.stringify(appData)); render(); } }
     render();
     setInterval(() => { const d = new Date(); document.getElementById('relogio').innerHTML = d.toLocaleDateString('pt-BR') + '<br>' + d.toLocaleTimeString('pt-BR'); }, 1000);
 </script>
