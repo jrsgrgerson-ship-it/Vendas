@@ -52,7 +52,7 @@
             <button class="btn-sync" onclick="salvarNoGithub()">💾 Salvar</button>
             <button class="btn-load" onclick="carregarDoGithub()">📥 Recuperar</button>
         </div>
-        <div id="syncStatus" style="font-size: 10px; margin-top: 10px; color: var(--yellow);">Status: Usuário jrsgrgerson-ship-it</div>
+        <div id="syncStatus" style="font-size: 10px; margin-top: 10px; color: var(--yellow);">Status: jrsgrgerson-ship-it</div>
     </div>
 
     <div class="fin-grid">
@@ -74,7 +74,7 @@
 <script>
     Chart.register(ChartDataLabels);
     
-    // Configurações atualizadas para jrsgrgerson-ship-it
+    // Configurações do Gerson
     const GH_TOKEN = "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";
     const GH_REPO = "jrsgrgerson-ship-it/vendas-canil";
     const GH_URL = `https://api.github.com/repos/${GH_REPO}/contents/vendas.json`;
@@ -86,17 +86,19 @@
 
     async function salvarNoGithub() {
         const status = document.getElementById('syncStatus');
-        status.innerText = "Conectando ao GitHub...";
+        status.innerText = "Forçando conexão...";
         try {
-            const resGet = await fetch(GH_URL, { 
+            // Adicionamos um timestamp no final para o GitHub não usar cache antigo
+            const resGet = await fetch(GH_URL + "?t=" + Date.now(), { 
                 headers: { 
-                    'Authorization': `token ${GH_TOKEN}`,
+                    'Authorization': `Bearer ${GH_TOKEN}`,
                     'Accept': 'application/vnd.github.v3+json'
                 } 
             });
             
             if (!resGet.ok) {
-                throw new Error("Não achou o arquivo no GitHub. Crie 'vendas.json' no repositório 'vendas-canil'.");
+                const erroTexto = await resGet.text();
+                throw new Error("GitHub recusou: Verifique se o Token tem permissão 'repo'.");
             }
 
             const dataGet = await resGet.json();
@@ -106,42 +108,37 @@
             const resPut = await fetch(GH_URL, {
                 method: 'PUT',
                 headers: { 
-                    'Authorization': `token ${GH_TOKEN}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/vnd.github.v3+json'
+                    'Authorization': `Bearer ${GH_TOKEN}`,
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ message: "Backup", content, sha })
             });
 
             if(resPut.ok) {
-                status.innerText = "✅ DADOS SINCRONIZADOS!";
+                status.innerText = "✅ SINCRONIZADO COM SUCESSO!";
                 status.style.color = "var(--green)";
             } else {
-                throw new Error("Erro de permissão no Token.");
+                throw new Error("Erro ao gravar. Token inválido.");
             }
         } catch (e) { 
-            console.error(e);
-            alert("Erro: " + e.message);
-            status.innerText = "❌ Falha de Conexão";
+            alert(e.message);
+            status.innerText = "❌ Erro: " + e.message;
+            status.style.color = "var(--red)";
         }
     }
 
     async function carregarDoGithub() {
-        if(!confirm("Substituir dados locais pelos da nuvem?")) return;
         try {
-            const res = await fetch(GH_URL, { 
-                headers: { 
-                    'Authorization': `token ${GH_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                } 
+            const res = await fetch(GH_URL + "?t=" + Date.now(), { 
+                headers: { 'Authorization': `Bearer ${GH_TOKEN}` } 
             });
-            if (!res.ok) throw new Error("Não achou o arquivo na nuvem.");
+            if (!res.ok) throw new Error("Não achou o arquivo.");
             const data = await res.json();
             appData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
             localStorage.setItem('canil_2026_db', JSON.stringify(appData));
             render();
             alert("Dados recuperados!");
-        } catch (e) { alert("Erro: " + e.message); }
+        } catch (e) { alert(e.message); }
     }
 
     function addVenda() {
