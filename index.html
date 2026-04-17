@@ -6,41 +6,41 @@
     <title>Painel Canil My Baby</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
     <style>
         :root { 
             --blue: #00f2ff; --green: #00ff88; --red: #ff0055; --bg: #080808; 
             --card: #141414; --border: #252525; --white: #ffffff; --glass: rgba(255, 255, 255, 0.03);
-            --pink: #ff85a1; --male: #4dabff;
+            --pink: #ff85a1; --male: #4dabff; --orange: #ffaa00;
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            background: var(--bg); color: var(--white); font-family: 'Plus Jakarta Sans', sans-serif; 
-            margin: 0; padding: 15px; padding-bottom: 50px; line-height: 1.4;
-        }
+        body { background: var(--bg); color: var(--white); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 15px; padding-bottom: 50px; }
 
-        #relogio { text-align: right; font-size: 10px; color: var(--green); font-weight: 600; margin-bottom: 10px; letter-spacing: 1px; }
+        #relogio { text-align: right; font-size: 10px; color: var(--green); font-weight: 600; margin-bottom: 10px; }
         header { margin-bottom: 25px; border-left: 4px solid var(--green); padding-left: 15px; }
-        header h1 { margin: 0; font-size: 20px; font-weight: 800; line-height: 1.2; }
+        header h1 { margin: 0; font-size: 20px; font-weight: 800; }
         header span { font-size: 12px; color: var(--green); font-weight: 600; text-transform: uppercase; }
 
-        .sync-bar { 
-            background: var(--glass); border: 1px solid var(--border); padding: 12px; 
-            border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
-        }
-        .btn-tiny { 
-            background: var(--white); color: #000; border: none; padding: 8px 15px; 
-            border-radius: 10px; font-weight: 700; font-size: 11px; text-transform: uppercase;
-        }
+        .sync-bar { background: var(--glass); border: 1px solid var(--border); padding: 12px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 5px; }
+        .btn-tiny { border: none; padding: 8px 12px; border-radius: 10px; font-weight: 700; font-size: 10px; text-transform: uppercase; cursor: pointer; }
 
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
         .stat-card { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 20px; }
         .stat-card span { font-size: 9px; color: #888; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 5px; }
         .stat-card b { font-size: 20px; font-weight: 800; display: block; }
         .stat-card.main { grid-column: span 2; border-color: var(--green); background: linear-gradient(145deg, rgba(0,255,136,0.05) 0%, transparent 100%); }
         .stat-card.main b { color: var(--green); font-size: 28px; }
 
-        .chart-container { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 15px; margin-bottom: 25px; height: 200px; }
+        .meta-box { background: var(--card); border: 1px solid var(--border); padding: 12px 18px; border-radius: 18px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
+        .meta-box label { font-size: 10px; font-weight: 800; color: #666; text-transform: uppercase; }
+        .meta-box input { background: none; border: none; color: var(--green); font-weight: 800; font-size: 18px; width: 120px; text-align: right; padding: 0; }
+        .meta-box input:focus { outline: none; }
+
+        .chart-container { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 25px; height: 250px; position: relative; }
+        .progresso-label { position: absolute; top: 15px; right: 25px; color: var(--green); font-weight: 800; font-size: 14px; }
 
         .glass-form { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 24px; margin-bottom: 25px; }
         .input-group { margin-bottom: 15px; }
@@ -48,16 +48,15 @@
         input, select { background: #000; border: 1px solid var(--border); color: #fff; padding: 14px; border-radius: 12px; width: 100%; font-size: 15px; }
         
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn-add { background: var(--green); color: #000; width: 100%; padding: 18px; border-radius: 15px; font-weight: 800; border: none; font-size: 16px; }
+        .btn-add { background: var(--green); color: #000; width: 100%; padding: 18px; border-radius: 15px; font-weight: 800; border: none; font-size: 16px; margin-top: 10px; }
 
         .venda-item { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 18px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
         .venda-info b { display: flex; align-items: center; font-size: 15px; gap: 5px; }
         .venda-info small { color: #888; font-size: 11px; display: block; margin-top: 2px; }
         .venda-badge { background: #1a1a1a; padding: 2px 6px; border-radius: 4px; font-size: 9px; color: var(--blue); border: 1px solid #333; }
-        .sexo-tag { font-size: 12px; font-weight: bold; }
         .btn-del { color: var(--red); background: none; border: none; font-size: 18px; }
         
-        #syncStatus { font-size: 10px; color: var(--yellow); }
+        #syncStatus { font-size: 10px; color: var(--orange); font-weight: bold; }
     </style>
 </head>
 <body>
@@ -68,8 +67,6 @@
         <span>Vendedor Gerson</span>
         <h1>Painel Canil My Baby</h1>
         <select id="selecaoMes" onchange="render()" style="margin-top:10px; border-color: var(--green); color: var(--green); height: 45px;">
-            <option value="01/2026">Janeiro 2026</option>
-            <option value="02/2026">Fevereiro 2026</option>
             <option value="03/2026">Março 2026</option>
             <option value="04/2026" selected>Abril 2026</option>
             <option value="05/2026">Maio 2026</option>
@@ -77,49 +74,44 @@
     </header>
 
     <div class="sync-bar">
-        <button class="btn-tiny" onclick="carregarDoGithub()" style="background: var(--blue);">📥 Buscar</button>
-        <div id="syncStatus">Pronto</div>
-        <button class="btn-tiny" onclick="salvarNoGithub()" style="background: var(--green);">💾 Salvar</button>
+        <button class="btn-tiny" onclick="carregarDoGithub()" style="background: var(--blue); color: #000;">📥 Buscar</button>
+        <button class="btn-tiny" onclick="exportarPDF()" style="background: var(--orange); color: #000;">📄 PDF</button>
+        <button class="btn-tiny" onclick="salvarNoGithub()" style="background: var(--green); color: #000;">💾 Salvar</button>
     </div>
 
+    <div id="syncStatus" style="text-align: center; margin-bottom: 15px;">Nuvem Conectada</div>
+
     <div class="stats-grid">
-        <div class="stat-card main"><span>💰 Comissões Totais</span><b id="salLiq">R$ 0,00</b></div>
+        <div class="stat-card main"><span>💰 Comissões Totais (5%)</span><b id="salLiq">R$ 0,00</b></div>
         <div class="stat-card"><span>🐕 Spitz</span><b id="countSpitz">0</b></div>
         <div class="stat-card"><span>🐈 Bengals</span><b id="countBengal">0</b></div>
         <div class="stat-card"><span>🐾 Filhotes Totais</span><b id="countTotal">0</b></div>
         <div class="stat-card"><span>💵 Faturamento</span><b id="totBruto">R$ 0,00</b></div>
     </div>
 
-    <div class="chart-container"><canvas id="graficoVendas"></canvas></div>
+    <div class="meta-box">
+        <label>🎯 Definir Meta (R$)</label>
+        <input type="number" id="inputMeta" value="50000" oninput="render()">
+    </div>
+
+    <div class="chart-container">
+        <div class="progresso-label" id="percProgresso">0%</div>
+        <canvas id="graficoVendas"></canvas>
+    </div>
 
     <div class="glass-form">
         <div class="row">
             <div class="input-group"><label>Data</label><input type="date" id="dataVenda"></div>
-            <div class="input-group">
-                <label>Raça</label>
-                <select id="tipo">
-                    <option value="Spitz">🐕 Spitz</option>
-                    <option value="Bengal">🐈 Bengal</option>
-                </select>
-            </div>
+            <div class="input-group"><label>Raça</label><select id="tipo"><option value="Spitz">🐕 Spitz</option><option value="Bengal">🐈 Bengal</option></select></div>
         </div>
-
         <div class="row">
             <div class="input-group"><label>Cliente</label><input type="text" id="cliente" placeholder="Nome"></div>
-            <div class="input-group">
-                <label>Sexo</label>
-                <select id="sexo">
-                    <option value="M">♂ Macho</option>
-                    <option value="F">♀ Fêmea</option>
-                </select>
-            </div>
+            <div class="input-group"><label>Sexo</label><select id="sexo"><option value="M">♂ Macho</option><option value="F">♀ Fêmea</option></select></div>
         </div>
-
         <div class="row">
             <div class="input-group"><label>Valor Animal</label><input type="number" id="valor" placeholder="0.00"></div>
             <div class="input-group"><label>Frete</label><input type="number" id="frete" placeholder="0.00"></div>
         </div>
-
         <div class="input-group">
             <label>Estado (UF)</label>
             <select id="uf">
@@ -129,10 +121,13 @@
                 <option value="SP">São Paulo</option>
                 <option value="RJ">Rio de Janeiro</option>
                 <option value="MG">Minas Gerais</option>
+                <option value="ES">Espírito Santo</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="GO">Goiás</option>
+                <option value="DF">Distrito Federal</option>
                 <option value="OUTRO">Outros</option>
             </select>
         </div>
-
         <button class="btn-add" onclick="addVenda()">REGISTRAR VENDA</button>
     </div>
 
@@ -142,68 +137,56 @@
     const GH_TOKEN = localStorage.getItem('gh_token_gerson');
     const GH_REPO = "jrsgrgerson-ship-it/Vendas";
     const GH_URL = `https://api.github.com/repos/${GH_REPO}/contents/vendas.json`;
-
-    let appData = JSON.parse(localStorage.getItem('canil_2026_db')) || { vendas: [] };
+    
+    let appData = JSON.parse(localStorage.getItem('canil_2026_db')) || { vendas: [], metaMensal: 50000 };
     let chart = null;
 
+    if(appData.metaMensal) document.getElementById('inputMeta').value = appData.metaMensal;
     document.getElementById('dataVenda').valueAsDate = new Date();
 
     async function salvarNoGithub() {
         const status = document.getElementById('syncStatus');
-        status.innerText = "⏳ Gravando...";
+        status.innerText = "⏳ Gravando na Nuvem...";
         try {
-            const resGet = await fetch(GH_URL + "?t=" + Date.now(), {
-                headers: { 'Authorization': `token ${GH_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
-            });
+            const resGet = await fetch(GH_URL + "?t=" + Date.now(), { headers: { 'Authorization': `token ${GH_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' } });
             const dataGet = await resGet.json();
             const content = btoa(unescape(encodeURIComponent(JSON.stringify(appData))));
-            const resPut = await fetch(GH_URL, {
-                method: 'PUT',
-                headers: { 'Authorization': `token ${GH_TOKEN}`, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: "Update Gerson", content, sha: dataGet.sha })
-            });
-            if(resPut.ok) status.innerText = "✅ Salvo";
-        } catch (e) { status.innerText = "❌ Erro"; }
+            const resPut = await fetch(GH_URL, { method: 'PUT', headers: { 'Authorization': `token ${GH_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ message: "Update Gerson", content, sha: dataGet.sha }) });
+            if(resPut.ok) status.innerText = "✅ Tudo Salvo!";
+        } catch (e) { status.innerText = "❌ Erro ao Sincronizar"; }
     }
 
     async function carregarDoGithub() {
         try {
-            const res = await fetch(GH_URL + "?t=" + Date.now(), {
-                headers: { 'Authorization': `token ${GH_TOKEN}` }
-            });
+            const res = await fetch(GH_URL + "?t=" + Date.now(), { headers: { 'Authorization': `token ${GH_TOKEN}` } });
             const data = await res.json();
             appData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
             localStorage.setItem('canil_2026_db', JSON.stringify(appData));
+            if(appData.metaMensal) document.getElementById('inputMeta').value = appData.metaMensal;
             render();
-            alert("Sincronizado!");
+            alert("Dados Atualizados!");
         } catch (e) { alert("Erro ao carregar."); }
     }
 
     function addVenda() {
         const c = document.getElementById('cliente').value, v = parseFloat(document.getElementById('valor').value);
-        const f = parseFloat(document.getElementById('frete').value) || 0;
-        const d = document.getElementById('dataVenda').value, u = document.getElementById('uf').value;
-        const s = document.getElementById('sexo').value;
+        const f = parseFloat(document.getElementById('frete').value) || 0, d = document.getElementById('dataVenda').value;
+        const u = document.getElementById('uf').value, s = document.getElementById('sexo').value;
         if (!c || !v || !d) return;
-        
         const [ano, mes, dia] = d.split('-');
-        appData.vendas.push({
-            id: Date.now(), mesRef: `${mes}/${ano}`, cliente: c, valor: v, frete: f,
-            tipo: document.getElementById('tipo').value, sexo: s, uf: u, data: `${dia}/${mes}/${ano}`,
-            ts: new Date(d).getTime()
-        });
-        
+        appData.vendas.push({ id: Date.now(), mesRef: `${mes}/${ano}`, cliente: c, valor: v, frete: f, tipo: document.getElementById('tipo').value, sexo: s, uf: u, data: `${dia}/${mes}/${ano}`, ts: new Date(d).getTime() });
         localStorage.setItem('canil_2026_db', JSON.stringify(appData));
-        document.getElementById('cliente').value = '';
-        document.getElementById('valor').value = '';
-        document.getElementById('frete').value = '';
+        document.getElementById('cliente').value = ''; document.getElementById('valor').value = ''; document.getElementById('frete').value = '';
         render();
     }
 
     function render() {
         const mesAtivo = document.getElementById('selecaoMes').value;
         const vMes = appData.vendas.filter(v => v.mesRef === mesAtivo);
-        
+        const metaAtual = parseFloat(document.getElementById('inputMeta').value) || 1;
+        appData.metaMensal = metaAtual;
+        localStorage.setItem('canil_2026_db', JSON.stringify(appData));
+
         let bruto = 0, qSpitz = 0, qBengal = 0;
         let histDiario = Array(32).fill(0);
 
@@ -220,28 +203,19 @@
         document.getElementById('totBruto').innerText = bruto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         document.getElementById('salLiq').innerText = (bruto * 0.05).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
+        const progresso = Math.min((bruto / metaAtual) * 100, 100).toFixed(1);
+        document.getElementById('percProgresso').innerText = progresso + "% DA META";
+
         const div = document.getElementById('lista');
         div.innerHTML = '';
         vMes.sort((a,b) => b.ts - a.ts).forEach(v => {
-            const sexoCor = v.sexo === 'M' ? 'var(--male)' : 'var(--pink)';
-            const sexoIcon = v.sexo === 'M' ? '♂' : '♀';
-            div.innerHTML += `
-                <div class="venda-item">
-                    <div class="venda-info">
-                        <b>
-                            ${v.tipo === 'Spitz' ? '🐕' : '🐈'} ${v.cliente} 
-                            <span style="color:${sexoCor}" class="sexo-tag">${sexoIcon}</span>
-                            <span class="venda-badge">${v.uf}</span>
-                        </b>
-                        <small>${v.data} • R$ ${v.valor.toLocaleString('pt-BR')} ${v.frete > 0 ? `(+R$ ${v.frete} frete)` : ''}</small>
-                    </div>
-                    <button class="btn-del" onclick="del(${v.id})">🗑️</button>
-                </div>`;
+            const sxCor = v.sexo === 'M' ? 'var(--male)' : 'var(--pink)';
+            div.innerHTML += `<div class="venda-item"><div class="venda-info"><b>${v.tipo === 'Spitz' ? '🐕' : '🐈'} ${v.cliente} <span style="color:${sxCor}">${v.sexo === 'M' ? '♂' : '♀'}</span> <span class="venda-badge">${v.uf}</span></b><small>${v.data} • R$ ${v.valor.toLocaleString('pt-BR')} ${v.frete > 0 ? `(+R$ ${v.frete})` : ''}</small></div><button class="btn-del" onclick="del(${v.id})">🗑️</button></div>`;
         });
-        desenharGrafico(histDiario);
+        desenharGrafico(histDiario, metaAtual);
     }
 
-    function desenharGrafico(dados) {
+    function desenharGrafico(dados, meta) {
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
         let acumulado = 0;
@@ -250,21 +224,44 @@
             type: 'line',
             data: {
                 labels: Array.from({length: 31}, (_, i) => i + 1),
-                datasets: [{
-                    data: pontos, borderColor: '#00ff88', borderWidth: 3, pointRadius: 0, tension: 0.4, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.1)'
-                }]
+                datasets: [{ data: pontos, borderColor: '#00ff88', borderWidth: 4, pointRadius: 0, tension: 0.4, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.1)' }]
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#444', font: { size: 9 } } }, y: { display: false } } }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#444' } }, y: { min: 0, max: meta, grid: { color: '#1a1a1a' }, ticks: { display: false } } } }
         });
     }
 
-    function del(id) { if(confirm("Excluir?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); localStorage.setItem('canil_2026_db', JSON.stringify(appData)); render(); } }
-    
-    setInterval(() => {
-        const d = new Date();
-        document.getElementById('relogio').innerText = d.toLocaleDateString('pt-BR') + ' | ' + d.toLocaleTimeString('pt-BR');
-    }, 1000);
+    // FUNÇÃO PARA EXPORTAR PDF
+    function exportarPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        const mesAtivo = document.getElementById('selecaoMes').value;
+        const vMes = appData.vendas.filter(v => v.mesRef === mesAtivo);
+        
+        doc.setFontSize(18);
+        doc.text("Relatório de Vendas - Canil My Baby", 14, 20);
+        doc.setFontSize(12);
+        doc.text(`Vendedor: Gerson | Mês: ${mesAtivo}`, 14, 30);
+        doc.text(`Faturamento: ${document.getElementById('totBruto').innerText}`, 14, 38);
+        doc.text(`Comissão: ${document.getElementById('salLiq').innerText}`, 14, 46);
 
+        const colunas = ["Data", "Cliente", "Raça", "Sexo", "UF", "Valor"];
+        const linhas = vMes.sort((a,b) => b.ts - a.ts).map(v => [
+            v.data, v.cliente, v.tipo, v.sexo === 'M' ? 'Macho' : 'Fêmea', v.uf, `R$ ${v.valor.toLocaleString('pt-BR')}`
+        ]);
+
+        doc.autoTable({
+            startY: 55,
+            head: [colunas],
+            body: linhas,
+            theme: 'striped',
+            headStyles: { fillColor: [0, 255, 136] },
+        });
+
+        doc.save(`Vendas_MyBaby_${mesAtivo.replace('/','_')}.pdf`);
+    }
+
+    function del(id) { if(confirm("Excluir?")) { appData.vendas = appData.vendas.filter(x => x.id !== id); localStorage.setItem('canil_2026_db', JSON.stringify(appData)); render(); } }
+    setInterval(() => { const d = new Date(); document.getElementById('relogio').innerText = d.toLocaleDateString('pt-BR') + ' | ' + d.toLocaleTimeString('pt-BR'); }, 1000);
     render();
 </script>
 </body>
