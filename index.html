@@ -145,15 +145,14 @@
     document.getElementById('dataVenda').valueAsDate = new Date();
 
     async function salvarNoGithub() {
-        const status = document.getElementById('syncStatus');
-        status.innerText = "⏳ Gravando na Nuvem...";
+        const status = document.getElementById('syncStatus'); status.innerText = "⏳ Gravando...";
         try {
             const resGet = await fetch(GH_URL + "?t=" + Date.now(), { headers: { 'Authorization': `token ${GH_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' } });
             const dataGet = await resGet.json();
             const content = btoa(unescape(encodeURIComponent(JSON.stringify(appData))));
             const resPut = await fetch(GH_URL, { method: 'PUT', headers: { 'Authorization': `token ${GH_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ message: "Update Gerson", content, sha: dataGet.sha }) });
             if(resPut.ok) status.innerText = "✅ Tudo Salvo!";
-        } catch (e) { status.innerText = "❌ Erro ao Sincronizar"; }
+        } catch (e) { status.innerText = "❌ Erro"; }
     }
 
     async function carregarDoGithub() {
@@ -164,7 +163,6 @@
             localStorage.setItem('canil_2026_db', JSON.stringify(appData));
             if(appData.metaMensal) document.getElementById('inputMeta').value = appData.metaMensal;
             render();
-            alert("Dados Atualizados!");
         } catch (e) { alert("Erro ao carregar."); }
     }
 
@@ -212,51 +210,70 @@
             const sxCor = v.sexo === 'M' ? 'var(--male)' : 'var(--pink)';
             div.innerHTML += `<div class="venda-item"><div class="venda-info"><b>${v.tipo === 'Spitz' ? '🐕' : '🐈'} ${v.cliente} <span style="color:${sxCor}">${v.sexo === 'M' ? '♂' : '♀'}</span> <span class="venda-badge">${v.uf}</span></b><small>${v.data} • R$ ${v.valor.toLocaleString('pt-BR')} ${v.frete > 0 ? `(+R$ ${v.frete})` : ''}</small></div><button class="btn-del" onclick="del(${v.id})">🗑️</button></div>`;
         });
-        desenharGrafico(histDiario, metaAtual);
+        desenharGrafico(histDiario, metaAtual, mesAtivo);
     }
 
-    function desenharGrafico(dados, meta) {
+    function desenharGrafico(dados, meta, mesAtivo) {
         const ctx = document.getElementById('graficoVendas').getContext('2d');
         if (chart) chart.destroy();
+        
+        const hoje = new Date();
+        const diaAtual = hoje.getDate();
+        const mesAtualStr = (hoje.getMonth() + 1).toString().padStart(2, '0') + '/' + hoje.getFullYear();
+        
         let acumulado = 0;
-        const pontos = dados.slice(1).map(v => { acumulado += v; return acumulado; });
+        const pontos = [];
+        const labels = [];
+        
+        // Só limita se o mês selecionado for o mês atual
+        const limiteDia = (mesAtivo === mesAtualStr) ? diaAtual : 31;
+
+        for (let i = 1; i <= 31; i++) {
+            labels.push(i);
+            if (i <= limiteDia) {
+                acumulado += dados[i] || 0;
+                pontos.push(acumulado);
+            } else {
+                pontos.push(null); // Aqui é o segredo: null faz a linha parar
+            }
+        }
+
         chart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: Array.from({length: 31}, (_, i) => i + 1),
-                datasets: [{ data: pontos, borderColor: '#00ff88', borderWidth: 4, pointRadius: 0, tension: 0.4, fill: true, backgroundColor: 'rgba(0, 255, 136, 0.1)' }]
+                labels: labels,
+                datasets: [{ 
+                    data: pontos, 
+                    borderColor: '#00ff88', 
+                    borderWidth: 4, 
+                    pointRadius: 0, 
+                    tension: 0.4, 
+                    fill: true, 
+                    backgroundColor: 'rgba(0, 255, 136, 0.1)',
+                    spanGaps: false // Garante que a linha não pule os nulos
+                }]
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#444' } }, y: { min: 0, max: meta, grid: { color: '#1a1a1a' }, ticks: { display: false } } } }
+            options: { 
+                responsive: true, 
+                maintainAspectRatio: false, 
+                plugins: { legend: { display: false } }, 
+                scales: { 
+                    x: { grid: { display: false }, ticks: { color: '#444' } }, 
+                    y: { min: 0, max: meta, grid: { color: '#1a1a1a' }, ticks: { display: false } } 
+                } 
+            }
         });
     }
 
-    // FUNÇÃO PARA EXPORTAR PDF
     function exportarPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         const mesAtivo = document.getElementById('selecaoMes').value;
         const vMes = appData.vendas.filter(v => v.mesRef === mesAtivo);
-        
-        doc.setFontSize(18);
-        doc.text("Relatório de Vendas - Canil My Baby", 14, 20);
-        doc.setFontSize(12);
-        doc.text(`Vendedor: Gerson | Mês: ${mesAtivo}`, 14, 30);
+        doc.setFontSize(18); doc.text("Relatório de Vendas - Canil My Baby", 14, 20);
+        doc.setFontSize(12); doc.text(`Vendedor: Gerson | Mês: ${mesAtivo}`, 14, 30);
         doc.text(`Faturamento: ${document.getElementById('totBruto').innerText}`, 14, 38);
-        doc.text(`Comissão: ${document.getElementById('salLiq').innerText}`, 14, 46);
-
-        const colunas = ["Data", "Cliente", "Raça", "Sexo", "UF", "Valor"];
-        const linhas = vMes.sort((a,b) => b.ts - a.ts).map(v => [
-            v.data, v.cliente, v.tipo, v.sexo === 'M' ? 'Macho' : 'Fêmea', v.uf, `R$ ${v.valor.toLocaleString('pt-BR')}`
-        ]);
-
-        doc.autoTable({
-            startY: 55,
-            head: [colunas],
-            body: linhas,
-            theme: 'striped',
-            headStyles: { fillColor: [0, 255, 136] },
-        });
-
+        doc.autoTable({ startY: 55, head: [["Data", "Cliente", "Raça", "Sexo", "UF", "Valor"]], body: vMes.sort((a,b) => b.ts - a.ts).map(v => [v.data, v.cliente, v.tipo, v.sexo === 'M' ? 'Macho' : 'Fêmea', v.uf, `R$ ${v.valor.toLocaleString('pt-BR')}`]), theme: 'striped', headStyles: { fillColor: [0, 255, 136] } });
         doc.save(`Vendas_MyBaby_${mesAtivo.replace('/','_')}.pdf`);
     }
 
